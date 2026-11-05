@@ -8,13 +8,13 @@
 ```php
 // ❌ NON FARE MAI COSÌ (vulnerabile a SQL injection)
 $id = $_GET['id'];
-$query = "SELECT * FROM studenti WHERE id = $id";
+$query = "SELECT * FROM libri WHERE id = $id";
 $risultati = $pdo->query($query)->fetchAll();
 
 // ✅ CORRETTO - Usa prepared statement
 $id = $_GET['id'];
-$stmt = $pdo->prepare("SELECT * FROM studenti WHERE id = :id");
-$stmt->execute(['id' => $id]);
+$stmt = $pdo->prepare("SELECT * FROM libri WHERE id = ?");
+$stmt->execute([$id]);
 $risultati = $stmt->fetchAll();
 ```
 
@@ -22,10 +22,10 @@ $risultati = $stmt->fetchAll();
 
 ```php
 // Sanitizza sempre l'input
-$nome = pulisci_input($_POST['nome']);
+$nome = trim($_POST['nome']);
 
 // Valida specificamente per il tipo di dato
-if (!valida_email($email)) {
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errore = "Email non valida";
 }
 
@@ -51,8 +51,8 @@ if (password_verify($password_inserita, $password_hash)) {
 // Sempre escape output HTML
 echo htmlspecialchars($variabile, ENT_QUOTES, 'UTF-8');
 
-// Usa la funzione pulisci_input() fornita in utils
-echo pulisci_input($input_utente);
+// Elimina gli spazi all'inizio e alla fine dell'input
+$nome = trim($_POST['nome']);
 ```
 
 ### 5. Gestione Sessioni Sicure
@@ -125,19 +125,18 @@ function calcola_media_ponderata($studente_id) {
 ```php
 // ✅ Separa logica da presentazione
 // File: logica.php
-function ottieni_studenti($pdo) {
-    $query = "SELECT * FROM studenti";
-    return esegui_query($pdo, $query);
+function ottieni_libri($pdo) {
+    return $pdo->query("SELECT * FROM libri")->fetchAll();
 }
 
 // File: vista.php
 <?php
 require_once 'logica.php';
-$studenti = ottieni_studenti($pdo);
+$libri = ottieni_libri($pdo);
 ?>
 <table>
-    <?php foreach ($studenti as $studente): ?>
-        <tr><td><?= htmlspecialchars($studente['nome']) ?></td></tr>
+    <?php foreach ($libri as $libro): ?>
+        <tr><td><?= htmlspecialchars($libro['titolo']) ?></td></tr>
     <?php endforeach; ?>
 </table>
 ```
@@ -213,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Validazione email
-    if (!valida_email($_POST['email'])) {
+    if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
         $errori[] = "Email non valida";
     }
     
@@ -244,7 +243,7 @@ if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
 
 ```php
 // File: snake_case
-// db_config.php, functions.php
+// db_config.php, connessione.php
 
 // Variabili: snake_case o camelCase (scegli uno e mantieni consistenza)
 $nome_studente = "Mario";
@@ -289,13 +288,14 @@ CREATE INDEX idx_studente_corso ON iscrizioni(studente_id, corso_id);
 
 ```php
 // ✅ Struttura file raccomandata
-esercizio-XX/
-├── index.php          # Entry point
-├── config.php         # Include configurazione
-├── functions.php      # Funzioni specifiche esercizio
-├── process.php        # Elaborazione form
-├── style.css          # Stili (opzionale)
-└── README.md          # Descrizione esercizio
+biblioteca/
+├── connessione.php    # Crea $pdo (si include con require_once)
+├── libri.php          # Elenco + form di inserimento
+├── libri_insert.php   # Un file per operazione...
+├── libri_edit.php
+├── libri_update.php
+├── libri_delete.php
+└── css/style.css      # Stili
 ```
 
 ## 🧪 Debug

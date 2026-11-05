@@ -1,59 +1,58 @@
--- Schema base per gli esercizi - versione SQLite
+-- Portale Biblioteca - versione SQLite
 -- Viene eseguito automaticamente da config/db_config.php quando il file
--- database/esercizi.sqlite è vuoto. Per ripartire da zero basta cancellare
--- il file esercizi.sqlite.
+-- database/biblioteca.sqlite e' vuoto. Per ripartire da zero basta cancellare
+-- il file biblioteca.sqlite.
 
-CREATE TABLE IF NOT EXISTS studenti (
+CREATE TABLE categorie (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE libri (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    titolo TEXT NOT NULL,
+    anno_pubblicazione INTEGER,
+    categoria_id INTEGER NOT NULL,
+    FOREIGN KEY (categoria_id) REFERENCES categorie(id) ON DELETE RESTRICT
+);
+
+CREATE TABLE autori (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
-    cognome TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
-    data_nascita TEXT,
-    citta TEXT,
-    corso TEXT,
-    creato_il TEXT DEFAULT CURRENT_TIMESTAMP,
-    modificato_il TEXT DEFAULT CURRENT_TIMESTAMP
+    cognome TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS corsi (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT NOT NULL,
-    descrizione TEXT,
-    durata_ore INTEGER,
-    docente TEXT,
-    creato_il TEXT DEFAULT CURRENT_TIMESTAMP
+-- Tabella ponte: relazione N:M tra libri e autori
+CREATE TABLE libro_autore (
+    libro_id INTEGER NOT NULL,
+    autore_id INTEGER NOT NULL,
+    ruolo TEXT NOT NULL,
+    PRIMARY KEY (libro_id, autore_id),
+    FOREIGN KEY (libro_id) REFERENCES libri(id) ON DELETE CASCADE,
+    FOREIGN KEY (autore_id) REFERENCES autori(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS iscrizioni (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    studente_id INTEGER NOT NULL,
-    corso_id INTEGER NOT NULL,
-    data_iscrizione TEXT NOT NULL,
-    voto REAL,
-    stato TEXT DEFAULT 'attivo' CHECK (stato IN ('attivo', 'completato', 'ritirato')),
-    FOREIGN KEY (studente_id) REFERENCES studenti(id) ON DELETE CASCADE,
-    FOREIGN KEY (corso_id) REFERENCES corsi(id) ON DELETE CASCADE,
-    UNIQUE (studente_id, corso_id)
-);
+INSERT INTO categorie (nome) VALUES
+('Romanzo'),
+('Fantascienza'),
+('Giallo'),
+('Saggio');
 
-INSERT INTO studenti (nome, cognome, email, data_nascita, citta, corso) VALUES
-('Mario', 'Rossi', 'mario.rossi@email.com', '2000-05-15', 'Roma', 'Informatica'),
-('Laura', 'Bianchi', 'laura.bianchi@email.com', '1999-08-22', 'Milano', 'Informatica'),
-('Giuseppe', 'Verdi', 'giuseppe.verdi@email.com', '2001-03-10', 'Napoli', 'Ingegneria'),
-('Sofia', 'Russo', 'sofia.russo@email.com', '2000-11-30', 'Torino', 'Informatica'),
-('Alessandro', 'Ferrari', 'alessandro.ferrari@email.com', '1998-07-18', 'Firenze', 'Matematica');
+INSERT INTO libri (titolo, anno_pubblicazione, categoria_id) VALUES
+('Il nome della rosa', 1980, 3),
+('Dune', 1965, 2),
+('Il buon inizio', 2010, 4),
+('Buona apocalisse a tutti', 2020, 1);
 
-INSERT INTO corsi (nome, descrizione, durata_ore, docente) VALUES
-('PHP Base', 'Introduzione al linguaggio PHP', 40, 'Prof. Giovanni Neri'),
-('Database MySQL', 'Fondamenti di database e SQL', 50, 'Prof. Maria Conti'),
-('Sviluppo Web', 'HTML, CSS e JavaScript', 60, 'Prof. Luca Martini'),
-('PHP Avanzato', 'Programmazione PHP avanzata', 45, 'Prof. Giovanni Neri');
+INSERT INTO autori (nome, cognome) VALUES
+('Umberto', 'Eco'),
+('Frank', 'Herbert'),
+('Isaac', 'Asimov'),
+('Michele', 'Rossi');
 
-INSERT INTO iscrizioni (studente_id, corso_id, data_iscrizione, voto, stato) VALUES
-(1, 1, '2024-01-15', 28.50, 'completato'),
-(1, 2, '2024-02-01', NULL, 'attivo'),
-(2, 1, '2024-01-15', 30.00, 'completato'),
-(2, 3, '2024-02-15', NULL, 'attivo'),
-(3, 2, '2024-01-20', 25.00, 'completato'),
-(4, 1, '2024-01-15', NULL, 'attivo'),
-(5, 4, '2024-03-01', NULL, 'attivo');
+INSERT INTO libro_autore (libro_id, autore_id, ruolo) VALUES
+(1, 1, 'Autore'),
+(2, 2, 'Autore'),
+(2, 3, 'Prefazione'),
+(3, 4, 'Autore'),
+(4, 4, 'Curatore');

@@ -14,7 +14,7 @@ Repository educativo per insegnare PHP procedurale con PDO a studenti in ambient
 
 ### Configurazione
 - **File di configurazione**: `config/db_config.php` (UNICO file, nessun template/local/env)
-- **Database**: costante `DB_DRIVER` in `config/db_config.php`: `'sqlite'` (predefinito, file `database/esercizi.sqlite` creato in automatico da `database/schema_sqlite.sql`) oppure `'mysql'` (`database/schema.sql`)
+- **Database**: costante `DB_DRIVER` in `config/db_config.php`: `'sqlite'` (predefinito, file `database/biblioteca.sqlite` creato in automatico da `database/schema_sqlite.sql`) oppure `'mysql'` (`database/schema.sql`)
 - **Credenziali XAMPP**: user=`root`, password=`` (vuota)
 - **Credenziali Altervista**: user=`username`, database=`my_username`
 
@@ -37,12 +37,12 @@ esercizi-php/
 ├── database/
 │   ├── schema.sql          # Schema MySQL
 │   └── schema_sqlite.sql   # Schema SQLite
-├── giorno-XX/              # Esercizi organizzati per giorno
-│   └── esercizio-XX/
-│       ├── README.md       # Descrizione esercizio
-│       └── index.php       # Codice esercizio
-└── utils/
-    └── functions.php       # Funzioni comuni
+├── lezioni/                # Tutorial: lezione-01.md ... lezione-08.md (si riparte da zero)
+└── biblioteca/             # Portale completo (soluzione di riferimento)
+    ├── connessione.php     # Crea $pdo e gestisce i messaggi di sessione
+    ├── categorie*.php      # Un file per operazione: x.php, x_insert, x_delete, x_edit, x_update
+    ├── libri*.php, autori*.php, libro_autori*.php   # 1:N e N:M (tabella ponte)
+    └── catalogo_ajax.php   # Ultima lezione: fetch che riceve HTML
 ```
 
 ### Convenzioni Codice
@@ -57,7 +57,7 @@ esercizi-php/
 
 #### Database
 - PDO con `ERRMODE_EXCEPTION` e `FETCH_ASSOC` (NO MySQLi), gestione errori con try/catch
-- Sempre prepared statements per sicurezza
+- Sempre prepared statements per sicurezza, con segnaposto posizionali `?` e `execute([$a, $b])` (NO parametri nominali `:nome`, NO sintassi `=>` negli array di `execute`): è la convenzione usata in classe
 - Funzioni helper: `connetti_database()` (ritorna un oggetto PDO), `chiudi_database($pdo)`
 - Charset: UTF-8 (utf8mb4)
 
@@ -78,7 +78,9 @@ esercizi-php/
 
 ### Cosa Fare
 ✅ Codice PHP procedurale semplice e chiaro
-✅ PDO con prepared statements (segnaposto nominali `:nome`)
+✅ PDO con prepared statements (segnaposto `?`)
+✅ Un file per operazione (`x.php`, `x_insert.php`, `x_delete.php`, `x_edit.php`, `x_update.php`), messaggi tra pagine con `$_SESSION['messaggio']`
+✅ JavaScript (solo ultima lezione): `fetch` con funzioni con nome e `async/await`, il PHP restituisce frammenti HTML (NO JSON); NO funzioni anonime/arrow function/`.then`; `onclick` diretto sui pulsanti, NO `addEventListener`
 ✅ Commenti esplicativi in italiano
 ✅ Validazione input server-side
 ✅ Gestione errori appropriata
@@ -89,7 +91,7 @@ esercizi-php/
 
 ### Formato
 - **Guide setup**: HTML (`docs/index.html`) per visualizzazione diretta in htdocs/Altervista
-- **Esercizi**: Markdown (`README.md`) per ogni esercizio
+- **Lezioni**: Markdown in `lezioni/` (una per passo)
 - **Codice**: Commenti inline in italiano
 
 ### Aggiornamento Documentazione

@@ -1,13 +1,13 @@
 <?php
 /**
  * ============================================================================
- * CONFIGURAZIONE DATABASE - Esercizi PHP con PDO
+ * CONFIGURAZIONE DATABASE - Portale Biblioteca con PDO
  * ============================================================================
  *
  * Questo è l'UNICO file di configurazione del progetto.
  * Scegli il database con DB_DRIVER:
  *
- *   'sqlite' -> un semplice file (database/esercizi.sqlite). NON serve
+ *   'sqlite' -> un semplice file (database/biblioteca.sqlite). NON serve
  *               installare nulla, funziona in locale e su Altervista e ogni
  *               studente ha il proprio database. Le tabelle e i dati di
  *               esempio vengono creati automaticamente al primo avvio.
@@ -16,7 +16,7 @@
  *               Importa prima database/schema.sql.
  *
  * Valori MySQL tipici:
- *   XAMPP:      DB_USER 'root',      DB_PASS '',             DB_NAME 'esercizi_php'
+ *   XAMPP:      DB_USER 'root',      DB_PASS '',             DB_NAME 'biblioteca'
  *   Altervista: DB_USER 'username',  DB_PASS 'tuapassword',  DB_NAME 'my_username'
  *
  * IMPORTANTE: se usi MySQL con la password reale di Altervista,
@@ -28,14 +28,14 @@
 define('DB_DRIVER', 'sqlite');          // 'sqlite' oppure 'mysql'
 
 // ===== CONFIGURAZIONE SQLITE =====
-define('SQLITE_FILE', __DIR__ . '/../database/esercizi.sqlite');
+define('SQLITE_FILE', __DIR__ . '/../database/biblioteca.sqlite');
 define('SQLITE_SCHEMA', __DIR__ . '/../database/schema_sqlite.sql');
 
 // ===== CONFIGURAZIONE MYSQL (usata solo se DB_DRIVER è 'mysql') =====
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');              // Altervista: il tuo username
 define('DB_PASS', '');                  // Altervista: la tua password
-define('DB_NAME', 'esercizi_php');      // Altervista: my_username
+define('DB_NAME', 'biblioteca');      // Altervista: my_username
 define('DB_CHARSET', 'utf8mb4');
 
 // ===== FUNZIONI DATABASE (NON MODIFICARE) =====
@@ -73,7 +73,7 @@ function connetti_database() {
  * @return void
  */
 function inizializza_sqlite($pdo) {
-    $tabella = $pdo->query("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'studenti'")->fetch();
+    $tabella = $pdo->query("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'categorie'")->fetch();
 
     if (!$tabella) {
         $pdo->exec(file_get_contents(SQLITE_SCHEMA));

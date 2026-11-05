@@ -1,65 +1,61 @@
--- Schema base per gli esercizi
--- Database: esercizi_php
+-- Portale Biblioteca - versione MySQL (XAMPP / Altervista)
+-- Su XAMPP: importa questo file da phpMyAdmin.
+-- Su Altervista: il database esiste gia', quindi importa SOLO le istruzioni
+-- da "CREATE TABLE" in poi (togli le prime due istruzioni).
 
--- Creazione database
-CREATE DATABASE IF NOT EXISTS esercizi_php CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE esercizi_php;
+CREATE DATABASE IF NOT EXISTS biblioteca CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE biblioteca;
 
--- Tabella studenti (esempio per gli esercizi)
-CREATE TABLE IF NOT EXISTS studenti (
+CREATE TABLE categorie (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+CREATE TABLE libri (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titolo VARCHAR(150) NOT NULL,
+    anno_pubblicazione INT,
+    categoria_id INT NOT NULL,
+    FOREIGN KEY (categoria_id) REFERENCES categorie(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE TABLE autori (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
-    cognome VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    data_nascita DATE,
-    citta VARCHAR(50),
-    corso VARCHAR(50),
-    creato_il TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    modificato_il TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    cognome VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
 
--- Tabella corsi
-CREATE TABLE IF NOT EXISTS corsi (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    descrizione TEXT,
-    durata_ore INT,
-    docente VARCHAR(100),
-    creato_il TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Tabella ponte: relazione N:M tra libri e autori
+CREATE TABLE libro_autore (
+    libro_id INT NOT NULL,
+    autore_id INT NOT NULL,
+    ruolo VARCHAR(50) NOT NULL,
+    PRIMARY KEY (libro_id, autore_id),
+    FOREIGN KEY (libro_id) REFERENCES libri(id) ON DELETE CASCADE,
+    FOREIGN KEY (autore_id) REFERENCES autori(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
 
--- Tabella iscrizioni (relazione studenti-corsi)
-CREATE TABLE IF NOT EXISTS iscrizioni (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    studente_id INT NOT NULL,
-    corso_id INT NOT NULL,
-    data_iscrizione DATE NOT NULL,
-    voto DECIMAL(4,2),
-    stato ENUM('attivo', 'completato', 'ritirato') DEFAULT 'attivo',
-    FOREIGN KEY (studente_id) REFERENCES studenti(id) ON DELETE CASCADE,
-    FOREIGN KEY (corso_id) REFERENCES corsi(id) ON DELETE CASCADE,
-    UNIQUE KEY iscrizione_unica (studente_id, corso_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO categorie (nome) VALUES
+('Romanzo'),
+('Fantascienza'),
+('Giallo'),
+('Saggio');
 
--- Dati di esempio per gli esercizi
-INSERT INTO studenti (nome, cognome, email, data_nascita, citta, corso) VALUES
-('Mario', 'Rossi', 'mario.rossi@email.com', '2000-05-15', 'Roma', 'Informatica'),
-('Laura', 'Bianchi', 'laura.bianchi@email.com', '1999-08-22', 'Milano', 'Informatica'),
-('Giuseppe', 'Verdi', 'giuseppe.verdi@email.com', '2001-03-10', 'Napoli', 'Ingegneria'),
-('Sofia', 'Russo', 'sofia.russo@email.com', '2000-11-30', 'Torino', 'Informatica'),
-('Alessandro', 'Ferrari', 'alessandro.ferrari@email.com', '1998-07-18', 'Firenze', 'Matematica');
+INSERT INTO libri (titolo, anno_pubblicazione, categoria_id) VALUES
+('Il nome della rosa', 1980, 3),
+('Dune', 1965, 2),
+('Il buon inizio', 2010, 4),
+('Buona apocalisse a tutti', 2020, 1);
 
-INSERT INTO corsi (nome, descrizione, durata_ore, docente) VALUES
-('PHP Base', 'Introduzione al linguaggio PHP', 40, 'Prof. Giovanni Neri'),
-('Database MySQL', 'Fondamenti di database e SQL', 50, 'Prof. Maria Conti'),
-('Sviluppo Web', 'HTML, CSS e JavaScript', 60, 'Prof. Luca Martini'),
-('PHP Avanzato', 'Programmazione PHP avanzata', 45, 'Prof. Giovanni Neri');
+INSERT INTO autori (nome, cognome) VALUES
+('Umberto', 'Eco'),
+('Frank', 'Herbert'),
+('Isaac', 'Asimov'),
+('Michele', 'Rossi');
 
-INSERT INTO iscrizioni (studente_id, corso_id, data_iscrizione, voto, stato) VALUES
-(1, 1, '2024-01-15', 28.50, 'completato'),
-(1, 2, '2024-02-01', NULL, 'attivo'),
-(2, 1, '2024-01-15', 30.00, 'completato'),
-(2, 3, '2024-02-15', NULL, 'attivo'),
-(3, 2, '2024-01-20', 25.00, 'completato'),
-(4, 1, '2024-01-15', NULL, 'attivo'),
-(5, 4, '2024-03-01', NULL, 'attivo');
+INSERT INTO libro_autore (libro_id, autore_id, ruolo) VALUES
+(1, 1, 'Autore'),
+(2, 2, 'Autore'),
+(2, 3, 'Prefazione'),
+(3, 4, 'Autore'),
+(4, 4, 'Curatore');

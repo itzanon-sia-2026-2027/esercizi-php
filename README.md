@@ -1,6 +1,6 @@
 # Esercizi PHP con PDO
 
-Tutorial a esercizi giornalieri di **PHP con PDO**, organizzati per difficoltà crescente. Si può usare con **SQLite** (nessuna installazione, un database per ogni studente) oppure con **MySQL** (XAMPP o Altervista), in locale o online.
+Tutorial di **PHP con PDO** che parte da zero e porta a costruire un **portale gestionale completo** (biblioteca: categorie, libri, autori, relazione N:M). Si può usare con **SQLite** (nessuna installazione, un database per ogni studente) oppure con **MySQL** (XAMPP o Altervista), in locale o online.
 
 ## 🚀 Setup Rapido
 
@@ -16,13 +16,13 @@ git clone https://github.com/itzanon-sia-2026-2027/esercizi-php.git
 
 Apri la cartella con VSCode.
 
-### 3. Avvia gli esercizi (SQLite, predefinito)
+### 3. Avvia il portale (SQLite, predefinito)
 
-1. Apri `giorno-01/esercizio-01/index.php`
+1. Apri `biblioteca/index.php`
 2. Esegui il task **"4. Avvia Server PHP (file corrente)"** (pulsante ▶️ nel pannello Favorites)
-3. Si apre `http://localhost:3000/giorno-01/esercizio-01/index.php`
+3. Si apre `http://localhost:3000/biblioteca/index.php`
 
-Il database `database/esercizi.sqlite` viene creato da solo, con i dati di esempio. Non serve avviare XAMPP.
+Il database `database/biblioteca.sqlite` viene creato da solo, con i dati di esempio. Non serve avviare XAMPP.
 
 Senza il profilo: `php -S localhost:3000` dalla cartella principale del progetto.
 
@@ -32,7 +32,7 @@ In `config/db_config.php` imposta `DB_DRIVER` a `'mysql'`, inserisci le credenzi
 
 | Ambiente | DB_USER | DB_PASS | DB_NAME |
 |----------|---------|---------|---------|
-| XAMPP | `root` | _(vuota)_ | `esercizi_php` |
+| XAMPP | `root` | _(vuota)_ | `biblioteca` |
 | Altervista | `username` | password database | `my_username` |
 
 ### 5. (Opzionale) Pubblicare su Altervista
@@ -64,10 +64,8 @@ esercizi-php/
 │   ├── schema.sql          # Schema MySQL
 │   ├── schema_sqlite.sql   # Schema SQLite (eseguito in automatico)
 │   └── .htaccess           # Protegge il file .sqlite
-├── giorno-01/              # Esercizi giorno 1
-├── giorno-02/              # Esercizi giorno 2
-└── utils/
-    └── functions.php       # Funzioni comuni
+├── lezioni/                # Le 8 lezioni del tutorial
+└── biblioteca/             # Portale completo (soluzione di riferimento)
 ```
 
 ## ⚙️ Configurazione Database
@@ -81,33 +79,34 @@ define('DB_DRIVER', 'sqlite');          // 'sqlite' oppure 'mysql'
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'esercizi_php');
+define('DB_NAME', 'biblioteca');
 ```
 
-Negli esercizi la connessione si ottiene così (funziona con entrambi i database):
+Nelle pagine la connessione si ottiene con `require_once 'connessione.php';` (vedi `biblioteca/connessione.php`), che usa `connetti_database()` e funziona con entrambi i database. Le query usano i segnaposto `?`:
 
 ```php
-require_once '../../config/db_config.php';
-
-try {
-    $pdo = connetti_database();
-    $stmt = $pdo->prepare("SELECT * FROM studenti WHERE id = :id");
-    $stmt->execute(['id' => $id]);
-    $studente = $stmt->fetch();
-} catch (PDOException $e) {
-    echo 'Errore: ' . htmlspecialchars($e->getMessage());
-}
+$stmt = $pdo->prepare("SELECT * FROM libri WHERE id = ?");
+$stmt->execute([$id]);
+$libro = $stmt->fetch();
 ```
 
-## 📚 Come Usare gli Esercizi
+## 📚 Come Usare il Tutorial
 
 1. Avvia il server (vedi sopra)
-2. Vai agli esercizi:
-   - `giorno-01/esercizio-01/` - Test connessione
-   - `giorno-01/esercizio-02/` - Lista studenti
-   - `giorno-01/esercizio-03/` - Dettagli studente
-   - `giorno-02/esercizio-01/` - Inserimento (da completare)
-   - `giorno-02/esercizio-02/` - Modifica ed eliminazione (da completare)
+2. Segui le [lezioni](lezioni/README.md) in ordine, scrivendo il codice in una tua cartella:
+
+   | # | Lezione |
+   |---|---------|
+   | 1 | Leggere i dati |
+   | 2 | Inserire e cancellare |
+   | 3 | Modificare |
+   | 4 | Messaggi ed errori |
+   | 5 | Seconda tabella: JOIN e menu a tendina |
+   | 6 | Relazione N:M (padre-figlio) |
+   | 7 | Il catalogo pubblico |
+   | 8 | fetch: aggiornare la pagina senza ricaricarla |
+
+3. Confronta con la soluzione in `biblioteca/`
 
 ## 🔧 Problemi?
 
@@ -116,7 +115,7 @@ Consulta la sezione [Problemi Comuni](docs/index.html) della guida (driver PDO m
 ## 📝 Convenzioni
 
 - **Lingua**: Commenti e documentazione in italiano
-- **Stile**: PHP procedurale con PDO, sempre prepared statements
+- **Stile**: PHP procedurale con PDO, sempre prepared statements con segnaposto `?`
 - **SQL**: standard, valido sia per SQLite sia per MySQL
 - **Encoding**: UTF-8
 - **Indentazione**: 4 spazi
