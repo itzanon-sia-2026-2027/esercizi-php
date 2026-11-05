@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezione 3 - Modificare</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); color: #444; line-height: 1.6; }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        h2 { color: #667eea; margin: 30px 0 10px; }
+        p, ul, ol, table, pre { margin-bottom: 15px; }
+        ul, ol { padding-left: 25px; }
+        a { color: #667eea; font-weight: 600; }
+        code { background: #f1f3f5; padding: 2px 6px; border-radius: 4px; font-size: 0.95em; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        pre code { background: none; padding: 0; color: inherit; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+        th { background: #f8f9fa; }
+        .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>Lezione 3 - Modificare</h1>
+<p><strong>Obiettivo</strong>: cambiare il nome di una categoria.</p>
+<p>Servono <strong>due</strong> pagine: una per mostrare il form già compilato (<code>edit</code>), una per salvare (<code>update</code>).</p>
+<h2><code>categorie_edit.php?id=...</code></h2>
+<ol>
+<li>Leggi la riga da modificare (una sola riga, quindi <code>fetch()</code> e non <code>fetchAll()</code>):</li>
+</ol>
+<pre><code class="language-php">$id = $_GET['id'];
+
+$stmt = $pdo-&gt;prepare(&quot;SELECT id, nome FROM categorie WHERE id = ?&quot;);
+$stmt-&gt;execute([$id]);
+$categoria = $stmt-&gt;fetch();
+</code></pre>
+<ol start="2">
+<li>Mostra un form con il valore attuale. L'<code>id</code> non si deve modificare, ma serve alla pagina successiva: lo mandiamo con un campo <strong>nascosto</strong>.</li>
+</ol>
+<pre><code class="language-html">&lt;form action=&quot;categorie_update.php&quot; method=&quot;post&quot;&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;&lt;?= $categoria['id'] ?&gt;&quot;&gt;
+    &lt;input type=&quot;text&quot; name=&quot;nome&quot; value=&quot;&lt;?= htmlspecialchars($categoria['nome']) ?&gt;&quot; required&gt;
+    &lt;button type=&quot;submit&quot;&gt;Salva&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+<ol start="3">
+<li>In <code>categorie.php</code> aggiungi il link <code>&lt;a href="categorie_edit.php?id=&lt;?= $c['id'] ?&gt;"&gt;Modifica&lt;/a&gt;</code>.</li>
+</ol>
+<h2><code>categorie_update.php</code></h2>
+<pre><code class="language-php">$id = $_POST['id'];
+$nome = trim($_POST['nome']);
+
+$stmt = $pdo-&gt;prepare(&quot;UPDATE categorie SET nome = ? WHERE id = ?&quot;);
+$stmt-&gt;execute([$nome, $id]);
+
+header(&quot;Location: categorie.php&quot;);
+exit;
+</code></pre>
+<p>Attenzione all'<strong>ordine</strong>: il primo <code>?</code> è <code>nome</code>, il secondo è <code>id</code>, quindi <code>[$nome, $id]</code>.</p>
+<h2>Verifica</h2>
+<p>Modifica "Giallo" in "Thriller". Se non sai dov'è l'errore, controlla l'ordine dei valori nell'array.</p>
+        <div class="nav"><a href="lezione-02.html">⬅️ Lezione precedente</a><a href="lezione-04.html">Lezione successiva ➡️</a></div>
+    </div>
+</body>
+</html>

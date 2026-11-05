@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezione 4 - Messaggi ed errori</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); color: #444; line-height: 1.6; }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        h2 { color: #667eea; margin: 30px 0 10px; }
+        p, ul, ol, table, pre { margin-bottom: 15px; }
+        ul, ol { padding-left: 25px; }
+        a { color: #667eea; font-weight: 600; }
+        code { background: #f1f3f5; padding: 2px 6px; border-radius: 4px; font-size: 0.95em; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        pre code { background: none; padding: 0; color: inherit; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+        th { background: #f8f9fa; }
+        .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>Lezione 4 - Messaggi ed errori</h1>
+<p><strong>Obiettivo</strong>: dire all'utente cosa è successo ed evitare le pagine bianche con errori.</p>
+<h2>Il problema</h2>
+<p>Dopo un <code>header("Location: ...")</code> la pagina cambia: non possiamo più usare una variabile per dare un messaggio. Usiamo la <strong>sessione</strong>, che sopravvive tra una pagina e l'altra.</p>
+<h2>La soluzione (già in <code>connessione.php</code>)</h2>
+<ul>
+<li><code>session_start();</code> attiva la sessione.</li>
+<li>Le pagine <code>*_insert/update/delete.php</code> scrivono il messaggio: <code>$_SESSION['messaggio'] = 'Categoria aggiunta';</code></li>
+<li><code>connessione.php</code> lo legge, lo mette in <code>$messaggio</code> e lo <strong>cancella</strong> (<code>unset</code>), così compare una volta sola.</li>
+<li><code>categorie.php</code> lo mostra:</li>
+</ul>
+<pre><code class="language-php">&lt;?php if ($messaggio != '') { ?&gt;
+    &lt;p&gt;&lt;?= htmlspecialchars($messaggio) ?&gt;&lt;/p&gt;
+&lt;?php } ?&gt;
+</code></pre>
+<h2>try / catch</h2>
+<p>Se il database rifiuta un'operazione, PDO lancia una <code>PDOException</code>. La catturiamo:</p>
+<pre><code class="language-php">try {
+    $stmt = $pdo-&gt;prepare(&quot;INSERT INTO categorie (nome) VALUES (?)&quot;);
+    $stmt-&gt;execute([$nome]);
+    $_SESSION['messaggio'] = 'Categoria aggiunta';
+} catch (PDOException $e) {
+    $_SESSION['messaggio'] = 'Errore: ' . $e-&gt;getMessage();
+}
+</code></pre>
+<p>Aggiungi anche un controllo: se <code>$nome == ''</code> il messaggio è "Il nome è obbligatorio" e non si esegue nessuna query (la validazione si fa <strong>sempre</strong> sul server).</p>
+<h2>Integrità referenziale</h2>
+<p>Nel database <code>libri.categoria_id</code> ha <code>ON DELETE RESTRICT</code>: <strong>non si può cancellare una categoria che ha dei libri</strong>. Ora che gestisci l'errore, in <code>categorie_delete.php</code> scrivi un messaggio chiaro: "Impossibile eliminare: ci sono libri collegati".</p>
+<p>Regole principali per le chiavi esterne:</p>
+<table>
+<thead>
+<tr>
+<th>Regola</th>
+<th>Cosa succede cancellando il padre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RESTRICT</code></td>
+<td>l'operazione viene rifiutata</td>
+</tr>
+<tr>
+<td><code>CASCADE</code></td>
+<td>vengono cancellati anche i figli</td>
+</tr>
+<tr>
+<td><code>SET NULL</code></td>
+<td>i figli restano con la chiave a <code>NULL</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Verifica</h2>
+<p>Prova a cancellare "Giallo" (ha dei libri) e a creare due volte la stessa categoria.</p>
+        <div class="nav"><a href="lezione-03.html">⬅️ Lezione precedente</a><a href="lezione-05.html">Lezione successiva ➡️</a></div>
+    </div>
+</body>
+</html>

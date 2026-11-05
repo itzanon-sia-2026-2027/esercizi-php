@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezione 8 (ultima) - fetch: aggiornare la pagina senza ricaricarla</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); color: #444; line-height: 1.6; }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        h2 { color: #667eea; margin: 30px 0 10px; }
+        p, ul, ol, table, pre { margin-bottom: 15px; }
+        ul, ol { padding-left: 25px; }
+        a { color: #667eea; font-weight: 600; }
+        code { background: #f1f3f5; padding: 2px 6px; border-radius: 4px; font-size: 0.95em; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        pre code { background: none; padding: 0; color: inherit; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+        th { background: #f8f9fa; }
+        .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>Lezione 8 (ultima) - fetch: aggiornare la pagina senza ricaricarla</h1>
+<p><strong>Obiettivo</strong>: finora ogni azione ricarica la pagina. Con JavaScript <code>fetch</code> il browser chiede a PHP un <strong>pezzo di HTML</strong> e lo inserisce nella pagina già aperta.</p>
+<p>Il PHP <strong>non restituisce JSON</strong>: restituisce direttamente HTML, scritto con le stesse tecniche di sempre.</p>
+<h2>Come funziona</h2>
+<pre><code>pulsante (onclick) -&gt; funzione JavaScript -&gt; fetch(&quot;pagina.php?...&quot;) -&gt; PHP risponde con HTML -&gt; innerHTML
+</code></pre>
+<h2>1. Il PHP che restituisce un frammento: <code>libri_frammento.php</code></h2>
+<p>Niente <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;body&gt;</code>: solo gli elementi che servono.</p>
+<pre><code class="language-php">&lt;?php
+require_once 'connessione.php';
+
+$categoria_id = $_GET['categoria_id'];
+
+$stmt = $pdo-&gt;prepare(&quot;SELECT id, titolo, anno_pubblicazione FROM libri WHERE categoria_id = ?&quot;);
+$stmt-&gt;execute([$categoria_id]);
+$libri = $stmt-&gt;fetchAll();
+
+foreach ($libri as $l) { ?&gt;
+    &lt;article&gt;
+        &lt;h2&gt;&lt;?= htmlspecialchars($l['titolo']) ?&gt; (&lt;?= $l['anno_pubblicazione'] ?&gt;)&lt;/h2&gt;
+        &lt;button onclick=&quot;carica_autori(&lt;?= $l['id'] ?&gt;)&quot;&gt;Mostra autori&lt;/button&gt;
+        &lt;div id=&quot;autori_&lt;?= $l['id'] ?&gt;&quot;&gt;&lt;/div&gt;
+    &lt;/article&gt;
+&lt;?php }
+</code></pre>
+<p>Anche i pulsanti del frammento hanno il loro <code>onclick</code>.</p>
+<h2>2. Il JavaScript: <code>js/catalogo.js</code></h2>
+<pre><code class="language-javascript">async function carica_libri(categoria_id) {
+    let risposta = await fetch(&quot;libri_frammento.php?categoria_id=&quot; + categoria_id);
+    let html = await risposta.text();
+    document.getElementById(&quot;elenco_libri&quot;).innerHTML = html;
+}
+</code></pre>
+<ul>
+<li><code>fetch(...)</code> fa la richiesta; con <code>await</code> si aspetta la risposta (per questo la funzione è <code>async</code>).</li>
+<li><code>risposta.text()</code> legge il corpo della risposta come testo (cioè l'HTML scritto dal PHP).</li>
+<li><code>innerHTML</code> mette quel testo dentro il <code>div</code>.</li>
+</ul>
+<p><strong>Regole di stile per questa lezione</strong>: solo funzioni con nome (<code>function nome() { ... }</code>), niente funzioni anonime, niente frecce <code>=&gt;</code>, niente <code>.then</code>. I pulsanti hanno l'attributo <code>onclick="nome_funzione(...)"</code> direttamente nell'HTML, senza <code>addEventListener</code>.</p>
+<h2>3. La pagina: <code>catalogo_ajax.php</code></h2>
+<pre><code class="language-php">&lt;script src=&quot;js/catalogo.js&quot;&gt;&lt;/script&gt;
+...
+&lt;?php foreach ($categorie as $c) { ?&gt;
+    &lt;button onclick=&quot;carica_libri(&lt;?= $c['id'] ?&gt;)&quot;&gt;&lt;?= htmlspecialchars($c['nome']) ?&gt;&lt;/button&gt;
+&lt;?php } ?&gt;
+
+&lt;div id=&quot;elenco_libri&quot;&gt;&lt;/div&gt;
+</code></pre>
+<h2>Verifica</h2>
+<p>Apri <code>catalogo_ajax.php</code>: clicca una categoria e poi "Mostra autori". La pagina non si ricarica mai (guarda la scheda Rete degli strumenti di sviluppo del browser per vedere le richieste <code>fetch</code>).</p>
+<h2>Esercizio</h2>
+<p>Scrivi <code>autori_frammento.php</code> e la funzione <code>carica_autori(libro_id)</code> (la soluzione è nel branch <code>soluzione</code>, cartella <code>passo-08</code>).</p>
+        <div class="nav"><a href="lezione-07.html">⬅️ Lezione precedente</a><a href="index.html">Indice ➡️</a></div>
+    </div>
+</body>
+</html>

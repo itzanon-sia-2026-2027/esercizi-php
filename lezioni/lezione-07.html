@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezione 7 - Il catalogo pubblico e la home del portale</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); color: #444; line-height: 1.6; }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        h2 { color: #667eea; margin: 30px 0 10px; }
+        p, ul, ol, table, pre { margin-bottom: 15px; }
+        ul, ol { padding-left: 25px; }
+        a { color: #667eea; font-weight: 600; }
+        code { background: #f1f3f5; padding: 2px 6px; border-radius: 4px; font-size: 0.95em; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        pre code { background: none; padding: 0; color: inherit; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+        th { background: #f8f9fa; }
+        .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>Lezione 7 - Il catalogo pubblico e la home del portale</h1>
+<p><strong>Obiettivo</strong>: la pagina che vede il pubblico, e da cui si accede alle pagine di gestione.</p>
+<h2><code>index.php</code></h2>
+<ol>
+<li>Leggi tutti i libri con la JOIN sulle categorie (come in lezione 5).</li>
+<li>Per <strong>ogni libro</strong> esegui una seconda query per gli autori. Il ciclo annidato è:</li>
+</ol>
+<pre><code class="language-php">&lt;?php foreach ($libri as $l) {
+    $sql = &quot;SELECT autori.nome, autori.cognome, libro_autore.ruolo
+            FROM autori
+            INNER JOIN libro_autore ON autori.id = libro_autore.autore_id
+            WHERE libro_autore.libro_id = ?&quot;;
+    $stmt = $pdo-&gt;prepare($sql);
+    $stmt-&gt;execute([$l['id']]);
+    $autori = $stmt-&gt;fetchAll(); ?&gt;
+    &lt;article&gt;
+        &lt;h2&gt;&lt;?= htmlspecialchars($l['titolo']) ?&gt;&lt;/h2&gt;
+        &lt;ul&gt;
+            &lt;?php foreach ($autori as $a) { ?&gt;
+                &lt;li&gt;&lt;?= htmlspecialchars($a['nome'] . ' ' . $a['cognome']) ?&gt; - &lt;?= htmlspecialchars($a['ruolo']) ?&gt;&lt;/li&gt;
+            &lt;?php } ?&gt;
+        &lt;/ul&gt;
+    &lt;/article&gt;
+&lt;?php } ?&gt;
+</code></pre>
+<p>Anche qui si usa <code>?</code>, perché <code>$l['id']</code> viene dal database: è una buona abitudine usare <strong>sempre</strong> <code>prepare</code>.
+3. Nell'header metti i link a <code>categorie.php</code>, <code>libri.php</code>, <code>autori.php</code>.</p>
+<h2>Rifinitura</h2>
+<p>Nelle pagine di gestione aggiungi un link "⬅️ Home". Hai un portale completo: <strong>home → liste → inserimento / modifica / cancellazione → relazioni</strong>.</p>
+<h2>Esercizio per la verifica</h2>
+<p>Realizza lo stesso portale con un altro tema, sulla stessa struttura:</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Tabella 1:N</th>
+<th>Tabella principale</th>
+<th>N:M</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Palestra</td>
+<td><code>sale</code></td>
+<td><code>corsi</code></td>
+<td><code>corsi</code> ↔ <code>istruttori</code></td>
+</tr>
+<tr>
+<td>Negozio</td>
+<td><code>reparti</code></td>
+<td><code>prodotti</code></td>
+<td><code>prodotti</code> ↔ <code>fornitori</code></td>
+</tr>
+<tr>
+<td>Scuola</td>
+<td><code>indirizzi</code></td>
+<td><code>classi</code></td>
+<td><code>classi</code> ↔ <code>docenti</code> (con materia)</td>
+</tr>
+</tbody>
+</table>
+        <div class="nav"><a href="lezione-06.html">⬅️ Lezione precedente</a><a href="lezione-08.html">Lezione successiva ➡️</a></div>
+    </div>
+</body>
+</html>

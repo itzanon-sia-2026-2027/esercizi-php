@@ -1,68 +1,94 @@
 <?php
 /**
  * ============================================================================
- * CONFIGURAZIONE DATABASE - Esercizi PHP
+ * CONFIGURAZIONE DATABASE - Portale Biblioteca con PDO
  * ============================================================================
- * 
- * ISTRUZIONI RAPIDE:
- * 
- * 1. XAMPP su Windows (laboratorio/casa):
- *    - DB_USER: 'root'
- *    - DB_PASS: '' (vuoto)
- *    - DB_NAME: 'esercizi_php'
- * 
- * 2. Altervista:
- *    - DB_USER: 'tuousername' (il tuo username Altervista)
- *    - DB_PASS: 'tuapassword' (la tua password database)
- *    - DB_NAME: 'my_tuousername' (my_ seguito dal tuo username)
- * 
- * 3. Linux/Mac (LAMP/MAMP):
- *    - Configura secondo la tua installazione
- * 
- * IMPORTANTE: Questo file contiene credenziali. NON condividerlo pubblicamente!
+ *
+ * Questo è l'UNICO file di configurazione del progetto.
+ * Scegli il database con DB_DRIVER:
+ *
+ *   'sqlite' -> un semplice file (database/biblioteca.sqlite). NON serve
+ *               installare nulla, funziona in locale e su Altervista e ogni
+ *               studente ha il proprio database. Le tabelle e i dati di
+ *               esempio vengono creati automaticamente al primo avvio.
+ *
+ *   'mysql'  -> server MySQL/MariaDB (XAMPP oppure Altervista).
+ *               Importa prima database/schema.sql.
+ *
+ * Valori MySQL tipici:
+ *   XAMPP:      DB_USER 'root',      DB_PASS '',             DB_NAME 'biblioteca'
+ *   Altervista: DB_USER 'username',  DB_PASS 'tuapassword',  DB_NAME 'my_username'
+ *
+ * IMPORTANTE: se usi MySQL con la password reale di Altervista,
+ * NON caricare questo file su repository pubblici.
  * ============================================================================
  */
 
-// ===== CONFIGURAZIONE DATABASE =====
-// Modifica SOLO questi valori con le tue credenziali
+// ===== SCEGLI IL DATABASE =====
+define('DB_DRIVER', 'sqlite');          // 'sqlite' oppure 'mysql'
 
+// ===== CONFIGURAZIONE SQLITE =====
+define('SQLITE_FILE', __DIR__ . '/../database/biblioteca.sqlite');
+define('SQLITE_SCHEMA', __DIR__ . '/../database/schema_sqlite.sql');
+
+// ===== CONFIGURAZIONE MYSQL (usata solo se DB_DRIVER è 'mysql') =====
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');              // Cambia con il tuo username
-define('DB_PASS', '');                  // Cambia con la tua password
-define('DB_NAME', 'esercizi_php');      // Cambia con il nome del tuo database
+define('DB_USER', 'root');              // Altervista: il tuo username
+define('DB_PASS', '');                  // Altervista: la tua password
+define('DB_NAME', 'biblioteca');      // Altervista: my_username
 define('DB_CHARSET', 'utf8mb4');
 
 // ===== FUNZIONI DATABASE (NON MODIFICARE) =====
 
 /**
- * Funzione per creare connessione al database
- * 
- * @return mysqli|false Oggetto mysqli o false in caso di errore
+ * Crea la connessione al database usando PDO
+ *
+ * In caso di errore lancia una PDOException: gestiscila con try/catch.
+ *
+ * @return PDO Oggetto di connessione
  */
 function connetti_database() {
-    // Crea connessione
-    $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-    
-    // Verifica connessione
-    if (!$conn) {
-        die("Errore di connessione: " . mysqli_connect_error());
+    $opzioni = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ];
+
+    if (DB_DRIVER === 'sqlite') {
+        // Il file viene creato automaticamente se non esiste
+        $pdo = new PDO('sqlite:' . SQLITE_FILE, null, null, $opzioni);
+        $pdo->exec('PRAGMA foreign_keys = ON');
+        inizializza_sqlite($pdo);
+    } else {
+        $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, $opzioni);
     }
-    
-    // Imposta charset
-    mysqli_set_charset($conn, DB_CHARSET);
-    
-    return $conn;
+
+    return $pdo;
 }
 
 /**
- * Funzione per chiudere connessione al database
- * 
- * @param mysqli $conn Connessione da chiudere
+ * Se il database SQLite è vuoto, crea le tabelle e inserisce i dati di esempio
+ *
+ * @param PDO $pdo Connessione SQLite
  * @return void
  */
-function chiudi_database($conn) {
-    if ($conn) {
-        mysqli_close($conn);
+function inizializza_sqlite($pdo) {
+    $tabella = $pdo->query("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'categorie'")->fetch();
+
+    if (!$tabella) {
+        $pdo->exec(file_get_contents(SQLITE_SCHEMA));
     }
+}
+
+/**
+ * Chiude la connessione al database
+ *
+ * In PDO la connessione si chiude assegnando null alla variabile.
+ *
+ * @param PDO $pdo Connessione da chiudere
+ * @return void
+ */
+function chiudi_database(&$pdo) {
+    $pdo = null;
 }
 ?>

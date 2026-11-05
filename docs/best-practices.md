@@ -1,4 +1,4 @@
-# Best Practices - PHP/MySQLi Procedurale
+# Best Practices - PHP con PDO
 
 ## 🔒 Sicurezza
 
@@ -8,25 +8,24 @@
 ```php
 // ❌ NON FARE MAI COSÌ (vulnerabile a SQL injection)
 $id = $_GET['id'];
-$query = "SELECT * FROM studenti WHERE id = $id";
-$result = mysqli_query($conn, $query);
+$query = "SELECT * FROM libri WHERE id = $id";
+$risultati = $pdo->query($query)->fetchAll();
 
 // ✅ CORRETTO - Usa prepared statement
 $id = $_GET['id'];
-$stmt = mysqli_prepare($conn, "SELECT * FROM studenti WHERE id = ?");
-mysqli_stmt_bind_param($stmt, "i", $id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
+$stmt = $pdo->prepare("SELECT * FROM libri WHERE id = ?");
+$stmt->execute([$id]);
+$risultati = $stmt->fetchAll();
 ```
 
 ### 2. Validazione e Sanitizzazione Input
 
 ```php
 // Sanitizza sempre l'input
-$nome = pulisci_input($_POST['nome']);
+$nome = trim($_POST['nome']);
 
 // Valida specificamente per il tipo di dato
-if (!valida_email($email)) {
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errore = "Email non valida";
 }
 
@@ -52,8 +51,8 @@ if (password_verify($password_inserita, $password_hash)) {
 // Sempre escape output HTML
 echo htmlspecialchars($variabile, ENT_QUOTES, 'UTF-8');
 
-// Usa la funzione pulisci_input() fornita in utils
-echo pulisci_input($input_utente);
+// Elimina gli spazi all'inizio e alla fine dell'input
+$nome = trim($_POST['nome']);
 ```
 
 ### 5. Gestione Sessioni Sicure
@@ -126,19 +125,18 @@ function calcola_media_ponderata($studente_id) {
 ```php
 // ✅ Separa logica da presentazione
 // File: logica.php
-function ottieni_studenti($conn) {
-    $query = "SELECT * FROM studenti";
-    return esegui_query($conn, $query);
+function ottieni_libri($pdo) {
+    return $pdo->query("SELECT * FROM libri")->fetchAll();
 }
 
 // File: vista.php
 <?php
 require_once 'logica.php';
-$studenti = ottieni_studenti($conn);
+$libri = ottieni_libri($pdo);
 ?>
 <table>
-    <?php foreach ($studenti as $studente): ?>
-        <tr><td><?= htmlspecialchars($studente['nome']) ?></td></tr>
+    <?php foreach ($libri as $libro): ?>
+        <tr><td><?= htmlspecialchars($libro['titolo']) ?></td></tr>
     <?php endforeach; ?>
 </table>
 ```
@@ -149,35 +147,39 @@ $studenti = ottieni_studenti($conn);
 
 ```php
 // ✅ Apri connessione solo quando necessario
-$conn = connetti_database();
+$pdo = connetti_database();
 
 // Esegui operazioni
-$result = mysqli_query($conn, $query);
+$risultati = $pdo->query($query)->fetchAll();
 
-// ✅ Chiudi sempre la connessione
-chiudi_database($conn);
+// ✅ Chiudi la connessione quando hai finito
+chiudi_database($pdo);
 ```
 
 ### 2. Gestione Errori
 
 ```php
-// ✅ Controlla sempre il risultato
-$result = mysqli_query($conn, $query);
-if (!$result) {
-    error_log("Errore query: " . mysqli_error($conn));
+// ✅ PDO è configurato con ERRMODE_EXCEPTION: gli errori sono eccezioni
+try {
+    $risultati = $pdo->query($query)->fetchAll();
+} catch (PDOException $e) {
+    error_log("Errore query: " . $e->getMessage());
     die("Si è verificato un errore. Riprova più tardi.");
 }
 
 // ✅ Usa transazioni per operazioni multiple
-mysqli_begin_transaction($conn);
 try {
-    mysqli_query($conn, $query1);
-    mysqli_query($conn, $query2);
-    mysqli_commit($conn);
-} catch (Exception $e) {
-    mysqli_rollback($conn);
+    $pdo->beginTransaction();
+    $pdo->exec($query1);
+    $pdo->exec($query2);
+    $pdo->commit();
+} catch (PDOException $e) {
+    $pdo->rollBack();
     error_log("Errore transazione: " . $e->getMessage());
 }
+
+// ✅ Scrivi SQL portabile: lo stesso codice deve funzionare
+// sia con SQLite sia con MySQL (usa solo SQL standard)
 ```
 
 ### 3. Query Ottimizzate
@@ -210,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Validazione email
-    if (!valida_email($_POST['email'])) {
+    if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
         $errori[] = "Email non valida";
     }
     
@@ -241,7 +243,7 @@ if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
 
 ```php
 // File: snake_case
-// db_config.php, esegui_query.php
+// db_config.php, connessione.php
 
 // Variabili: snake_case o camelCase (scegli uno e mantieni consistenza)
 $nome_studente = "Mario";
@@ -286,13 +288,14 @@ CREATE INDEX idx_studente_corso ON iscrizioni(studente_id, corso_id);
 
 ```php
 // ✅ Struttura file raccomandata
-esercizio-XX/
-├── index.php          # Entry point
-├── config.php         # Include configurazione
-├── functions.php      # Funzioni specifiche esercizio
-├── process.php        # Elaborazione form
-├── style.css          # Stili (opzionale)
-└── README.md          # Descrizione esercizio
+lavoro/
+├── connessione.php    # Crea $pdo (si include con require_once)
+├── libri.php          # Elenco + form di inserimento
+├── libri_insert.php   # Un file per operazione...
+├── libri_edit.php
+├── libri_update.php
+├── libri_delete.php
+└── css/style.css      # Stili
 ```
 
 ## 🧪 Debug
