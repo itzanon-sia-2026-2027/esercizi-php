@@ -38,8 +38,8 @@ In questo esercizio imparerai a:
 
 ## 📚 Funzioni PHP da Usare
 
-- `mysqli_prepare()` - Per UPDATE e DELETE sicuri
-- `mysqli_affected_rows()` - Verifica se record è stato modificato
+- `$pdo->prepare()` ed `$stmt->execute()` - Per UPDATE e DELETE sicuri
+- `$stmt->rowCount()` - Verifica quante righe sono state modificate
 - `header('Location: ...')` - Redirect dopo operazioni
 - `exit()` - Termina script dopo redirect
 
@@ -87,11 +87,8 @@ SELECT id FROM studenti WHERE id = ?;
 
 ## ✅ Test
 
-1. Avvia il server:
-```bash
-cd giorno-02/esercizio-02
-php -S localhost:8000
-```
+1. Apri `index.php` in VSCode ed esegui il task **"4. Avvia Server PHP (file corrente)"** (pulsante ▶️ nel pannello Favorites), oppure da terminale nella cartella principale del progetto: `php -S localhost:3000`
+   Il browser si apre su `http://localhost:3000/giorno-02/esercizio-02/index.php`
 
 2. Test da eseguire:
    - `?id=1` → Deve mostrare form precompilato con dati di studente #1
@@ -106,12 +103,12 @@ php -S localhost:8000
 
 ```php
 // ✅ Prepared statement per UPDATE
-$stmt = mysqli_prepare($conn, "UPDATE studenti SET nome = ?, email = ? WHERE id = ?");
-mysqli_stmt_bind_param($stmt, "ssi", $nome, $email, $id);
+$stmt = $pdo->prepare("UPDATE studenti SET nome = :nome, email = :email WHERE id = :id");
+$stmt->execute(['nome' => $nome, 'email' => $email, 'id' => $id]);
 
 // ✅ Prepared statement per DELETE
-$stmt = mysqli_prepare($conn, "DELETE FROM studenti WHERE id = ?");
-mysqli_stmt_bind_param($stmt, "i", $id);
+$stmt = $pdo->prepare("DELETE FROM studenti WHERE id = :id");
+$stmt->execute(['id' => $id]);
 
 // ✅ SEMPRE redirect dopo operazioni di modifica (Pattern Post-Redirect-Get)
 header('Location: lista.php?msg=success');

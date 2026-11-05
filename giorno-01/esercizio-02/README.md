@@ -27,9 +27,9 @@ In questo esercizio imparerai a:
 
 ## 📚 Funzioni PHP da Usare
 
-- `mysqli_query()` - Esegue la query
-- `mysqli_fetch_assoc()` - Recupera riga come array associativo
-- `mysqli_num_rows()` - Conta il numero di risultati
+- `$pdo->query()` - Esegue la query
+- `$stmt->fetchAll()` - Recupera tutte le righe come array associativi
+- `count()` - Conta il numero di risultati
 - `htmlspecialchars()` - Sanitizza output HTML
 
 ## 🎨 Output Atteso
@@ -44,8 +44,8 @@ Una tabella HTML con intestazioni:
 
 ## 💡 Suggerimenti
 
-1. Usa `while ($riga = mysqli_fetch_assoc($result))` per iterare sui risultati
-2. Controlla sempre con `mysqli_num_rows()` se ci sono risultati
+1. Usa `foreach ($studenti as $studente)` per iterare sui risultati di `fetchAll()`
+2. Controlla sempre con `count()` se ci sono risultati
 3. Usa CSS per rendere la tabella più leggibile
 4. Sanitizza sempre l'output con `htmlspecialchars()`
 
@@ -67,11 +67,8 @@ ORDER BY cognome, nome;
 
 ## ✅ Test
 
-1. Avvia il server:
-```bash
-cd giorno-01/esercizio-02
-php -S localhost:8000
-```
+1. Apri `index.php` in VSCode ed esegui il task **"4. Avvia Server PHP (file corrente)"** (pulsante ▶️ nel pannello Favorites), oppure da terminale nella cartella principale del progetto: `php -S localhost:3000`
+   Il browser si apre su `http://localhost:3000/giorno-01/esercizio-02/index.php`
 
 2. Verifica che vengano visualizzati tutti e 5 gli studenti di esempio
 

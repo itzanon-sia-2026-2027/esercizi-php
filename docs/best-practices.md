@@ -1,4 +1,4 @@
-# Best Practices - PHP/MySQLi Procedurale
+# Best Practices - PHP con PDO
 
 ## 🔒 Sicurezza
 
@@ -9,14 +9,13 @@
 // ❌ NON FARE MAI COSÌ (vulnerabile a SQL injection)
 $id = $_GET['id'];
 $query = "SELECT * FROM studenti WHERE id = $id";
-$result = mysqli_query($conn, $query);
+$risultati = $pdo->query($query)->fetchAll();
 
 // ✅ CORRETTO - Usa prepared statement
 $id = $_GET['id'];
-$stmt = mysqli_prepare($conn, "SELECT * FROM studenti WHERE id = ?");
-mysqli_stmt_bind_param($stmt, "i", $id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
+$stmt = $pdo->prepare("SELECT * FROM studenti WHERE id = :id");
+$stmt->execute(['id' => $id]);
+$risultati = $stmt->fetchAll();
 ```
 
 ### 2. Validazione e Sanitizzazione Input
@@ -126,15 +125,15 @@ function calcola_media_ponderata($studente_id) {
 ```php
 // ✅ Separa logica da presentazione
 // File: logica.php
-function ottieni_studenti($conn) {
+function ottieni_studenti($pdo) {
     $query = "SELECT * FROM studenti";
-    return esegui_query($conn, $query);
+    return esegui_query($pdo, $query);
 }
 
 // File: vista.php
 <?php
 require_once 'logica.php';
-$studenti = ottieni_studenti($conn);
+$studenti = ottieni_studenti($pdo);
 ?>
 <table>
     <?php foreach ($studenti as $studente): ?>
@@ -149,35 +148,39 @@ $studenti = ottieni_studenti($conn);
 
 ```php
 // ✅ Apri connessione solo quando necessario
-$conn = connetti_database();
+$pdo = connetti_database();
 
 // Esegui operazioni
-$result = mysqli_query($conn, $query);
+$risultati = $pdo->query($query)->fetchAll();
 
-// ✅ Chiudi sempre la connessione
-chiudi_database($conn);
+// ✅ Chiudi la connessione quando hai finito
+chiudi_database($pdo);
 ```
 
 ### 2. Gestione Errori
 
 ```php
-// ✅ Controlla sempre il risultato
-$result = mysqli_query($conn, $query);
-if (!$result) {
-    error_log("Errore query: " . mysqli_error($conn));
+// ✅ PDO è configurato con ERRMODE_EXCEPTION: gli errori sono eccezioni
+try {
+    $risultati = $pdo->query($query)->fetchAll();
+} catch (PDOException $e) {
+    error_log("Errore query: " . $e->getMessage());
     die("Si è verificato un errore. Riprova più tardi.");
 }
 
 // ✅ Usa transazioni per operazioni multiple
-mysqli_begin_transaction($conn);
 try {
-    mysqli_query($conn, $query1);
-    mysqli_query($conn, $query2);
-    mysqli_commit($conn);
-} catch (Exception $e) {
-    mysqli_rollback($conn);
+    $pdo->beginTransaction();
+    $pdo->exec($query1);
+    $pdo->exec($query2);
+    $pdo->commit();
+} catch (PDOException $e) {
+    $pdo->rollBack();
     error_log("Errore transazione: " . $e->getMessage());
 }
+
+// ✅ Scrivi SQL portabile: lo stesso codice deve funzionare
+// sia con SQLite sia con MySQL (usa solo SQL standard)
 ```
 
 ### 3. Query Ottimizzate
@@ -241,7 +244,7 @@ if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
 
 ```php
 // File: snake_case
-// db_config.php, esegui_query.php
+// db_config.php, functions.php
 
 // Variabili: snake_case o camelCase (scegli uno e mantieni consistenza)
 $nome_studente = "Mario";

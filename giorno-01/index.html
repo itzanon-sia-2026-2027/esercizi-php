@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giorno 1 - Fondamenti PHP e MySQLi</title>
+    <title>Giorno 1 - Fondamenti PHP e PDO</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>📚 Giorno 1</h1>
-            <p class="subtitle">Fondamenti PHP e MySQLi</p>
+            <p class="subtitle">Fondamenti PHP e PDO</p>
         </header>
         
         <div class="objectives">
             <h2>🎯 Obiettivi del Giorno</h2>
             <ul>
                 <li>Comprendere la sintassi base di PHP</li>
-                <li>Stabilire connessione a un database MySQL</li>
+                <li>Stabilire connessione a un database con PDO</li>
                 <li>Eseguire query SELECT</li>
                 <li>Visualizzare dati in formato HTML</li>
             </ul>
@@ -110,8 +110,8 @@
         <div class="tips">
             <h2>💡 Suggerimenti</h2>
             <ul>
-                <li><strong>Controlla sempre gli errori</strong>: Usa <code>mysqli_error()</code> per debug</li>
-                <li><strong>Chiudi le connessioni</strong>: Sempre chiudere con <code>mysqli_close()</code></li>
+                <li><strong>Controlla sempre gli errori</strong>: Usa <code>try/catch</code> con <code>PDOException</code> per debug</li>
+                <li><strong>Chiudi le connessioni</strong>: Con PDO basta assegnare <code>null</code> alla variabile (<code>$pdo = null;</code>)</li>
                 <li><strong>Sanitizza input</strong>: Usa <code>htmlspecialchars()</code> per output HTML</li>
                 <li><strong>Testa il database</strong>: Verifica che i dati di esempio siano presenti</li>
             </ul>

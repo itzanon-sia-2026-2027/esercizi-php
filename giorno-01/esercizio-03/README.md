@@ -31,8 +31,8 @@ In questo esercizio imparerai a:
 - `$_GET['parametro']` - Riceve parametri dall'URL
 - `isset()` - Verifica se una variabile esiste
 - `is_numeric()` - Verifica se un valore è numerico
-- `mysqli_prepare()` - Prepara statement (per sicurezza)
-- `mysqli_fetch_assoc()` - Recupera il risultato
+- `$pdo->prepare()` ed `$stmt->execute()` - Query con parametri (per sicurezza)
+- `$stmt->fetch()` - Recupera la riga (o `false` se non esiste)
 
 ## 🎨 Output Atteso
 
@@ -72,17 +72,14 @@ SELECT * FROM studenti WHERE id = ?;
 ## 🔗 URL di Esempio
 
 ```
-http://localhost:8000/index.php?id=1
-http://localhost:8000/index.php?id=3
+http://localhost:3000/giorno-01/esercizio-03/index.php?id=1
+http://localhost:3000/giorno-01/esercizio-03/index.php?id=3
 ```
 
 ## ✅ Test
 
-1. Avvia il server:
-```bash
-cd giorno-01/esercizio-03
-php -S localhost:8000
-```
+1. Apri `index.php` in VSCode ed esegui il task **"4. Avvia Server PHP (file corrente)"** (pulsante ▶️ nel pannello Favorites), oppure da terminale nella cartella principale del progetto: `php -S localhost:3000`
+   Il browser si apre su `http://localhost:3000/giorno-01/esercizio-03/index.php`
 
 2. Testa con diversi ID:
    - `?id=1` - Dovrebbe mostrare Mario Rossi

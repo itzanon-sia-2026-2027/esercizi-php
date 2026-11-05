@@ -45,9 +45,9 @@ In questo esercizio imparerai a:
 - `$_SERVER['REQUEST_METHOD']` - Verifica metodo HTTP
 - `$_POST['campo']` - Riceve dati form
 - `filter_var()` - Valida email
-- `mysqli_prepare()` - Prepara statement
-- `mysqli_stmt_bind_param()` - Associa parametri
-- `mysqli_insert_id()` - Ottiene ID inserito
+- `$pdo->prepare()` - Prepara statement
+- `$stmt->execute([...])` - Esegue passando i parametri
+- `$pdo->lastInsertId()` - Ottiene ID inserito
 
 ## 🎨 Output Atteso
 
@@ -61,7 +61,7 @@ Un form con campi di input e, dopo invio:
 2. Crea un array `$errori = []` per collezionare tutti gli errori
 3. Mostra errori solo se l'array non è vuoto
 4. Usa `htmlspecialchars()` per mostrare i valori nel form
-5. Considera l'uso di `mysqli_real_escape_string()` o prepared statements
+5. Usa SEMPRE prepared statements per inserire i dati
 
 ## 🚀 Bonus (Opzionale)
 
@@ -80,11 +80,8 @@ VALUES (?, ?, ?, ?, ?, ?);
 
 ## ✅ Test
 
-1. Avvia il server:
-```bash
-cd giorno-02/esercizio-01
-php -S localhost:8000
-```
+1. Apri `index.php` in VSCode ed esegui il task **"4. Avvia Server PHP (file corrente)"** (pulsante ▶️ nel pannello Favorites), oppure da terminale nella cartella principale del progetto: `php -S localhost:3000`
+   Il browser si apre su `http://localhost:3000/giorno-02/esercizio-01/index.php`
 
 2. Test da eseguire:
    - Invia form vuoto → Deve mostrare errori campi obbligatori
@@ -101,6 +98,6 @@ $nome = trim($_POST['nome']);
 $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
 // ✅ SEMPRE usare prepared statements
-$stmt = mysqli_prepare($conn, "INSERT INTO studenti (nome, email) VALUES (?, ?)");
-mysqli_stmt_bind_param($stmt, "ss", $nome, $email);
+$stmt = $pdo->prepare("INSERT INTO studenti (nome, cognome, email) VALUES (:nome, :cognome, :email)");
+$stmt->execute(['nome' => $nome, 'cognome' => $cognome, 'email' => $email]);
 ```

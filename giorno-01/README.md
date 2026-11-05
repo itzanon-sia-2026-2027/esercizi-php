@@ -1,6 +1,6 @@
-# Giorno 1 - Fondamenti PHP e MySQLi
+# Giorno 1 - Fondamenti PHP e PDO
 
-Benvenuto al primo giorno di esercizi! Oggi imparerai le basi di PHP e come connetterti e interrogare un database MySQL usando MySQLi in modalità procedurale.
+Benvenuto al primo giorno di esercizi! Oggi imparerai le basi di PHP e come connetterti e interrogare un database (SQLite o MySQL) usando PDO.
 
 ## 🎯 Obiettivi del Giorno
 
@@ -12,10 +12,10 @@ Benvenuto al primo giorno di esercizi! Oggi imparerai le basi di PHP e come conn
 ## 📚 Concetti Trattati
 
 1. **Variabili e tipi di dati in PHP**
-2. **Connessione al database con mysqli_connect()**
-3. **Esecuzione query con mysqli_query()**
-4. **Fetch dati con mysqli_fetch_assoc()**
-5. **Chiusura connessione con mysqli_close()**
+2. **Connessione al database con `new PDO()`**
+3. **Esecuzione query con `$pdo->query()` e `$pdo->prepare()`**
+4. **Lettura dati con `fetch()` e `fetchAll()`**
+5. **Gestione errori con `try/catch` e `PDOException`**
 
 ## 📋 Esercizi
 
@@ -66,22 +66,22 @@ Mostra i dettagli di uno studente specifico basandosi su un parametro GET.
 
 ## 💡 Suggerimenti
 
-1. **Controlla sempre gli errori**: Usa `mysqli_error()` per debug
-2. **Chiudi le connessioni**: Sempre chiudere con `mysqli_close()`
+1. **Controlla sempre gli errori**: Racchiudi il codice in `try { ... } catch (PDOException $e)` e leggi `$e->getMessage()`
+2. **Chiudi le connessioni**: Con PDO basta assegnare `null` alla variabile (`$pdo = null;`)
 3. **Sanitizza input**: Usa `htmlspecialchars()` per output HTML
 4. **Testa il database**: Verifica che i dati di esempio siano presenti
 
 ## 🔗 Risorse Utili
 
-- [Documentazione mysqli_connect](https://www.php.net/manual/it/function.mysqli-connect.php)
-- [Documentazione mysqli_query](https://www.php.net/manual/it/mysqli.query.php)
-- [Tutorial PHP/MySQL](https://www.php.net/manual/it/mysqli.quickstart.php)
+- [PDO - Manuale PHP](https://www.php.net/manual/it/book.pdo.php)
+- [PDO::prepare](https://www.php.net/manual/it/pdo.prepare.php)
+- [Driver PDO SQLite](https://www.php.net/manual/it/ref.pdo-sqlite.php)
 
 ## ✅ Checklist di Completamento
 
 Dopo aver completato gli esercizi, dovresti essere in grado di:
 
-- [ ] Connetterti a un database MySQL
+- [ ] Connetterti a un database con PDO
 - [ ] Eseguire una query SELECT
 - [ ] Visualizzare dati in formato tabella HTML
 - [ ] Gestire errori di connessione e query

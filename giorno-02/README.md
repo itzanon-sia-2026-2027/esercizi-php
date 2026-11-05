@@ -14,7 +14,7 @@ Benvenuto al secondo giorno di esercizi! Oggi imparerai a eseguire tutte le oper
 ## 📚 Concetti Trattati
 
 1. **Form HTML e metodi POST/GET**
-2. **INSERT: Inserimento dati con mysqli_query()**
+2. **INSERT: Inserimento dati con `prepare()` ed `execute()`**
 3. **UPDATE: Modifica dati esistenti**
 4. **DELETE: Cancellazione record**
 5. **Prepared Statements per sicurezza**
@@ -70,8 +70,8 @@ Crea un'interfaccia per modificare i dati di uno studente esistente ed eliminare
 $query = "INSERT INTO studenti (nome) VALUES ('{$_POST['nome']}')";
 
 // ✅ Usa prepared statements
-$stmt = mysqli_prepare($conn, "INSERT INTO studenti (nome) VALUES (?)");
-mysqli_stmt_bind_param($stmt, "s", $_POST['nome']);
+$stmt = $pdo->prepare("INSERT INTO studenti (nome) VALUES (:nome)");
+$stmt->execute(['nome' => $_POST['nome']]);
 ```
 
 ## 📖 Query SQL di Riferimento
@@ -109,7 +109,7 @@ Dopo aver completato gli esercizi, dovresti essere in grado di:
 
 ## 🔗 Risorse Utili
 
-- [mysqli_prepare()](https://www.php.net/manual/it/mysqli.prepare.php)
+- [PDO::prepare()](https://www.php.net/manual/it/pdo.prepare.php)
 - [INSERT Statement](https://dev.mysql.com/doc/refman/8.0/en/insert.html)
 - [UPDATE Statement](https://dev.mysql.com/doc/refman/8.0/en/update.html)
 - [DELETE Statement](https://dev.mysql.com/doc/refman/8.0/en/delete.html)

@@ -1,0 +1,4 @@
+# Impedisce il download diretto del database SQLite (Apache/XAMPP/Altervista)
+<FilesMatch "\.(sqlite|sqlite3|db)$">
+    Require all denied
+</FilesMatch>

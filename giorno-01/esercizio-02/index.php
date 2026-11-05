@@ -16,36 +16,30 @@
         <p class="subtitle">📚 Giorno 1 - Esercizio 2</p>
         
         <?php
-        // Includi file di configurazione
+        // Includi file di configurazione e funzioni comuni
         require_once '../../config/db_config.php';
+        require_once '../../utils/functions.php';
         
-        // Connetti al database
-        $conn = connetti_database();
-        
-        if (!$conn) {
-            echo '<div class="error">❌ Errore di connessione al database: ' . 
-                 htmlspecialchars(mysqli_connect_error()) . '</div>';
-            exit;
-        }
-        
-        // Query per ottenere tutti gli studenti
-        $query = "SELECT id, nome, cognome, email, data_nascita, citta, corso 
-                  FROM studenti 
-                  ORDER BY cognome, nome";
-        
-        // Esegui la query
-        $result = mysqli_query($conn, $query);
-        
-        // Verifica se la query è stata eseguita correttamente
-        if (!$result) {
-            echo '<div class="error">❌ Errore nella query: ' . 
-                 htmlspecialchars(mysqli_error($conn)) . '</div>';
-            chiudi_database($conn);
+        try {
+            // Connetti al database
+            $pdo = connetti_database();
+            
+            // Query per ottenere tutti gli studenti (statica, senza input utente)
+            $query = "SELECT id, nome, cognome, email, data_nascita, citta, corso 
+                      FROM studenti 
+                      ORDER BY cognome, nome";
+            
+            // Esegui la query e ottieni tutte le righe in un array
+            $stmt = $pdo->query($query);
+            $studenti = $stmt->fetchAll();
+        } catch (PDOException $e) {
+            echo '<div class="error">❌ Errore database: ' . 
+                 htmlspecialchars($e->getMessage()) . '</div>';
             exit;
         }
         
         // Conta il numero di risultati
-        $num_studenti = mysqli_num_rows($result);
+        $num_studenti = count($studenti);
         ?>
         
         <!-- Mostra il numero totale di studenti -->
@@ -68,7 +62,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($studente = mysqli_fetch_assoc($result)): ?>
+                    <?php foreach ($studenti as $studente): ?>
                         <tr>
                             <td><strong>#<?php echo htmlspecialchars($studente['id']); ?></strong></td>
                             <td><?php echo htmlspecialchars($studente['nome']); ?></td>
@@ -77,8 +71,7 @@
                             <td>
                                 <?php 
                                 if ($studente['data_nascita']) {
-                                    $data = new DateTime($studente['data_nascita']);
-                                    echo $data->format('d/m/Y');
+                                    echo formatta_data_italiana($studente['data_nascita']);
                                 } else {
                                     echo '-';
                                 }
@@ -91,7 +84,7 @@
                                 </span>
                             </td>
                         </tr>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         <?php else: ?>
@@ -103,12 +96,12 @@
         
         <?php
         // Chiudi la connessione al database
-        chiudi_database($conn);
+        chiudi_database($pdo);
         ?>
         
         <div class="footer">
             <p>🔗 Esercizio completato con successo!</p>
-            <p>PHP/MySQLi Procedurale</p>
+            <p>PHP con PDO</p>
         </div>
     </div>
 </body>

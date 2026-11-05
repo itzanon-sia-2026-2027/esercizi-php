@@ -35,40 +35,28 @@
             // ID valido, procedi con la query
             $id = (int)$_GET['id'];
             
-            // Connetti al database
-            $conn = connetti_database();
-            
-            if (!$conn) {
-                $errore = "❌ Errore di connessione al database: " . mysqli_connect_error();
-            } else {
-                // Prepara la query (prepared statement per sicurezza)
-                $stmt = mysqli_prepare($conn, "SELECT id, nome, cognome, email, data_nascita, citta, corso, creato_il 
-                                                FROM studenti 
-                                                WHERE id = ?");
+            try {
+                // Connetti al database
+                $pdo = connetti_database();
                 
-                if ($stmt) {
-                    // Bind del parametro
-                    mysqli_stmt_bind_param($stmt, "i", $id);
-                    
-                    // Esegui la query
-                    mysqli_stmt_execute($stmt);
-                    
-                    // Ottieni il risultato
-                    $result = mysqli_stmt_get_result($stmt);
-                    
-                    // Controlla se è stato trovato uno studente
-                    if (mysqli_num_rows($result) > 0) {
-                        $studente = mysqli_fetch_assoc($result);
-                    } else {
-                        $errore = "📭 Studente con ID #$id non trovato nel database.";
-                    }
-                    
-                    mysqli_stmt_close($stmt);
-                } else {
-                    $errore = "❌ Errore nella preparazione della query: " . mysqli_error($conn);
+                // Prepara la query (prepared statement con segnaposto :id)
+                $stmt = $pdo->prepare("SELECT id, nome, cognome, email, data_nascita, citta, corso, creato_il 
+                                       FROM studenti 
+                                       WHERE id = :id");
+                
+                // Esegui la query passando il valore del parametro
+                $stmt->execute(['id' => $id]);
+                
+                // fetch() ritorna la riga trovata oppure false
+                $studente = $stmt->fetch();
+                
+                if (!$studente) {
+                    $errore = "📭 Studente con ID #$id non trovato nel database.";
                 }
                 
-                chiudi_database($conn);
+                chiudi_database($pdo);
+            } catch (PDOException $e) {
+                $errore = "❌ Errore database: " . $e->getMessage();
             }
         }
         ?>
@@ -144,7 +132,7 @@
         
         <div class="footer">
             <p>🔗 Esercizio completato con successo!</p>
-            <p>PHP/MySQLi Procedurale</p>
+            <p>PHP con PDO</p>
         </div>
     </div>
 </body>

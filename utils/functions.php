@@ -82,90 +82,31 @@ function debug($var) {
 }
 
 /**
- * Esegue query SELECT e ritorna array associativo
- * 
- * ⚠️ ATTENZIONE: Questa funzione NON usa prepared statements.
- * Usare SOLO con query statiche senza input utente.
- * Per query con parametri utente, usare sempre mysqli_prepare().
- * 
- * @param mysqli $conn Connessione database
- * @param string $query Query SQL STATICA (senza input utente)
- * @return array Array di risultati
- * 
+ * Esegue una query (con o senza parametri) e ritorna tutte le righe
+ *
+ * Usa sempre prepared statements: i valori forniti dall'utente
+ * vanno passati in $parametri, MAI concatenati nella query.
+ *
+ * @param PDO $pdo Connessione database
+ * @param string $sql Query SQL con eventuali segnaposto (? oppure :nome)
+ * @param array $parametri Valori da associare ai segnaposto
+ * @return array Array di righe (array associativi)
+ *
  * @example
- * // ✅ OK - Query statica
- * $studenti = esegui_query($conn, "SELECT * FROM studenti");
- * 
- * // ❌ MAI fare così - Rischio SQL injection
- * // $id = $_GET['id'];
- * // $studenti = esegui_query($conn, "SELECT * FROM studenti WHERE id = $id");
+ * $studenti = esegui_query($pdo, "SELECT * FROM studenti");
+ * $studente = esegui_query($pdo, "SELECT * FROM studenti WHERE id = ?", [$id]);
+ * $studenti = esegui_query($pdo, "SELECT * FROM studenti WHERE citta = :citta", ['citta' => $citta]);
  */
-function esegui_query($conn, $query) {
-    $risultato = mysqli_query($conn, $query);
-    
-    if (!$risultato) {
+function esegui_query($pdo, $sql, $parametri = []) {
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($parametri);
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
         // In produzione, loggare l'errore invece di mostrarlo
-        error_log("Errore query: " . mysqli_error($conn));
+        error_log("Errore query: " . $e->getMessage());
         die("Si è verificato un errore nel recupero dei dati.");
     }
-    
-    $dati = array();
-    while ($riga = mysqli_fetch_assoc($risultato)) {
-        $dati[] = $riga;
-    }
-    
-    return $dati;
-}
-
-/**
- * Esegue query SELECT con prepared statement in modo sicuro
- * 
- * @param mysqli $conn Connessione database
- * @param string $query Query SQL con placeholder (?)
- * @param string $types Stringa dei tipi parametri (i=integer, s=string, d=double, b=blob)
- * @param array $params Array dei parametri
- * @return array Array di risultati
- * 
- * @example
- * // Query con un parametro
- * $result = esegui_query_sicura($conn, 
- *     "SELECT * FROM studenti WHERE id = ?", 
- *     "i", 
- *     [$id]
- * );
- * 
- * // Query con multipli parametri
- * $result = esegui_query_sicura($conn,
- *     "SELECT * FROM studenti WHERE nome = ? AND citta = ?",
- *     "ss",
- *     [$nome, $citta]
- * );
- */
-function esegui_query_sicura($conn, $query, $types, $params) {
-    $stmt = mysqli_prepare($conn, $query);
-    
-    if (!$stmt) {
-        error_log("Errore preparazione query: " . mysqli_error($conn));
-        die("Si è verificato un errore nel recupero dei dati.");
-    }
-    
-    // Bind dei parametri usando splat operator (PHP 5.6+)
-    mysqli_stmt_bind_param($stmt, $types, ...$params);
-    
-    // Esegui query
-    mysqli_stmt_execute($stmt);
-    
-    // Ottieni risultato
-    $result = mysqli_stmt_get_result($stmt);
-    
-    $dati = array();
-    while ($riga = mysqli_fetch_assoc($result)) {
-        $dati[] = $riga;
-    }
-    
-    mysqli_stmt_close($stmt);
-    
-    return $dati;
 }
 
 /**

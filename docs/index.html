@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Esercizi PHP - Guida Setup</title>
+    <title>Esercizi PHP con PDO - Guida Setup</title>
     <style>
         * {
             margin: 0;
@@ -229,504 +229,290 @@
 <body>
     <div class="container">
         <header>
-            <h1>🚀 Esercizi PHP/MySQLi</h1>
-            <p>Guida Setup e Configurazione</p>
+            <h1>🚀 Esercizi PHP con PDO</h1>
+            <p>Tutorial: setup, VSCode, SQLite/MySQL, XAMPP e Altervista</p>
         </header>
-        
+
         <div class="content">
-            <!-- Introduzione alle opzioni -->
-            <div class="alert alert-info" style="background: #e3f2fd; border-left: 5px solid #2196f3; padding: 25px; border-radius: 8px; margin-bottom: 30px;">
-                <h2 style="color: #1565c0; margin-top: 0; font-size: 1.5em;">🎯 Scegli il Tuo Ambiente di Sviluppo</h2>
-                <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
-                    <strong>Prima di iniziare, devi configurare un ambiente dove eseguire PHP e MySQL.</strong><br>
-                    Ci sono 2 opzioni disponibili. Scegli quella più adatta a te:
-                </p>
-                
-                <div style="display: grid; gap: 15px; margin-top: 20px;">
-                    <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #4caf50;">
-                        <strong style="color: #2e7d32; font-size: 1.1em;">💻 XAMPP Windows (Consigliato per Laboratorio/Casa)</strong>
-                        <p style="color: #666; margin-top: 8px;">Ambiente locale su Windows. Ideale per sviluppo e test offline.</p>
-                        <p style="color: #1565c0; margin-top: 5px; font-weight: 600;">👉 Clicca sulla tab "💻 XAMPP Windows" qui sotto</p>
-                    </div>
-                    
-                    <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #ff9800;">
-                        <strong style="color: #e65100; font-size: 1.1em;">🌐 Altervista (Hosting Online Gratuito)</strong>
-                        <p style="color: #666; margin-top: 8px;">Hosting online gratuito per pubblicare il tuo progetto su internet.</p>
-                        <p style="color: #1565c0; margin-top: 5px; font-weight: 600;">👉 Clicca sulla tab "🌐 Altervista" qui sotto</p>
-                    </div>
-                    
-                </div>
+            <div class="alert alert-info">
+                <h2 style="margin-top: 0; border: none;">🎯 Da dove iniziare</h2>
+                <p>Il progetto usa <strong>PDO</strong> e può lavorare con due database, scelti in <code>config/db_config.php</code> con la costante <code>DB_DRIVER</code>:</p>
+                <ul>
+                    <li><strong>SQLite</strong> (predefinito): un semplice file, <em>nessuna installazione</em>, ogni studente ha il proprio database. Funziona in locale e su Altervista.</li>
+                    <li><strong>MySQL</strong>: server MySQL/MariaDB di XAMPP (locale) o di Altervista (un solo database per account).</li>
+                </ul>
+                <p><strong>Percorso più veloce:</strong> importa il profilo VSCode (tab 🧰), apri la cartella del progetto, apri un file <code>index.php</code> e lancia il task <em>"4. Avvia Server PHP (file corrente)"</em>.</p>
             </div>
-            
-            <h3 style="color: #333; margin-bottom: 15px; text-align: center; font-size: 1.3em;">
-                ⬇️ Clicca su una delle TAB qui sotto per iniziare ⬇️
-            </h3>
-            
+
             <div class="tabs">
-                <button class="tab-button active" onclick="openTab('xampp')">
-                    <span class="emoji">💻</span> XAMPP Windows
-                </button>
-                <button class="tab-button" onclick="openTab('altervista')">
-                    <span class="emoji">🌐</span> Altervista
-                </button>
-                <button class="tab-button" onclick="openTab('config')">
-                    <span class="emoji">⚙️</span> Configurazione
-                </button>
-                <button class="tab-button" onclick="openTab('troubleshooting')">
-                    <span class="emoji">🔧</span> Problemi Comuni
-                </button>
+                <button class="tab-button active" onclick="openTab('vscode', event)"><span class="emoji">🧰</span> Profilo VSCode</button>
+                <button class="tab-button" onclick="openTab('database', event)"><span class="emoji">🗄️</span> Database</button>
+                <button class="tab-button" onclick="openTab('xampp', event)"><span class="emoji">💻</span> XAMPP Windows</button>
+                <button class="tab-button" onclick="openTab('altervista', event)"><span class="emoji">🌐</span> Altervista</button>
+                <button class="tab-button" onclick="openTab('troubleshooting', event)"><span class="emoji">🔧</span> Problemi Comuni</button>
             </div>
-            
-            <!-- XAMPP Tab -->
-            <div id="xampp" class="tab-content active">
+
+            <!-- Profilo VSCode -->
+            <div id="vscode" class="tab-content active">
+                <h2>Profilo VSCode <code>5sia_lab112</code></h2>
+
+                <div class="step">
+                    <h4>Passo 1: Importa il profilo</h4>
+                    <ol>
+                        <li>In VSCode clicca sull'icona ingranaggio ⚙️ → <strong>Profili</strong> → <strong>Importa profilo...</strong></li>
+                        <li>Incolla l'indirizzo del profilo: <a href="https://gist.github.com/sonia-guerci/919b29e9d19bd9c56305630e88d89c08" target="_blank">gist.github.com/sonia-guerci/919b29e9d19bd9c56305630e88d89c08</a></li>
+                        <li>Conferma e attendi l'installazione delle estensioni, poi usa <strong>File → Apri cartella</strong> sul progetto.</li>
+                    </ol>
+                </div>
+
+                <h3>Cosa contiene</h3>
+                <ul>
+                    <li><strong>Estensioni</strong>: PHP Intelephense, SQLTools (+ driver MySQL), SFTP (Altervista), Favorites panel.</li>
+                    <li><strong>Impostazioni</strong>: PHP di XAMPP (<code>C:\xampp\php\php.exe</code>), Emmet attivo nei file PHP, Copilot disattivato.</li>
+                    <li><strong>Snippet</strong>: scrivi il prefisso e premi Tab (vedi tabella).</li>
+                    <li><strong>Pannello Favorites</strong>: pulsanti rapidi per avviare il server, importare un dump SQL, aprire phpMyAdmin, prompt MySQL, riavviare VSCode.</li>
+                </ul>
+
+                <h3>Task disponibili</h3>
+                <p>Si lanciano con <code>Ctrl+Shift+P</code> → <em>Tasks: Run Task</em> (oppure dal pannello Favorites).</p>
+                <table style="width:100%; border-collapse: collapse;">
+                    <tr style="background:#f0f0f5;"><th style="text-align:left; padding:8px;">Task</th><th style="text-align:left; padding:8px;">A cosa serve</th></tr>
+                    <tr><td style="padding:8px;"><strong>1. Inizializza Progetto &amp; SFTP Altervista</strong></td><td style="padding:8px;">Chiede la cartella remota (es. <code>cognome_nome</code>) e crea <code>.vscode/sftp.json</code>. Poi sostituisci <code>NOMEACCOUNT</code> e <code>PASSWORD</code> con i tuoi dati Altervista.</td></tr>
+                    <tr><td style="padding:8px;"><strong>2. Crea Database SQLite Vuoto</strong></td><td style="padding:8px;">Crea un file <code>database.db</code> vuoto nella cartella del file aperto (utile per i tuoi progetti liberi).</td></tr>
+                    <tr><td style="padding:8px;"><strong>3. Inizializza Git &amp; Identity Locale</strong></td><td style="padding:8px;">Esegue <code>git init</code>, imposta nome/email e fa il primo commit.</td></tr>
+                    <tr><td style="padding:8px;"><strong>4. Avvia Server PHP (file corrente)</strong></td><td style="padding:8px;">Avvia il server integrato su <code>http://localhost:3000</code> con la cartella del progetto come radice e apre il file corrente nel browser.</td></tr>
+                    <tr><td style="padding:8px;"><strong>5. Avvia Server PHP</strong></td><td style="padding:8px;">Avvia il server integrato nella cartella corrente del terminale, senza aprire il browser.</td></tr>
+                    <tr><td style="padding:8px;"><strong>6. Crea connessione.php</strong></td><td style="padding:8px;">Crea un <code>connessione.php</code> PDO/MySQL (database <code>laboratorio</code>) nella cartella del file aperto.</td></tr>
+                    <tr><td style="padding:8px;"><strong>7-9. MySQL / phpMyAdmin / Importa dump</strong></td><td style="padding:8px;">Prompt MySQL di XAMPP, apertura di phpMyAdmin, importazione guidata di un file <code>.sql</code>.</td></tr>
+                </table>
+
+                <div class="alert alert-success">
+                    <strong>✅ Con il server integrato (task 4) non serve copiare il progetto in <code>htdocs</code></strong> e, usando SQLite, non serve nemmeno avviare Apache o MySQL da XAMPP. L'indirizzo degli esercizi è <code>http://localhost:3000/giorno-01/esercizio-01/index.php</code>.
+                </div>
+
+                <h3>Snippet PDO</h3>
+                <table style="width:100%; border-collapse: collapse;">
+                    <tr style="background:#f0f0f5;"><th style="text-align:left; padding:8px;">Prefisso</th><th style="text-align:left; padding:8px;">Risultato</th></tr>
+                    <tr><td style="padding:8px;"><code>php-pdo-conn</code></td><td style="padding:8px;">Connessione PDO a MySQL</td></tr>
+                    <tr><td style="padding:8px;"><code>php-pdo</code> / <code>php-pdo-param</code></td><td style="padding:8px;">SELECT semplice / con un parametro</td></tr>
+                    <tr><td style="padding:8px;"><code>php-pdo-table</code> / <code>php-pdo-table-graffe</code></td><td style="padding:8px;">Pagina con tabella HTML dinamica (sintassi alternativa / con graffe)</td></tr>
+                    <tr><td style="padding:8px;"><code>php</code>, <code>php-e</code>, <code>php-for-alt</code>, <code>php-for</code></td><td style="padding:8px;">Tag PHP, echo di un array, foreach nell'HTML</td></tr>
+                </table>
+                <div class="alert alert-info">
+                    Gli snippet e <code>connessione.php</code> (task 6) usano <code>require_once 'connessione.php'</code> e <code>$pdo</code>: sono pensati per i progetti liberi. Negli esercizi di questo repository usa invece <code>require_once '../../config/db_config.php'</code> e <code>$pdo = connetti_database();</code>, che funziona sia con SQLite sia con MySQL.
+                </div>
+            </div>
+
+            <!-- Database -->
+            <div id="database" class="tab-content">
+                <h2>Scegliere il database</h2>
+                <p>Apri <code>config/db_config.php</code> (<strong>unico file di configurazione</strong>) e imposta <code>DB_DRIVER</code>.</p>
+
+                <h3>Opzione A: SQLite (predefinita)</h3>
+<pre>define('DB_DRIVER', 'sqlite');</pre>
+                <ul>
+                    <li>Il database è il file <code>database/esercizi.sqlite</code>, creato <strong>automaticamente</strong> al primo accesso, con tabelle e dati di esempio (<code>database/schema_sqlite.sql</code>).</li>
+                    <li>Per ripartire da zero cancella il file <code>esercizi.sqlite</code>.</li>
+                    <li>Il file è escluso da Git e protetto da <code>database/.htaccess</code> (non scaricabile da browser su Apache/Altervista).</li>
+                    <li>Per ispezionarlo: estensione VSCode "SQLTools SQLite" oppure <a href="https://sqlitebrowser.org/" target="_blank">DB Browser for SQLite</a>.</li>
+                    <li>Richiede l'estensione PHP <code>pdo_sqlite</code> (inclusa in XAMPP e su Altervista).</li>
+                </ul>
+
+                <h3>Opzione B: MySQL</h3>
+<pre>define('DB_DRIVER', 'mysql');
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');            // Altervista: il tuo username
+define('DB_PASS', '');                // Altervista: la tua password
+define('DB_NAME', 'esercizi_php');    // Altervista: my_username</pre>
+                <ol>
+                    <li>Avvia <strong>MySQL</strong> dal XAMPP Control Panel.</li>
+                    <li>Importa <code>database/schema.sql</code>: pulsante "Importa DB da file .sql" nel pannello Favorites (task 9) oppure phpMyAdmin → Importa. Lo schema crea il database <code>esercizi_php</code>.</li>
+                </ol>
+
+                <div class="alert alert-info">
+                    <strong>💡 Perché SQLite?</strong> Altervista offre un solo database MySQL per account: con SQLite ogni studente (o ogni progetto) può avere un proprio file di database, senza condividere le tabelle.
+                </div>
+
+                <h3>Scrivere SQL portabile</h3>
+                <p>Gli esercizi devono funzionare con entrambi i database: usa SQL standard e i segnaposto PDO (<code>:nome</code>) per i parametri. Evita funzioni specifiche (es. <code>NOW()</code> di MySQL).</p>
+
+                <h3>Usare il database nei tuoi file</h3>
+<pre>&lt;?php
+require_once '../../config/db_config.php';
+
+try {
+    $pdo = connetti_database();
+    $stmt = $pdo-&gt;prepare("SELECT * FROM studenti WHERE id = :id");
+    $stmt-&gt;execute(['id' =&gt; $_GET['id'] ?? 0]);
+    $studente = $stmt-&gt;fetch();
+} catch (PDOException $e) {
+    die('Errore database: ' . htmlspecialchars($e-&gt;getMessage()));
+}
+?&gt;</pre>
+                <p>Per un progetto libero con SQLite (es. il file creato dal task 2):</p>
+<pre>$pdo = new PDO('sqlite:database.db', null, null, [
+    PDO::ATTR_ERRMODE            =&gt; PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC
+]);</pre>
+            </div>
+
+            <!-- XAMPP -->
+            <div id="xampp" class="tab-content">
                 <h2>Setup con XAMPP su Windows</h2>
-                
-                <div class="alert alert-info">
-                    <strong>📍 Per laboratorio e casa con Windows</strong><br>
-                    Questa è la configurazione standard per lo sviluppo locale.
-                </div>
-                
+                <div class="alert alert-info">Credenziali predefinite MySQL di XAMPP: utente <code>root</code>, password vuota.</div>
+
                 <div class="step">
-                    <h4>Passo 1: Installa XAMPP</h4>
+                    <h4>Passo 1: Installa XAMPP e VSCode</h4>
+                    <p>Scarica XAMPP da <a href="https://www.apachefriends.org/it/index.html" target="_blank">apachefriends.org</a> e installalo in <code>C:\xampp</code> (Apache, MySQL, PHP, phpMyAdmin). In laboratorio è già installato.</p>
+                </div>
+
+                <div class="step">
+                    <h4>Passo 2: Scarica il progetto</h4>
+<pre>git clone https://github.com/itzanon-sia-2026-2027/esercizi-php.git</pre>
+                    <p>Oppure scarica lo ZIP da GitHub e scompattalo. Apri la cartella con VSCode (profilo <code>5sia_lab112</code>).</p>
+                </div>
+
+                <div class="step">
+                    <h4>Passo 3A: Server integrato PHP (consigliato)</h4>
                     <ol>
-                        <li>Scarica XAMPP da <a href="https://www.apachefriends.org/it/index.html" target="_blank">apachefriends.org</a></li>
-                        <li>Installa in <code>C:\xampp</code></li>
-                        <li>Seleziona: Apache, MySQL, PHP, phpMyAdmin</li>
+                        <li>Apri un file del progetto (es. <code>giorno-01/esercizio-01/index.php</code>).</li>
+                        <li>Esegui il task <strong>"4. Avvia Server PHP (file corrente)"</strong> (pulsante ▶️ <em>Avvia Server PHP</em> nel pannello Favorites).</li>
+                        <li>Si apre <code>http://localhost:3000/giorno-01/esercizio-01/index.php</code>.</li>
+                    </ol>
+                    <p>Con SQLite non serve altro. Con MySQL avvia anche <strong>MySQL</strong> dal XAMPP Control Panel e importa lo schema (tab 🗄️).</p>
+                </div>
+
+                <div class="step">
+                    <h4>Passo 3B: Apache di XAMPP</h4>
+                    <ol>
+                        <li>Copia il progetto in <code>C:\xampp\htdocs\esercizi-php\</code>.</li>
+                        <li>Avvia <strong>Apache</strong> (e <strong>MySQL</strong> se usi MySQL) dal Control Panel.</li>
+                        <li>Apri <code>http://localhost/esercizi-php/</code>.</li>
                     </ol>
                 </div>
-                
-                <div class="step">
-                    <h4>Passo 2: Scarica il Progetto</h4>
-                    <p>Scegli uno dei seguenti metodi:</p>
-                    
-                    <h5 style="color: #667eea; margin: 15px 0 10px 0;">📦 Metodo 1: Download ZIP (Più Semplice)</h5>
-                    <ol>
-                        <li>Vai su <a href="https://github.com/studente-prova/esercizi-php" target="_blank">github.com/studente-prova/esercizi-php</a></li>
-                        <li>Clicca sul pulsante verde <strong>Code</strong></li>
-                        <li>Clicca su <strong>Download ZIP</strong></li>
-                        <li>Estrai la cartella ZIP in <code>C:\xampp\htdocs\</code></li>
-                        <li>Rinomina la cartella in <code>esercizi-php</code> (rimuovi il suffisso -main)</li>
-                    </ol>
-                    
-                    <h5 style="color: #667eea; margin: 15px 0 10px 0;">🔧 Metodo 2: Git in VSCode</h5>
-                    <ol>
-                        <li>Apri VSCode</li>
-                        <li>Premi <code>Ctrl+Shift+P</code> e cerca <code>Git: Clone</code></li>
-                        <li>Inserisci l'URL: <code>https://github.com/studente-prova/esercizi-php.git</code></li>
-                        <li>Scegli come destinazione: <code>C:\xampp\htdocs\</code></li>
-                        <li>Attendi il completamento del clone</li>
-                    </ol>
-                    
-                    <h5 style="color: #667eea; margin: 15px 0 10px 0;">💻 Metodo 3: Git da Terminale</h5>
-                    <pre>cd C:\xampp\htdocs
-git clone https://github.com/studente-prova/esercizi-php.git</pre>
-                </div>
-                
-                <div class="step">
-                    <h4>Passo 3: Avvia XAMPP</h4>
-                    <ol>
-                        <li>Apri <strong>XAMPP Control Panel</strong></li>
-                        <li>Clicca <strong>Start</strong> su Apache</li>
-                        <li>Clicca <strong>Start</strong> su MySQL</li>
-                        <li>I moduli dovrebbero diventare verdi ✅</li>
-                    </ol>
-                </div>
-                
-                <div class="step">
-                    <h4>Passo 4: Crea il Database</h4>
-                    <ol>
-                        <li>Apri il browser e vai su: <code>http://localhost/phpmyadmin</code></li>
-                        <li>Clicca su <strong>Nuovo</strong></li>
-                        <li>Nome database: <code>esercizi_php</code></li>
-                        <li>Codifica: <code>utf8mb4_unicode_ci</code></li>
-                        <li>Clicca <strong>Crea</strong></li>
-                        <li>Vai sulla tab <strong>Importa</strong></li>
-                        <li>Seleziona il file: <code>C:\xampp\htdocs\esercizi-php\database\schema.sql</code></li>
-                        <li>Clicca <strong>Esegui</strong></li>
-                    </ol>
-                </div>
-                
-                <div class="step">
-                    <h4>Passo 5: Configura db_config.php</h4>
-                    <p>Apri il file <code>config/db_config.php</code> e modifica:</p>
-                    <pre>define('DB_HOST', 'localhost');
-define('DB_USER', 'root');              // ← Per XAMPP
-define('DB_PASS', '');                  // ← Vuoto per XAMPP
-define('DB_NAME', 'esercizi_php');</pre>
-                    <div class="alert alert-warning">
-                        <strong>⚠️ IMPORTANTE:</strong> Su XAMPP la password è vuota per default!
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <h4>Passo 6: Testa la Configurazione</h4>
-                    <p>Apri nel browser:</p>
-                    <pre>http://localhost/esercizi-php/giorno-01/esercizio-01/</pre>
-                    <div class="alert alert-success">
-                        Se vedi "✅ Connessione al database riuscita!", tutto funziona! 🎉
-                    </div>
-                </div>
-                
-                <h3>Workflow Giornaliero</h3>
-                <div class="card">
-                    <ol>
-                        <li>Avvia XAMPP Control Panel</li>
-                        <li>Start Apache e MySQL</li>
-                        <li>Apri VSCode sulla cartella <code>C:\xampp\htdocs\esercizi-php</code></li>
-                        <li>Modifica i file PHP</li>
-                        <li>Salva e ricarica il browser</li>
-                    </ol>
-                </div>
+
+                <h3>Workflow giornaliero</h3>
+                <ol>
+                    <li>Apri la cartella del progetto in VSCode</li>
+                    <li>Avvia il server (task 4) e, se serve, MySQL</li>
+                    <li>Modifica i file, salva e ricarica il browser</li>
+                    <li>Salva il lavoro con Git (<code>git add .</code>, <code>git commit</code>)</li>
+                </ol>
             </div>
-            
-            <!-- Altervista Tab -->
+
+            <!-- Altervista -->
             <div id="altervista" class="tab-content">
-                <h2>Setup su Altervista</h2>
-                
-                <div class="alert alert-info">
-                    <strong>🌐 Per sviluppo/test online</strong><br>
-                    Carica i file con FTP e configura il database.
-                </div>
-                
+                <h2>Pubblicare su Altervista</h2>
+
                 <div class="step">
-                    <h4>Passo 1: Crea Account</h4>
-                    <ol>
-                        <li>Vai su <a href="https://it.altervista.org/" target="_blank">altervista.org</a></li>
-                        <li>Clicca su <strong>Crea sito</strong></li>
-                        <li><strong>IMPORTANTE</strong>: Quando scegli il piano, seleziona <strong>"Hosting con File Manager"</strong></li>
-                        <li>Scegli un dominio di terzo livello (esempio: <code>miosito.altervista.org</code>)</li>
-                        <li>Prendi nota del tuo username (esempio: <code>miosito</code>)</li>
-                    </ol>
-                    
-                    <div class="alert alert-warning" style="margin-top: 15px;">
-                        <strong>💰 Non preoccuparti del prezzo!</strong><br>
-                        Se scegli un dominio di terzo livello (miosito.altervista.org), il servizio è completamente <strong>GRATUITO</strong>. 
-                        Anche se durante la registrazione potrebbero comparire piani a pagamento, accontentandoti del dominio di terzo livello non paghi nulla! ✅
-                    </div>
+                    <h4>Passo 1: Crea l'account</h4>
+                    <p>Registrati su <a href="https://it.altervista.org/" target="_blank">it.altervista.org</a>: il tuo sito sarà <code>https://NOMEACCOUNT.altervista.org</code>.</p>
                 </div>
-                
+
                 <div class="step">
-                    <h4>Passo 2: Scarica il Progetto Localmente</h4>
-                    <p>Prima di caricare su Altervista, devi avere i file sul tuo computer. Scegli un metodo:</p>
-                    
-                    <h5 style="color: #667eea; margin: 15px 0 10px 0;">📦 Metodo 1: Download ZIP</h5>
+                    <h4>Passo 2: Configura il caricamento FTP con il profilo</h4>
                     <ol>
-                        <li>Vai su <a href="https://github.com/studente-prova/esercizi-php" target="_blank">github.com/studente-prova/esercizi-php</a></li>
-                        <li>Clicca sul pulsante verde <strong>Code</strong> → <strong>Download ZIP</strong></li>
-                        <li>Estrai il file ZIP in una cartella sul tuo computer</li>
-                        <li>Rinomina la cartella in <code>esercizi-php</code></li>
+                        <li>Esegui il task <strong>"1. Inizializza Progetto &amp; SFTP Altervista"</strong> e inserisci la tua cartella remota (es. <code>cognome_nome</code>).</li>
+                        <li>Apri <code>.vscode/sftp.json</code> e sostituisci <code>NOMEACCOUNT</code> (host e username) e <code>PASSWORD</code> con i dati Altervista.</li>
+                        <li>La cartella <code>.vscode</code> non va su Git (contiene la password): è già in <code>.gitignore</code>.</li>
+                        <li>Con <code>uploadOnSave</code> ogni file salvato viene caricato; per caricare tutto: <code>Ctrl+Shift+P</code> → <em>SFTP: Upload Project</em> (se non riesci, prova <em>SFTP: Upload Folder</em>).</li>
                     </ol>
-                    
-                    <h5 style="color: #667eea; margin: 15px 0 10px 0;">🔧 Metodo 2: Git Clone in VSCode</h5>
-                    <ol>
-                        <li>Apri VSCode</li>
-                        <li>Premi <code>Ctrl+Shift+P</code> → <code>Git: Clone</code></li>
-                        <li>Inserisci: <code>https://github.com/studente-prova/esercizi-php.git</code></li>
-                        <li>Scegli una cartella sul tuo computer</li>
-                    </ol>
-                </div>
-                
-                <div class="step">
-                    <h4>Passo 3: Configura Database</h4>
-                    <ol>
-                        <li>Accedi al pannello di controllo Altervista</li>
-                        <li>Vai su <strong>Database MySQL</strong></li>
-                        <li>Clicca <strong>Attiva database</strong></li>
-                        <li>Prendi nota delle credenziali:
-                            <ul>
-                                <li>Host: <code>localhost</code></li>
-                                <li>Username: il tuo username</li>
-                                <li>Database: <code>my_tuousername</code></li>
-                                <li>Password: quella che hai impostato</li>
-                            </ul>
-                        </li>
-                        <li>Vai su <strong>phpMyAdmin</strong></li>
-                        <li>Importa <code>database/schema.sql</code></li>
-                    </ol>
-                </div>
-                
-                <div class="step">
-                    <h4>Passo 4: Configura FTP in VSCode</h4>
-                    <ol>
-                        <li>Installa l'estensione <strong>FTP-Simple</strong> in VSCode</li>
-                        <li>Premi <code>Ctrl+Shift+P</code> e cerca <code>FTP-Simple: Config</code></li>
-                        <li>Configura con i tuoi dati FTP:
 <pre>{
-    "host": "ftp.tuousername.altervista.org",
-    "port": 21,
-    "username": "tuousername",
-    "password": "tuapassword",
-    "remotePath": "/",
-    "uploadOnSave": false
+  "name": "Altervista",
+  "host": "ftp.NOMEACCOUNT.altervista.org",
+  "protocol": "ftp",
+  "port": 21,
+  "username": "NOMEACCOUNT",
+  "password": "PASSWORD",
+  "remotePath": "/cognome_nome/",
+  "uploadOnSave": true
 }</pre>
-                        </li>
-                    </ol>
                 </div>
-                
+
                 <div class="step">
-                    <h4>Passo 5: Modifica db_config.php</h4>
-                    <p><strong>PRIMA di caricare i file</strong>, modifica <code>config/db_config.php</code>:</p>
-                    <pre>define('DB_HOST', 'localhost');
-define('DB_USER', 'tuousername');        // ← Il tuo username
-define('DB_PASS', 'tuapassword');        // ← La tua password
-define('DB_NAME', 'my_tuousername');     // ← my_ + username</pre>
-                    <div class="alert alert-warning">
-                        <strong>⚠️ ATTENZIONE:</strong> Su Altervista il nome database è <code>my_tuousername</code>!
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <h4>Passo 6: Carica i File</h4>
+                    <h4>Passo 3A: Database SQLite (consigliato)</h4>
                     <ol>
-                        <li>In VSCode, fai clic destro sulla cartella del progetto</li>
-                        <li>Seleziona <strong>Upload Folder</strong></li>
-                        <li>Aspetta il completamento dell'upload</li>
+                        <li>Lascia <code>DB_DRIVER</code> su <code>'sqlite'</code> in <code>config/db_config.php</code>.</li>
+                        <li>Carica il progetto e apri <code>https://NOMEACCOUNT.altervista.org/cognome_nome/giorno-01/esercizio-01/</code>.</li>
+                        <li>Il file <code>database/esercizi.sqlite</code> viene creato sul server al primo accesso. Il database online è <strong>separato</strong> da quello locale.</li>
                     </ol>
+                    <div class="alert alert-warning">La cartella <code>database/</code> deve essere scrivibile dal server. Se compare "unable to open database file" imposta i permessi della cartella dal File Manager di Altervista.</div>
                 </div>
-                
+
                 <div class="step">
-                    <h4>Passo 7: Testa Online</h4>
-                    <p>Apri nel browser:</p>
-                    <pre>http://tuousername.altervista.org/esercizi-php/giorno-01/esercizio-01/</pre>
-                    <div class="alert alert-success">
-                        Se vedi "✅ Connessione al database riuscita!", è tutto online! 🎉
-                    </div>
-                </div>
-                
-                <h3>Workflow con FTP</h3>
-                <div class="card">
+                    <h4>Passo 3B: Database MySQL</h4>
                     <ol>
-                        <li>Modifica i file localmente in VSCode</li>
-                        <li>Salva le modifiche</li>
-                        <li>Fai clic destro sul file → <strong>Upload</strong></li>
-                        <li>Oppure abilita <code>uploadOnSave: true</code> per upload automatico</li>
-                        <li>Ricarica il browser per vedere le modifiche</li>
+                        <li>Dal pannello Altervista apri <strong>phpMyAdmin</strong> (database <code>my_NOMEACCOUNT</code>) e importa <code>database/schema_altervista.sql</code>… oppure usa <code>database/schema.sql</code> togliendo le righe <code>CREATE DATABASE</code> e <code>USE</code>.</li>
+                        <li>In <code>config/db_config.php</code> imposta <code>DB_DRIVER</code> <code>'mysql'</code>, <code>DB_USER</code> = username, <code>DB_PASS</code> = password database, <code>DB_NAME</code> = <code>my_NOMEACCOUNT</code>.</li>
                     </ol>
-                </div>
-                
-                <h3>💡 Pro Tip: Gestire Più Progetti con un Solo Database</h3>
-                <div class="card">
-                    <p><strong>Problema:</strong> Altervista offre un solo database gratuito, ma potresti voler sviluppare più progetti.</p>
-                    
-                    <p><strong>Soluzione:</strong> Usa i <strong>prefissi delle tabelle</strong> per partizionare logicamente il database!</p>
-                    
-                    <h4 style="color: #667eea; margin-top: 15px;">Strategia di Partizionamento</h4>
-                    
-                    <p><strong>1. Per ogni progetto, usa un prefisso diverso per le tabelle:</strong></p>
-                    <pre>-- Progetto Esercizi PHP (tabelle con prefisso esercizi_)
-esercizi_studenti
-esercizi_corsi
-esercizi_voti
-
--- Progetto Blog (tabelle con prefisso blog_)
-blog_posts
-blog_comments
-blog_users
-
--- Progetto E-commerce (tabelle con prefisso shop_)
-shop_products
-shop_orders
-shop_customers</pre>
-                    
-                    <p><strong>2. Nel codice, definisci il prefisso come costante:</strong></p>
-                    <pre>// In config/db_config.php
-define('DB_PREFIX', 'esercizi_');
-
-// Quando crei query
-$table = DB_PREFIX . 'studenti';  // Risultato: esercizi_studenti
-$query = "SELECT * FROM $table";</pre>
-                    
-                    <p><strong>3. Vantaggi di questo approccio:</strong></p>
-                    <ul style="margin-top: 10px;">
-                        <li>✅ Un solo database Altervista per più progetti</li>
-                        <li>✅ Facile identificare le tabelle di ogni progetto</li>
-                        <li>✅ Nessun conflitto tra progetti diversi</li>
-                        <li>✅ Puoi fare backup selettivi per progetto</li>
-                        <li>✅ Cambi progetto solo modificando DB_PREFIX</li>
-                    </ul>
-                    
-                    <div class="alert alert-info" style="margin-top: 15px;">
-                        <strong>💡 Suggerimento:</strong> Mantieni una lista dei prefissi usati in un file di testo per non dimenticarli!
-                    </div>
+                    <p>Altervista dà un solo database: se lo condividi tra più progetti, usa un prefisso per le tabelle oppure passa a SQLite.</p>
                 </div>
             </div>
-            
-            <!-- Config Tab -->
-            <div id="config" class="tab-content">
-                <h2>Configurazione Database</h2>
-                
-                <div class="alert alert-info">
-                    <strong>📝 File unico di configurazione</strong><br>
-                    Tutto si configura modificando <code>config/db_config.php</code>
-                </div>
-                
-                <h3>Configurazioni per Ambiente</h3>
-                
-                <div class="card">
-                    <h4>🖥️ XAMPP Windows (Laboratorio/Casa)</h4>
-                    <pre>define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');                  // Password VUOTA
-define('DB_NAME', 'esercizi_php');</pre>
-                </div>
-                
-                <div class="card">
-                    <h4>🌐 Altervista</h4>
-                    <pre>define('DB_HOST', 'localhost');
-define('DB_USER', 'miosito');           // Tuo username
-define('DB_PASS', 'miapassword');       // Tua password
-define('DB_NAME', 'my_miosito');        // my_ + username</pre>
-                </div>
-                
-                <div class="card">
-                    <h4>🐧 Linux (LAMP)</h4>
-                    <pre>define('DB_HOST', 'localhost');
-define('DB_USER', 'utente_db');
-define('DB_PASS', 'password_sicura');
-define('DB_NAME', 'esercizi_php');</pre>
-                </div>
-                
-                <h3>Sicurezza</h3>
-                <div class="alert alert-warning">
-                    <strong>⚠️ IMPORTANTE:</strong>
-                    <ul>
-                        <li>Il file <code>db_config.php</code> contiene credenziali sensibili</li>
-                        <li>Non condividerlo pubblicamente</li>
-                        <li>Non committarlo su repository pubblici con credenziali reali</li>
-                        <li>Usa password sicure in produzione</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Troubleshooting Tab -->
+
+            <!-- Troubleshooting -->
             <div id="troubleshooting" class="tab-content">
                 <h2>Problemi Comuni e Soluzioni</h2>
-                
+
                 <div class="card">
-                    <h3>❌ Apache non si avvia (XAMPP)</h3>
-                    <p><strong>Causa:</strong> Porta 80 occupata (Skype, IIS, altri programmi)</p>
-                    <p><strong>Soluzione:</strong></p>
-                    <ol>
-                        <li>Chiudi Skype o programmi che usano porta 80</li>
-                        <li>OPPURE cambia porta Apache:
-                            <ul>
-                                <li>XAMPP Control Panel → Config → httpd.conf</li>
-                                <li>Cerca <code>Listen 80</code> → cambia in <code>Listen 8080</code></li>
-                                <li>Cerca <code>ServerName localhost:80</code> → cambia in <code>ServerName localhost:8080</code></li>
-                                <li>Salva e riavvia Apache</li>
-                                <li>Usa <code>http://localhost:8080/...</code></li>
-                            </ul>
-                        </li>
-                    </ol>
+                    <h3>❌ could not find driver</h3>
+                    <p>L'estensione PDO del database scelto non è attiva. In XAMPP apri <code>C:\xampp\php\php.ini</code> e togli il <code>;</code> da <code>extension=pdo_sqlite</code> / <code>extension=pdo_mysql</code>, poi riavvia il server.</p>
                 </div>
-                
+
                 <div class="card">
-                    <h3>❌ MySQL non si avvia (XAMPP)</h3>
-                    <p><strong>Causa:</strong> Porta 3306 occupata o altro MySQL installato</p>
-                    <p><strong>Soluzione:</strong></p>
-                    <ol>
-                        <li>Apri Gestione Attività (Ctrl+Shift+Esc)</li>
-                        <li>Cerca processi "mysqld" o "MySQL" e terminali</li>
-                        <li>Riavvia XAMPP</li>
-                    </ol>
+                    <h3>❌ unable to open database file (SQLite)</h3>
+                    <p>La cartella <code>database/</code> non è scrivibile o il percorso è errato. Controlla i permessi (su Altervista dal File Manager).</p>
                 </div>
-                
+
                 <div class="card">
-                    <h3>❌ Errore: Access denied for user</h3>
-                    <p><strong>Causa:</strong> Credenziali database errate</p>
-                    <p><strong>Soluzione:</strong></p>
-                    <ol>
-                        <li>Verifica <code>config/db_config.php</code></li>
-                        <li>Per XAMPP: user=<code>root</code>, password=<code>''</code> (vuota)</li>
-                        <li>Per Altervista: user=<code>tuousername</code>, database=<code>my_tuousername</code></li>
-                        <li>Verifica che MySQL sia avviato</li>
-                    </ol>
+                    <h3>❌ Access denied for user / Unknown database (MySQL)</h3>
+                    <p>Controlla <code>DB_USER</code>, <code>DB_PASS</code>, <code>DB_NAME</code> in <code>config/db_config.php</code> e di aver importato <code>database/schema.sql</code>. XAMPP: <code>root</code> senza password.</p>
                 </div>
-                
+
                 <div class="card">
-                    <h3>❌ Errore: Unknown database</h3>
-                    <p><strong>Causa:</strong> Database non creato</p>
-                    <p><strong>Soluzione:</strong></p>
-                    <ol>
-                        <li>Vai su phpMyAdmin</li>
-                        <li>Crea database <code>esercizi_php</code></li>
-                        <li>Importa <code>database/schema.sql</code></li>
-                    </ol>
+                    <h3>❌ Connection refused (MySQL)</h3>
+                    <p>MySQL non è avviato: avvialo dal XAMPP Control Panel oppure passa a SQLite.</p>
                 </div>
-                
+
+                <div class="card">
+                    <h3>❌ Il task "Avvia Server PHP" non parte / porta occupata</h3>
+                    <p>Chiudi il terminale del server precedente (cestino del terminale) e rilancia il task. Verifica che PHP sia in <code>C:\xampp\php\php.exe</code>.</p>
+                </div>
+
                 <div class="card">
                     <h3>❌ Pagina bianca / Errore 500</h3>
-                    <p><strong>Causa:</strong> Errore PHP non visualizzato</p>
-                    <p><strong>Soluzione:</strong></p>
-                    <ol>
-                        <li>Controlla log: <code>C:\xampp\apache\logs\error.log</code></li>
-                        <li>Oppure abilita errori PHP temporaneamente:
-                            <pre>&lt;?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-?&gt;</pre>
-                        </li>
-                    </ol>
+                    <p>Attiva gli errori all'inizio del file: <code>ini_set('display_errors', 1); error_reporting(E_ALL);</code> e leggi il messaggio.</p>
                 </div>
-                
+
                 <div class="card">
                     <h3>❌ Caratteri strani (à, è, ì, ò, ù)</h3>
-                    <p><strong>Causa:</strong> Problemi encoding</p>
-                    <p><strong>Soluzione:</strong></p>
-                    <ol>
-                        <li>Verifica che i file PHP siano UTF-8 (VSCode, in basso a destra)</li>
-                        <li>Verifica database utf8mb4 in phpMyAdmin</li>
-                        <li>Aggiungi all'inizio delle pagine HTML:
-                            <pre>&lt;meta charset="UTF-8"&gt;</pre>
-                        </li>
-                    </ol>
+                    <p>Salva i file in UTF-8 e usa <code>&lt;meta charset="UTF-8"&gt;</code>. Con MySQL il charset <code>utf8mb4</code> è già impostato nel DSN.</p>
                 </div>
-                
+
                 <div class="card">
                     <h3>❌ Upload FTP fallito (Altervista)</h3>
-                    <p><strong>Causa:</strong> Credenziali FTP errate o firewall</p>
-                    <p><strong>Soluzione:</strong></p>
-                    <ol>
-                        <li>Verifica host: <code>ftp.tuousername.altervista.org</code></li>
-                        <li>Verifica username e password FTP</li>
-                        <li>Prova modalità passiva FTP</li>
-                        <li>Controlla firewall Windows</li>
-                    </ol>
-                </div>
-                
-                <h3>🆘 Serve Aiuto?</h3>
-                <div class="alert alert-info">
-                    <p>Se il problema persiste:</p>
-                    <ol>
-                        <li>Controlla i log di errore</li>
-                        <li>Cerca su Google il messaggio di errore specifico</li>
-                        <li>Chiedi al docente o ai compagni</li>
-                    </ol>
+                    <p>Verifica host, username e password in <code>.vscode/sftp.json</code> e che il protocollo sia <code>ftp</code> sulla porta 21.</p>
                 </div>
             </div>
         </div>
-        
+
         <footer>
-            <p><strong>Esercizi PHP/MySQLi</strong> - Repository didattico</p>
+            <p><strong>Esercizi PHP con PDO</strong> - Repository didattico</p>
             <p>Per tornare agli esercizi: <a href="../">Vai alla home</a></p>
         </footer>
     </div>
-    
+
     <script>
         function openTab(tabName, event) {
-            // Nascondi tutti i tab content
             var tabContents = document.getElementsByClassName('tab-content');
             for (var i = 0; i < tabContents.length; i++) {
                 tabContents[i].classList.remove('active');
             }
-            
-            // Rimuovi active da tutti i bottoni
+
             var tabButtons = document.getElementsByClassName('tab-button');
             for (var i = 0; i < tabButtons.length; i++) {
                 tabButtons[i].classList.remove('active');
             }
-            
-            // Mostra il tab selezionato
+
             document.getElementById(tabName).classList.add('active');
             event.currentTarget.classList.add('active');
         }

@@ -18,37 +18,44 @@
         // Includi file di configurazione
         require_once '../../config/db_config.php';
         
-        // Variabile per memorizzare messaggi
+        // Variabili per memorizzare messaggi
         $messaggio = '';
         $tipo = '';
         $info_database = '';
         
-        // Tenta la connessione al database
-        $conn = connetti_database();
-        
-        // Verifica se la connessione è riuscita
-        if ($conn) {
+        try {
+            // Tenta la connessione al database (PDO lancia un'eccezione se fallisce)
+            $pdo = connetti_database();
+            
             $messaggio = "Connessione al database riuscita!";
             $tipo = "success";
             
             // Ottieni informazioni aggiuntive sul database
-            $db_info = mysqli_get_server_info($conn);
-            $db_name = DB_NAME;
-            $charset = mysqli_character_set_name($conn);
+            $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+            $versione = $pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+            
+            if ($driver === 'sqlite') {
+                $nome_db = basename(SQLITE_FILE);
+                $charset = $pdo->query("PRAGMA encoding")->fetchColumn();
+            } else {
+                $nome_db = DB_NAME;
+                $charset = $pdo->query("SELECT @@character_set_connection")->fetchColumn();
+            }
             
             $info_database = "
                 <div class='info'>
                     <strong>ℹ️ Informazioni Database:</strong>
-                    📦 Database: <strong>$db_name</strong><br>
-                    🔢 Versione MySQL: <strong>$db_info</strong><br>
-                    🔤 Charset: <strong>$charset</strong>
+                    🗄️ Driver PDO: <strong>" . htmlspecialchars($driver) . "</strong><br>
+                    📦 Database: <strong>" . htmlspecialchars($nome_db) . "</strong><br>
+                    🔢 Versione: <strong>" . htmlspecialchars($versione) . "</strong><br>
+                    🔤 Charset: <strong>" . htmlspecialchars($charset) . "</strong>
                 </div>
             ";
             
             // Chiudi la connessione
-            chiudi_database($conn);
-        } else {
-            $messaggio = "Errore di connessione: " . mysqli_connect_error();
+            chiudi_database($pdo);
+        } catch (PDOException $e) {
+            $messaggio = "Errore di connessione: " . $e->getMessage();
             $tipo = "error";
         }
         ?>
@@ -68,7 +75,7 @@
         
         <div style="margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
             <p>📚 <strong>Giorno 1</strong> - Esercizio 1</p>
-            <p>PHP/MySQLi Procedurale</p>
+            <p>PHP con PDO</p>
         </div>
     </div>
 </body>

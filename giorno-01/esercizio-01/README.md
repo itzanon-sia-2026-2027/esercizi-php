@@ -15,8 +15,8 @@ Questo è il tuo primo esercizio con PHP e MySQL. Imparerai a:
 ## 🔧 Requisiti
 
 1. Includere il file di configurazione del database
-2. Stabilire connessione usando `mysqli_connect()`
-3. Verificare se la connessione è riuscita
+2. Stabilire connessione con `connetti_database()` (che usa `new PDO()`)
+3. Gestire un eventuale errore con `try/catch` (`PDOException`)
 4. Mostrare messaggio di successo o errore
 5. Chiudere la connessione
 
@@ -26,9 +26,9 @@ Questo è il tuo primo esercizio con PHP e MySQL. Imparerai a:
 
 ## 📚 Funzioni PHP da Usare
 
-- `mysqli_connect()` - Crea connessione al database
-- `mysqli_connect_error()` - Ritorna errore di connessione
-- `mysqli_close()` - Chiude connessione
+- `new PDO()` - Crea connessione al database
+- `PDOException::getMessage()` - Ritorna il messaggio di errore
+- `$pdo = null` - Chiude connessione
 
 ## 🎨 Output Atteso
 
@@ -45,7 +45,7 @@ oppure in caso di errore:
 
 ## 💡 Suggerimenti
 
-1. Assicurati di aver configurato correttamente `config/db_config_local.php`
+1. Controlla `DB_DRIVER` in `config/db_config.php` (`'sqlite'` funziona subito, senza installare nulla)
 2. Usa `require_once` per includere i file di configurazione
 3. Controlla sempre se la connessione è valida prima di usarla
 4. Usa CSS inline o semplice per migliorare la presentazione
@@ -61,15 +61,17 @@ oppure in caso di errore:
 ```php
 <?php
 // Includi configurazione database
-require_once '../../config/db_config.template.php';
+require_once '../../config/db_config.php';
 
-// TODO: Crea connessione
+try {
+    // TODO: Crea connessione con connetti_database()
 
-// TODO: Verifica connessione
+    // TODO: Mostra messaggio di successo
 
-// TODO: Mostra messaggio
-
-// TODO: Chiudi connessione
+    // TODO: Chiudi connessione
+} catch (PDOException $e) {
+    // TODO: Mostra messaggio di errore
+}
 ?>
 ```
 
@@ -77,12 +79,7 @@ require_once '../../config/db_config.template.php';
 
 Per verificare che l'esercizio funzioni:
 
-1. Avvia il server PHP:
-```bash
-cd giorno-01/esercizio-01
-php -S localhost:8000
-```
+1. Apri `index.php` in VSCode ed esegui il task **"4. Avvia Server PHP (file corrente)"** (pulsante ▶️ nel pannello Favorites), oppure da terminale nella cartella principale del progetto: `php -S localhost:3000`
+   Il browser si apre su `http://localhost:3000/giorno-01/esercizio-01/index.php`
 
-2. Apri il browser a `http://localhost:8000`
-
-3. Dovresti vedere il messaggio di connessione riuscita
+2. Dovresti vedere il messaggio di connessione riuscita

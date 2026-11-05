@@ -1,18 +1,20 @@
 # Istruzioni per AI Coding Agents
 
-Questo repository contiene esercizi didattici di PHP con MySQLi procedurale per studenti.
+Questo repository contiene esercizi didattici di PHP con PDO per studenti.
 
 ## Contesto del Progetto
 
 ### Scopo
-Repository educativo per insegnare PHP procedurale e MySQLi a studenti in ambiente laboratorio/casa.
+Repository educativo per insegnare PHP procedurale con PDO a studenti in ambiente laboratorio/casa.
 
 ### Ambienti di Sviluppo
 1. **Laboratorio/Casa**: Windows con XAMPP (htdocs) + VSCode
-2. **Online**: Altervista con caricamento FTP tramite VSCode
+2. **Online**: Altervista con caricamento FTP tramite VSCode (task del profilo)
+3. **VSCode**: profilo `5sia_lab112` (https://gist.github.com/sonia-guerci/919b29e9d19bd9c56305630e88d89c08) con estensioni, snippet `php-pdo*` e task numerati (es. "4. Avvia Server PHP (file corrente)" su `http://localhost:3000`, radice = cartella del progetto)
 
 ### Configurazione
 - **File di configurazione**: `config/db_config.php` (UNICO file, nessun template/local/env)
+- **Database**: costante `DB_DRIVER` in `config/db_config.php`: `'sqlite'` (predefinito, file `database/esercizi.sqlite` creato in automatico da `database/schema_sqlite.sql`) oppure `'mysql'` (`database/schema.sql`)
 - **Credenziali XAMPP**: user=`root`, password=`` (vuota)
 - **Credenziali Altervista**: user=`username`, database=`my_username`
 
@@ -22,7 +24,7 @@ Repository educativo per insegnare PHP procedurale e MySQLi a studenti in ambien
 1. **Semplicità**: Il codice deve essere comprensibile per principianti
 2. **Didattica**: Privilegiare chiarezza su efficienza
 3. **PHP Procedurale**: NO OOP, NO framework, solo PHP procedurale
-4. **MySQLi**: Usare MySQLi (NO PDO) in stile procedurale
+4. **PDO**: Usare PDO (NO MySQLi) con `connetti_database()`; SQL portabile, valido sia per SQLite sia per MySQL
 
 ### Struttura File
 ```
@@ -33,7 +35,8 @@ esercizi-php/
 ├── config/
 │   └── db_config.php       # UNICO file configurazione
 ├── database/
-│   └── schema.sql          # Schema database
+│   ├── schema.sql          # Schema MySQL
+│   └── schema_sqlite.sql   # Schema SQLite
 ├── giorno-XX/              # Esercizi organizzati per giorno
 │   └── esercizio-XX/
 │       ├── README.md       # Descrizione esercizio
@@ -53,9 +56,9 @@ esercizi-php/
 - Indentazione: 4 spazi
 
 #### Database
-- MySQLi procedurale (NO PDO)
+- PDO con `ERRMODE_EXCEPTION` e `FETCH_ASSOC` (NO MySQLi), gestione errori con try/catch
 - Sempre prepared statements per sicurezza
-- Funzioni helper: `connetti_database()`, `chiudi_database()`
+- Funzioni helper: `connetti_database()` (ritorna un oggetto PDO), `chiudi_database($pdo)`
 - Charset: UTF-8 (utf8mb4)
 
 #### HTML/CSS
@@ -68,14 +71,14 @@ esercizi-php/
 ❌ Non usare framework (Laravel, Symfony, ecc.)
 ❌ Non usare Composer o package manager
 ❌ Non usare OOP avanzata
-❌ Non usare PDO
+❌ Non usare MySQLi
 ❌ Non creare file .env o sistemi di config complessi
 ❌ Non usare JavaScript framework (Vue, React, ecc.)
 ❌ Non modificare la struttura principale senza necessità
 
 ### Cosa Fare
 ✅ Codice PHP procedurale semplice e chiaro
-✅ MySQLi con prepared statements
+✅ PDO con prepared statements (segnaposto nominali `:nome`)
 ✅ Commenti esplicativi in italiano
 ✅ Validazione input server-side
 ✅ Gestione errori appropriata
@@ -99,8 +102,9 @@ Quando modifichi configurazione o workflow:
 
 ### Ambienti di Test
 1. XAMPP su Windows (ambiente target principale)
-2. PHP built-in server per test rapidi
+2. PHP built-in server per test rapidi (`php -S localhost:3000` dalla radice)
 3. Altervista per test deployment
+4. Entrambi i driver: SQLite e MySQL
 
 ### Verifica Modifiche
 Quando aggiungi/modifichi esercizi:
@@ -128,12 +132,12 @@ Quando aggiungi/modifichi esercizi:
 
 ### Link Utili
 - [PHP Manual (IT)](https://www.php.net/manual/it/)
-- [MySQLi Reference](https://www.php.net/manual/it/book.mysqli.php)
+- [PDO Reference](https://www.php.net/manual/it/book.pdo.php)
 - [XAMPP Download](https://www.apachefriends.org/it/)
 - [Altervista](https://it.altervista.org/)
 
 ### Repository
-- GitHub: `studente-prova/esercizi-php`
+- GitHub: `itzanon-sia-2026-2027/esercizi-php`
 - Documentazione: Apri `index.html` o `docs/index.html` nel browser
 
 ## Changelog
