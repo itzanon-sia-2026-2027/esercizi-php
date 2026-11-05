@@ -37,7 +37,7 @@ esercizi-php/
 ├── database/
 │   ├── schema.sql          # Schema MySQL
 │   └── schema_sqlite.sql   # Schema SQLite
-├── lezioni/                # Tutorial: lezione-01.md ... lezione-08.md (si riparte da zero)
+├── lezioni/                # Tutorial: lezione-01.html ... lezione-08.html (si riparte da zero)
 └── biblioteca/             # Portale completo (soluzione di riferimento)
     ├── connessione.php     # Crea $pdo e gestisce i messaggi di sessione
     ├── categorie*.php      # Un file per operazione: x.php, x_insert, x_delete, x_edit, x_update
@@ -91,7 +91,7 @@ esercizi-php/
 
 ### Formato
 - **Guide setup**: HTML (`docs/index.html`) per visualizzazione diretta in htdocs/Altervista
-- **Lezioni**: Markdown in `lezioni/` (una per passo)
+- **Lezioni**: HTML in `lezioni/` (una per passo, `index.html` è l'indice)
 - **Codice**: Commenti inline in italiano
 
 ### Aggiornamento Documentazione

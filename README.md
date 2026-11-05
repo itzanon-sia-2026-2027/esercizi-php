@@ -93,7 +93,7 @@ $libro = $stmt->fetch();
 ## 📚 Come Usare il Tutorial
 
 1. Avvia il server (vedi sopra)
-2. Segui le [lezioni](lezioni/README.md) in ordine, scrivendo il codice in una tua cartella:
+2. Segui le [lezioni](lezioni/index.html) in ordine, scrivendo il codice in una tua cartella:
 
    | # | Lezione |
    |---|---------|

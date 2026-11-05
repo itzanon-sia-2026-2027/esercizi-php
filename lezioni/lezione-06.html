@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezione 6 - Relazione N:M: gli autori dei libri (padre-figlio)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); color: #444; line-height: 1.6; }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        h2 { color: #667eea; margin: 30px 0 10px; }
+        p, ul, ol, table, pre { margin-bottom: 15px; }
+        ul, ol { padding-left: 25px; }
+        a { color: #667eea; font-weight: 600; }
+        code { background: #f1f3f5; padding: 2px 6px; border-radius: 4px; font-size: 0.95em; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        pre code { background: none; padding: 0; color: inherit; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+        th { background: #f8f9fa; }
+        .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>Lezione 6 - Relazione N:M: gli autori dei libri (padre-figlio)</h1>
+<p><strong>Obiettivo</strong>: un libro può avere più autori e un autore più libri. Con in più un dato sul collegamento: il <strong>ruolo</strong> (Autore, Curatore, Prefazione...).</p>
+<h2>1. CRUD degli autori</h2>
+<p>Ripeti ancora lo schema di lezioni 1-4 per <code>autori</code> (<code>autori.php</code>, <code>autori_insert.php</code>, <code>autori_delete.php</code>, <code>autori_edit.php</code>, <code>autori_update.php</code>). Ha due campi, quindi nella query ci sono due (o tre, nell'update) <code>?</code>.</p>
+<h2>2. La tabella ponte <code>libro_autore</code></h2>
+<p>Una N:M si realizza con una terza tabella con <strong>due chiavi esterne</strong> e la chiave primaria composta:</p>
+<pre><code class="language-sql">CREATE TABLE libro_autore (
+    libro_id INTEGER NOT NULL,
+    autore_id INTEGER NOT NULL,
+    ruolo TEXT NOT NULL,
+    PRIMARY KEY (libro_id, autore_id),
+    FOREIGN KEY (libro_id) REFERENCES libri(id) ON DELETE CASCADE,
+    FOREIGN KEY (autore_id) REFERENCES autori(id) ON DELETE CASCADE
+);
+</code></pre>
+<p>Con <code>CASCADE</code>, cancellando un libro (o un autore) spariscono anche i suoi collegamenti.</p>
+<h2>3. La pagina "padre-figlio": <code>libro_autori.php?id=...</code></h2>
+<p>Parte da un libro (il <strong>padre</strong>) e ne gestisce gli autori collegati (i <strong>figli</strong>).</p>
+<ul>
+<li>In <code>libri.php</code> aggiungi il link <code>libro_autori.php?id=&lt;?= $l['id'] ?&gt;</code>.</li>
+<li>Gli autori già collegati (JOIN con la tabella ponte):</li>
+</ul>
+<pre><code class="language-php">$sql = &quot;SELECT autori.id, autori.nome, autori.cognome, libro_autore.ruolo
+        FROM autori
+        INNER JOIN libro_autore ON autori.id = libro_autore.autore_id
+        WHERE libro_autore.libro_id = ?&quot;;
+$stmt = $pdo-&gt;prepare($sql);
+$stmt-&gt;execute([$libro_id]);
+$autori_libro = $stmt-&gt;fetchAll();
+</code></pre>
+<ul>
+<li>Il menu a tendina propone solo gli autori <strong>non ancora</strong> collegati:</li>
+</ul>
+<pre><code class="language-php">SELECT id, nome, cognome FROM autori
+WHERE id NOT IN (SELECT autore_id FROM libro_autore WHERE libro_id = ?)
+</code></pre>
+<ul>
+<li>Il form invia <code>libro_id</code> (campo hidden), <code>autore_id</code> e <code>ruolo</code> a <code>libro_autori_insert.php</code>, che fa l'<code>INSERT</code> nella tabella ponte e poi torna a <code>libro_autori.php?id=</code> + il libro.</li>
+<li>Il link "Scollega" chiama <code>libro_autori_delete.php?libro_id=...&amp;autore_id=...</code>: servono <strong>entrambe</strong> le chiavi, perché la riga è identificata dalla coppia:</li>
+</ul>
+<pre><code class="language-php">DELETE FROM libro_autore WHERE libro_id = ? AND autore_id = ?
+</code></pre>
+<h2>Verifica</h2>
+<p>Collega un secondo autore a "Dune", poi scollegalo. Cancella un libro e controlla che i collegamenti siano spariti.</p>
+        <div class="nav"><a href="lezione-05.html">⬅️ Lezione precedente</a><a href="lezione-07.html">Lezione successiva ➡️</a></div>
+    </div>
+</body>
+</html>

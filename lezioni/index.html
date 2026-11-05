@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezioni: dal primo SELECT al portale gestionale</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); color: #444; line-height: 1.6; }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        h2 { color: #667eea; margin: 30px 0 10px; }
+        p, ul, ol, table, pre { margin-bottom: 15px; }
+        ul, ol { padding-left: 25px; }
+        a { color: #667eea; font-weight: 600; }
+        code { background: #f1f3f5; padding: 2px 6px; border-radius: 4px; font-size: 0.95em; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        pre code { background: none; padding: 0; color: inherit; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+        th { background: #f8f9fa; }
+        .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+<p><a href="../index.html">⬅️ Home</a></p>
+<h1>Lezioni: dal primo SELECT al portale gestionale</h1>
+<p>Si riparte da zero e si costruisce un <strong>portale gestionale per una biblioteca</strong>, un passo alla volta.
+La soluzione completa e funzionante è nella cartella <a href="../biblioteca/index.php"><code>../biblioteca/</code></a>: usala per confrontare il tuo lavoro, non per copiare.</p>
+<h2>Prima di iniziare</h2>
+<ol>
+<li>Crea una cartella di lavoro tua, ad esempio <code>miabiblioteca/</code>, dentro il progetto.</li>
+<li>Copia da <code>biblioteca/</code> solo la cartella <code>css/</code> (lo stile è già pronto).</li>
+<li>Il database <code>database/biblioteca.sqlite</code> si crea da solo, con i dati di esempio (guarda <code>database/schema_sqlite.sql</code>). Per ricominciare cancella il file <code>.sqlite</code>.</li>
+<li>Avvia il server con il task <strong>"4. Avvia Server PHP (file corrente)"</strong> del profilo VSCode.</li>
+</ol>
+<p>Lo schema del database:</p>
+<pre><code>categorie (id, nome)                      1 ──&lt; N   libri (id, titolo, anno_pubblicazione, categoria_id)
+libri  &gt;──&lt; autori (id, nome, cognome)    N:M tramite libro_autore (libro_id, autore_id, ruolo)
+</code></pre>
+<h2>Convenzioni (le stesse usate in classe)</h2>
+<ul>
+<li>Ogni pagina inizia con <code>require_once 'connessione.php';</code> e usa la variabile <code>$pdo</code>.</li>
+<li><strong>Un file per ogni operazione</strong>: <code>categorie.php</code>, <code>categorie_insert.php</code>, <code>categorie_delete.php</code>, <code>categorie_edit.php</code>, <code>categorie_update.php</code>.</li>
+<li>Le query con dati dell'utente usano <strong>sempre <code>prepare</code> con i segnaposto <code>?</code></strong> e <code>execute([ ... ])</code>:</li>
+</ul>
+<pre><code class="language-php">$stmt = $pdo-&gt;prepare(&quot;UPDATE autori SET nome = ?, cognome = ? WHERE id = ?&quot;);
+$stmt-&gt;execute([$nome, $cognome, $id]);
+</code></pre>
+<p>I valori nell'array vanno <strong>nello stesso ordine</strong> dei <code>?</code>. Non si usano i parametri con nome.
+- Dopo una scrittura: <code>header("Location: pagina.php"); exit;</code>.
+- Ogni dato mostrato in pagina passa da <code>htmlspecialchars()</code>.</p>
+<h2>Sequenza</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Lezione</th>
+<th>Argomento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><a href="lezione-01.html">Leggere i dati</a></td>
+<td>connessione, <code>query</code>, <code>fetchAll</code>, tabella HTML</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="lezione-02.html">Inserire e cancellare</a></td>
+<td>form, <code>prepare</code>/<code>execute</code>, redirect</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="lezione-03.html">Modificare</a></td>
+<td><code>fetch</code>, <code>&lt;input type="hidden"&gt;</code>, <code>UPDATE</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="lezione-04.html">Messaggi ed errori</a></td>
+<td>sessione, <code>try/catch</code>, chiavi esterne</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="lezione-05.html">Seconda tabella: libri</a></td>
+<td><code>INNER JOIN</code>, menu a tendina</td>
+</tr>
+<tr>
+<td>6</td>
+<td><a href="lezione-06.html">Relazione N:M: autori dei libri</a></td>
+<td>tabella ponte, padre-figlio</td>
+</tr>
+<tr>
+<td>7</td>
+<td><a href="lezione-07.html">Il catalogo pubblico</a></td>
+<td>pagina finale, cicli annidati, home del portale</td>
+</tr>
+<tr>
+<td>8</td>
+<td><a href="lezione-08.html">Ultima lezione: fetch</a></td>
+<td>JavaScript che chiede a PHP pezzi di HTML</td>
+</tr>
+</tbody>
+</table>
+<p>Alla fine della lezione 7 hai un portale completo. Cambiando tabelle e campi puoi costruire lo stesso portale per qualsiasi altro tema (negozio, palestra, scuola...).</p>
+    </div>
+</body>
+</html>
