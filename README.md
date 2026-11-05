@@ -18,9 +18,9 @@ Apri la cartella con VSCode.
 
 ### 3. Avvia il portale (SQLite, predefinito)
 
-1. Apri `biblioteca/index.php`
+1. Crea `lavoro/categorie.php` seguendo la [lezione 1](lezioni/lezione-01.html) e aprilo
 2. Esegui il task **"4. Avvia Server PHP (file corrente)"** (pulsante ▶️ nel pannello Favorites)
-3. Si apre `http://localhost:3000/biblioteca/index.php`
+3. Si apre `http://localhost:3000/lavoro/categorie.php`
 
 Il database `database/biblioteca.sqlite` viene creato da solo, con i dati di esempio. Non serve avviare XAMPP.
 
@@ -65,7 +65,7 @@ esercizi-php/
 │   ├── schema_sqlite.sql   # Schema SQLite (eseguito in automatico)
 │   └── .htaccess           # Protegge il file .sqlite
 ├── lezioni/                # Le 8 lezioni del tutorial
-└── biblioteca/             # Portale completo (soluzione di riferimento)
+└── lavoro/                 # Cartella di lavoro (connessione.php e css già pronti)
 ```
 
 ## ⚙️ Configurazione Database
@@ -82,7 +82,7 @@ define('DB_PASS', '');
 define('DB_NAME', 'biblioteca');
 ```
 
-Nelle pagine la connessione si ottiene con `require_once 'connessione.php';` (vedi `biblioteca/connessione.php`), che usa `connetti_database()` e funziona con entrambi i database. Le query usano i segnaposto `?`:
+Nelle pagine la connessione si ottiene con `require_once 'connessione.php';` (vedi `lavoro/connessione.php`), che usa `connetti_database()` e funziona con entrambi i database. Le query usano i segnaposto `?`:
 
 ```php
 $stmt = $pdo->prepare("SELECT * FROM libri WHERE id = ?");
@@ -106,7 +106,7 @@ $libro = $stmt->fetch();
    | 7 | Il catalogo pubblico |
    | 8 | fetch: aggiornare la pagina senza ricaricarla |
 
-3. Confronta con la soluzione in `biblioteca/`
+3. La soluzione completa e i passi intermedi (`passo-01` … `passo-08`) sono nel branch `soluzione`, che l'insegnante rende disponibile
 
 ## 🔧 Problemi?
 

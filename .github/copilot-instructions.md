@@ -38,12 +38,11 @@ esercizi-php/
 │   ├── schema.sql          # Schema MySQL
 │   └── schema_sqlite.sql   # Schema SQLite
 ├── lezioni/                # Tutorial: lezione-01.html ... lezione-08.html (si riparte da zero)
-└── biblioteca/             # Portale completo (soluzione di riferimento)
-    ├── connessione.php     # Crea $pdo e gestisce i messaggi di sessione
-    ├── categorie*.php      # Un file per operazione: x.php, x_insert, x_delete, x_edit, x_update
-    ├── libri*.php, autori*.php, libro_autori*.php   # 1:N e N:M (tabella ponte)
-    └── catalogo_ajax.php   # Ultima lezione: fetch che riceve HTML
+└── lavoro/                 # Cartella di lavoro degli studenti (solo connessione.php e css/)
+    └── connessione.php     # Crea $pdo e gestisce i messaggi di sessione
 ```
+
+**Branch `soluzione`**: contiene il portale completo (`biblioteca/`) e i passi intermedi `passo-01` … `passo-08` (stessa profondità di `lavoro/`, quindi `connessione.php` funziona identico). Non va fuso in `main`: gli studenti non devono vedere la soluzione. Convenzione dei file: un file per operazione (`categorie.php`, `_insert`, `_delete`, `_edit`, `_update`); `libri*`, `autori*`, `libro_autori*` per 1:N e N:M (tabella ponte); `catalogo_ajax.php` per la lezione finale con fetch.
 
 ### Convenzioni Codice
 
