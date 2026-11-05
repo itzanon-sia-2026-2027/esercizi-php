@@ -1,0 +1,200 @@
+:root {
+    --bg-main: #0f172a;
+    --card-bg: #1e293b;
+    --card-border: #334155;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --badge-bg: #0369a1;
+    --badge-text: #e0f2fe;
+    --radius: 12px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   Header & Footer (A tutta larghezza con testo centrato)
+   ========================================================================== */
+header {
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--card-border);
+    padding: 24px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    color: var(--accent);
+}
+
+header p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+footer {
+    border-top: 1px solid var(--card-border);
+    padding: 20px 20px;
+    margin-top: 60px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   Griglia Principale (Main)
+   ========================================================================== */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+/* ==========================================================================
+   Card del Film (Article)
+   ========================================================================== */
+article {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+article:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+/* Locandina in formato proporzionale nativo 2:3 */
+article > img {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    background-color: #000;
+    display: block;
+}
+
+/* Corpo della Card */
+article > div {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* Badge Genere (primo <span> dentro il body della card) */
+article > div > span:first-of-type {
+    align-self: flex-start;
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Titolo Film e Anno */
+article h2 {
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+    color: var(--text-main);
+}
+
+article time {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   Sezione Cast (Allineata in fondo con margin-top: auto)
+   ========================================================================== */
+article h3 {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: auto;
+    border-top: 1px solid var(--card-border);
+    padding-top: 15px;
+    margin-bottom: 10px;
+}
+
+article ul {
+    list-style: none;
+}
+
+article li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+article li:last-child {
+    margin-bottom: 0;
+}
+
+article li img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--accent);
+}
+
+article li div {
+    display: flex;
+    flex-direction: column;
+}
+
+article li strong {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+article li span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+header a {
+    display: inline-block;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-top: 12px;
+    padding: 6px 14px;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    background-color: var(--bg-main);
+    transition: all 0.2s ease;
+}
+
+header a:hover {
+    border-color: var(--accent);
+    background-color: rgba(56, 189, 248, 0.1);
+}
