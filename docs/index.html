@@ -236,10 +236,10 @@
         <div class="content">
             <div class="alert alert-info">
                 <h2 style="margin-top: 0; border: none;">🎯 Da dove iniziare</h2>
-                <p>Il progetto usa <strong>PDO</strong> e può lavorare con due database, scelti in <code>config/db_config.php</code> con la costante <code>DB_DRIVER</code>:</p>
+                <p>Gli esercizi nella cartella <code>lavoro/</code> usano <strong>MySQL</strong>, come nelle lezioni. La soluzione completa in <code>biblioteca/</code> include invece configurazioni separate per MySQL e SQLite.</p>
                 <ul>
-                    <li><strong>SQLite</strong> (predefinito): un semplice file, <em>nessuna installazione</em>, ogni studente ha il proprio database. Funziona in locale e su Altervista.</li>
-                    <li><strong>MySQL</strong>: server MySQL/MariaDB di XAMPP (locale) o di Altervista (un solo database per account).</li>
+                    <li><strong>MySQL</strong>: server MySQL/MariaDB di XAMPP o Altervista; è il database usato per svolgere le lezioni.</li>
+                    <li><strong>SQLite</strong>: disponibile nella soluzione <code>biblioteca/</code>; usa un file e non richiede un server database.</li>
                 </ul>
                 <p><strong>Percorso più veloce:</strong> importa il profilo VSCode (tab 🧰), apri la cartella del progetto, apri un file <code>index.php</code> e lancia il task <em>"4. Avvia Server PHP (file corrente)"</em>.</p>
             </div>
@@ -299,18 +299,18 @@
                     <tr><td style="padding:8px;"><code>php</code>, <code>php-e</code>, <code>php-for-alt</code>, <code>php-for</code></td><td style="padding:8px;">Tag PHP, echo di un array, foreach nell'HTML</td></tr>
                 </table>
                 <div class="alert alert-info">
-                    Gli snippet e <code>connessione.php</code> (task 6) usano <code>require_once 'connessione.php'</code> e <code>$pdo</code>: sono pensati per i progetti liberi. Negli esercizi di questo repository usa invece <code>require_once '../../config/db_config.php'</code> e <code>$pdo = connetti_database();</code>, che funziona sia con SQLite sia con MySQL.
+                    Gli snippet e <code>connessione.php</code> (task 6) usano <code>require_once 'connessione.php'</code> e la variabile <code>$pdo</code>. È lo stesso schema usato negli esercizi: <code>lavoro/connessione.php</code> apre MySQL, mentre la soluzione <code>biblioteca/</code> seleziona uno dei suoi file di connessione.
                 </div>
             </div>
 
             <!-- Database -->
             <div id="database" class="tab-content">
                 <h2>Scegliere il database</h2>
-                <p>Apri <code>config/db_config.php</code> (<strong>unico file di configurazione</strong>) e imposta <code>DB_DRIVER</code>.</p>
+                <p>Per le lezioni usa MySQL e configura le credenziali in <code>lavoro/connessione.php</code>. Nella soluzione completa i driver sono separati: <code>biblioteca/connessione.mysql.php</code> e <code>biblioteca/connessione.sqlite.php</code>; il selettore è <code>biblioteca/connessione.php</code>.</p>
 
-                <h3>Opzione A: SQLite (predefinita)</h3>
-<pre>define('DB_DRIVER', 'sqlite');</pre>
+                <h3>Soluzione biblioteca: SQLite</h3>
                 <ul>
+                    <li>La soluzione <code>biblioteca/</code> seleziona SQLite inizialmente. La connessione è configurata in <code>biblioteca/connessione.sqlite.php</code>.</li>
                     <li>Il database è il file <code>database/biblioteca.sqlite</code>, creato <strong>automaticamente</strong> al primo accesso, con tabelle e dati di esempio (<code>database/schema_sqlite.sql</code>).</li>
                     <li>Per ripartire da zero cancella il file <code>biblioteca.sqlite</code>.</li>
                     <li>Il file è escluso da Git e protetto da <code>database/.htaccess</code> (non scaricabile da browser su Apache/Altervista).</li>
@@ -318,23 +318,19 @@
                     <li>Richiede l'estensione PHP <code>pdo_sqlite</code> (inclusa in XAMPP e su Altervista).</li>
                 </ul>
 
-                <h3>Opzione B: MySQL</h3>
-<pre>define('DB_DRIVER', 'mysql');
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');            // Altervista: il tuo username
-define('DB_PASS', '');                // Altervista: la tua password
-define('DB_NAME', 'biblioteca');    // Altervista: my_username</pre>
+                <h3>MySQL per le lezioni e la soluzione</h3>
                 <ol>
-                    <li>Avvia <strong>MySQL</strong> dal XAMPP Control Panel.</li>
-                    <li>Importa <code>database/schema.sql</code>: pulsante "Importa DB da file .sql" nel pannello Favorites (task 9) oppure phpMyAdmin → Importa. Lo schema crea il database <code>esercizi_php</code>.</li>
+                    <li>Per le lezioni, modifica in <code>lavoro/connessione.php</code> le variabili <code>$host</code>, <code>$db</code>, <code>$user</code> e <code>$pass</code>. In XAMPP i valori predefiniti sono <code>localhost</code>, <code>biblioteca</code>, <code>root</code> e password vuota.</li>
+                    <li>Per la soluzione completa, modifica le credenziali in <code>biblioteca/connessione.mysql.php</code> e seleziona quel file in <code>biblioteca/connessione.php</code>.</li>
+                    <li>Avvia MySQL e importa <code>database/schema.sql</code> con phpMyAdmin o il task 9. Lo schema crea il database <code>biblioteca</code>.</li>
                 </ol>
 
                 <div class="alert alert-info">
-                    <strong>💡 Perché SQLite?</strong> Altervista offre un solo database MySQL per account: con SQLite ogni studente (o ogni progetto) può avere un proprio file di database, senza condividere le tabelle.
+                    <strong>💡 Perché SQLite nella soluzione?</strong> Altervista offre un solo database MySQL per account: SQLite permette alla soluzione completa di avere un file database dedicato.
                 </div>
 
                 <h3>Scrivere SQL portabile</h3>
-                <p>Gli esercizi devono funzionare con entrambi i database: usa SQL standard e i segnaposto PDO (<code>:nome</code>) per i parametri. Evita funzioni specifiche (es. <code>NOW()</code> di MySQL).</p>
+                <p>Le query degli esercizi usano SQL portabile e segnaposto PDO posizionali (<code>?</code>) per i parametri. Evita funzioni specifiche (es. <code>NOW()</code> di MySQL).</p>
 
                 <h3>Usare il database nei tuoi file</h3>
 <pre>&lt;?php
@@ -435,14 +431,14 @@ try {
                         <li>Apri <strong>Actions → Deploy su Altervista (Manuale) → Run workflow</strong>, scegli il branch da pubblicare e avvia la workflow. Controlla il risultato nella pagina dell'esecuzione.</li>
                         <li>Il progetto viene pubblicato in <code>/5bs/esercizi-php/</code>, raggiungibile da <code>https://NOMEACCOUNT.altervista.org/5bs/esercizi-php/</code>.</li>
                     </ol>
-                    <p>La sincronizzazione esclude i database SQLite, ma può sovrascrivere i file pubblicati e cancellare dal server quelli rimossi dal repository dopo una pubblicazione precedente. In particolare, <code>config/db_config.php</code> viene sovrascritto: non affidarti a modifiche MySQL fatte solo sul server e non inserire password reali nel repository. Fai un backup prima di pubblicare.</p>
+                    <p>La sincronizzazione esclude i database SQLite, ma può sovrascrivere i file pubblicati e cancellare dal server quelli rimossi dal repository dopo una pubblicazione precedente. I file di connessione MySQL fanno parte del repository: non inserire password reali nei file e fai un backup prima di pubblicare.</p>
                     <div class="alert alert-warning">La workflow usa FTP sulla porta 21: credenziali e file viaggiano senza cifratura. Verifica nelle impostazioni Altervista che l'accesso FTP sia abilitato e che il server accetti la connessione dai runner GitHub.</div>
                 </div>
 
                 <div class="step">
                     <h4>Passo 3A: Database SQLite (consigliato)</h4>
                     <ol>
-                        <li>Lascia <code>DB_DRIVER</code> su <code>'sqlite'</code> in <code>config/db_config.php</code>.</li>
+                        <li>La soluzione <code>biblioteca/connessione.php</code> seleziona SQLite su Altervista; non occorre impostare un driver.</li>
                         <li>Carica il progetto e apri <code>https://NOMEACCOUNT.altervista.org/cognome_nome/lavoro/</code>.</li>
                         <li>Il file <code>database/biblioteca.sqlite</code> viene creato sul server al primo accesso. Il database online è <strong>separato</strong> da quello locale.</li>
                     </ol>
@@ -452,8 +448,8 @@ try {
                 <div class="step">
                     <h4>Passo 3B: Database MySQL</h4>
                     <ol>
-                        <li>Dal pannello Altervista apri <strong>phpMyAdmin</strong> (database <code>my_NOMEACCOUNT</code>) e importa <code>database/schema_altervista.sql</code>… oppure usa <code>database/schema.sql</code> togliendo le righe <code>CREATE DATABASE</code> e <code>USE</code>.</li>
-                        <li>In <code>config/db_config.php</code> imposta <code>DB_DRIVER</code> <code>'mysql'</code>, <code>DB_USER</code> = username, <code>DB_PASS</code> = password database, <code>DB_NAME</code> = <code>my_NOMEACCOUNT</code>.</li>
+                        <li>Dal pannello Altervista apri <strong>phpMyAdmin</strong> (database <code>my_NOMEACCOUNT</code>) e importa <code>database/schema.sql</code> dopo aver rimosso le istruzioni <code>CREATE DATABASE</code> e <code>USE</code>.</li>
+                        <li>Per gli esercizi inserisci le credenziali Altervista in <code>lavoro/connessione.php</code>. Per la soluzione, inseriscile in <code>biblioteca/connessione.mysql.php</code> e modifica <code>biblioteca/connessione.php</code> perché includa la connessione MySQL anche su Altervista.</li>
                     </ol>
                     <p>Altervista dà un solo database: se lo condividi tra più progetti, usa un prefisso per le tabelle oppure passa a SQLite.</p>
                 </div>
@@ -475,7 +471,7 @@ try {
 
                 <div class="card">
                     <h3>❌ Access denied for user / Unknown database (MySQL)</h3>
-                    <p>Controlla <code>DB_USER</code>, <code>DB_PASS</code>, <code>DB_NAME</code> in <code>config/db_config.php</code> e di aver importato <code>database/schema.sql</code>. XAMPP: <code>root</code> senza password.</p>
+                    <p>Controlla host, database, utente e password in <code>lavoro/connessione.php</code> oppure in <code>biblioteca/connessione.mysql.php</code>, e verifica di aver importato <code>database/schema.sql</code>. XAMPP: <code>root</code> senza password.</p>
                 </div>
 
                 <div class="card">

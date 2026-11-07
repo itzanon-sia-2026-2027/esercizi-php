@@ -146,14 +146,13 @@ $libri = ottieni_libri($pdo);
 ### 1. Gestione Connessioni
 
 ```php
-// ✅ Apri connessione solo quando necessario
-$pdo = connetti_database();
+// La pagina include connessione.php, che prepara già $pdo
+require_once 'connessione.php';
 
 // Esegui operazioni
 $risultati = $pdo->query($query)->fetchAll();
 
-// ✅ Chiudi la connessione quando hai finito
-chiudi_database($pdo);
+// PDO chiude la connessione alla fine della richiesta
 ```
 
 ### 2. Gestione Errori
@@ -243,7 +242,7 @@ if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
 
 ```php
 // File: snake_case
-// db_config.php, connessione.php
+// connessione.php, catalogo_fetch.php
 
 // Variabili: snake_case o camelCase (scegli uno e mantieni consistenza)
 $nome_studente = "Mario";

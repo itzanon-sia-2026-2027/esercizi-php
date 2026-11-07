@@ -13,8 +13,8 @@ Repository educativo per insegnare PHP procedurale con PDO a studenti in ambient
 3. **VSCode**: profilo `5sia_lab112` (https://gist.github.com/sonia-guerci/919b29e9d19bd9c56305630e88d89c08) con estensioni, snippet `php-pdo*` e task numerati (es. "4. Avvia Server PHP (file corrente)" su `http://localhost:3000`, radice = cartella del progetto)
 
 ### Configurazione
-- **File di configurazione**: `config/db_config.php` (UNICO file, nessun template/local/env)
-- **Database**: costante `DB_DRIVER` in `config/db_config.php`: `'sqlite'` (predefinito, file `database/biblioteca.sqlite` creato in automatico da `database/schema_sqlite.sql`) oppure `'mysql'` (`database/schema.sql`)
+- **Esercizi in `lavoro/`**: usare MySQL con `lavoro/connessione.php`; in classe si lavora con MySQL e non si cambia driver.
+- **Soluzione `biblioteca/`**: configurazioni separate in `biblioteca/connessione.mysql.php` e `biblioteca/connessione.sqlite.php`; il selettore è `biblioteca/connessione.php`. SQLite usa `database/biblioteca.sqlite` e `database/schema_sqlite.sql`; MySQL usa `database/schema.sql`.
 - **Credenziali XAMPP**: user=`root`, password=`` (vuota)
 - **Credenziali Altervista**: user=`username`, database=`my_username`
 
@@ -24,7 +24,7 @@ Repository educativo per insegnare PHP procedurale con PDO a studenti in ambient
 1. **Semplicità**: Il codice deve essere comprensibile per principianti
 2. **Didattica**: Privilegiare chiarezza su efficienza
 3. **PHP Procedurale**: NO OOP, NO framework, solo PHP procedurale
-4. **PDO**: Usare PDO (NO MySQLi) con `connetti_database()`; SQL portabile, valido sia per SQLite sia per MySQL
+4. **PDO**: Usare PDO (NO MySQLi), includere `connessione.php` e usare la variabile `$pdo`; SQL portabile, valido sia per SQLite sia per MySQL nella soluzione `biblioteca/`
 
 ### Struttura File
 ```
@@ -32,11 +32,10 @@ esercizi-php/
 ├── index.html              # Home navigabile
 ├── docs/
 │   └── index.html          # Documentazione HTML (NON markdown)
-├── config/
-│   └── db_config.php       # UNICO file configurazione
 ├── database/
 │   ├── schema.sql          # Schema MySQL
 │   └── schema_sqlite.sql   # Schema SQLite
+├── biblioteca/             # Soluzione completa, connessioni MySQL/SQLite separate
 ├── lezioni/                # Tutorial: lezione-01.html ... lezione-08.html (si riparte da zero)
 └── lavoro/                 # Cartella di lavoro degli studenti (solo connessione.php e css/)
     └── connessione.php     # Crea $pdo e gestisce i messaggi di sessione
@@ -57,7 +56,7 @@ esercizi-php/
 #### Database
 - PDO con `ERRMODE_EXCEPTION` e `FETCH_ASSOC` (NO MySQLi), gestione errori con try/catch
 - Sempre prepared statements per sicurezza, con segnaposto posizionali `?` e `execute([$a, $b])` (NO parametri nominali `:nome`, NO sintassi `=>` negli array di `execute`): è la convenzione usata in classe
-- Funzioni helper: `connetti_database()` (ritorna un oggetto PDO), `chiudi_database($pdo)`
+- La connessione è esposta nella variabile `$pdo` dal file `connessione.php`; non usare helper di connessione non presenti nel progetto.
 - Charset: UTF-8 (utf8mb4)
 
 #### HTML/CSS
@@ -110,7 +109,7 @@ Quando modifichi configurazione o workflow:
 ### Verifica Modifiche
 Quando aggiungi/modifichi esercizi:
 1. Testa su XAMPP Windows con credenziali default
-2. Verifica che `config/db_config.php` funzioni
+2. Verifica `lavoro/connessione.php` con MySQL; nella soluzione prova separatamente i file di connessione MySQL e SQLite.
 3. Controlla che non ci siano dipendenze da librerie esterne
 4. Verifica encoding UTF-8 per caratteri accentati
 5. Testa form e validazione input
@@ -125,9 +124,8 @@ Quando aggiungi/modifichi esercizi:
 - Session management sicuro
 
 ### Note
-- Il file `config/db_config.php` è nel repository per scopi didattici
-- Contiene credenziali di esempio (root/vuoto per XAMPP)
-- Studenti devono modificarlo con le proprie credenziali
+- `lavoro/connessione.php` e `biblioteca/connessione.mysql.php` contengono credenziali di esempio per XAMPP (`root`, password vuota).
+- Per Altervista, usare le credenziali dell'account e non inserirle nei commit o nei repository pubblici.
 
 ## Risorse
 
@@ -153,5 +151,5 @@ Quando fai modifiche significative:
 ---
 
 **Ultimo aggiornamento**: 2025-12-23
-**Configurazione**: File unico `config/db_config.php`
+**Configurazione**: MySQL per gli esercizi in `lavoro/`; file separati per la soluzione `biblioteca/`
 **Documentazione**: HTML in `docs/index.html`

@@ -8,34 +8,40 @@ Tutorial di **PHP con PDO** che parte da zero e porta a costruire un **portale g
 
 Importa il [profilo VSCode](https://gist.github.com/sonia-guerci/919b29e9d19bd9c56305630e88d89c08) (⚙️ → Profili → Importa profilo). Include estensioni (Intelephense, SQLTools, SFTP, Favorites panel), snippet PDO e task per avviare il server PHP, creare `connessione.php`, collegarsi ad Altervista, ecc.
 
+
 ### 2. Scarica il progetto
 
 ```bash
 git clone https://github.com/itzanon-sia-2026-2027/esercizi-php.git
+
 ```
 
 Apri la cartella con VSCode.
 
-### 3. Avvia il portale (SQLite, predefinito)
+### 3. Segui le lezioni (MySQL)
 
-1. Crea `lavoro/categorie.php` seguendo la [lezione 1](lezioni/lezione-01.html) e aprilo
-2. Esegui il task **"4. Avvia Server PHP (file corrente)"** (pulsante ▶️ nel pannello Favorites)
-3. Si apre `http://localhost:3000/lavoro/categorie.php`
+Gli esercizi nella cartella `lavoro/` usano **MySQL**, come nelle lezioni. Avvia MySQL da XAMPP e importa `database/schema.sql` in phpMyAdmin: il file crea il database `biblioteca`.
 
-Il database `database/biblioteca.sqlite` viene creato da solo, con i dati di esempio, inclusi 48 libri inventati per esercitarsi con la ricerca. I database già creati non vengono aggiornati automaticamente. Non serve avviare XAMPP.
+1. Crea `lavoro/categorie.php` seguendo la [lezione 1](lezioni/lezione-01.html).
+2. Esegui il task **"4. Avvia Server PHP (file corrente)"** (pulsante ▶️ nel pannello Favorites).
+3. Si apre `http://localhost:3000/lavoro/categorie.php`.
 
-Senza il profilo: `php -S localhost:3000` dalla cartella principale del progetto.
+*Senza il profilo VSCode:* assicurati di aver avviato i servizi di XAMPP, apri il terminale ed esegui `php -S localhost:3000` dalla cartella principale del progetto.
 
-### 4. (Opzionale) Usare MySQL
+### 4. Configurazione MySQL per gli esercizi
 
-In `config/db_config.php` imposta `DB_DRIVER` a `'mysql'`, inserisci le credenziali e importa `database/schema.sql`.
+La connessione degli esercizi è in `lavoro/connessione.php`. Per XAMPP i valori iniziali sono già pronti. Su Altervista modifica `$host`, `$db`, `$user` e `$pass` con i dati del tuo account:
 
-| Ambiente | DB_USER | DB_PASS | DB_NAME |
-|----------|---------|---------|---------|
-| XAMPP | `root` | _(vuota)_ | `biblioteca` |
-| Altervista | `username` | password database | `my_username` |
+| Ambiente | `$host` | `$user` | `$pass` | `$db` |
+| --- | --- | --- | --- | --- |
+| XAMPP | `localhost` | `root` | *(vuota)* | `biblioteca` |
+| Altervista | `localhost` | `tuousername` | password database | `my_tuousername` |
 
-### 5. (Opzionale) Pubblicare su Altervista
+### 5. Soluzione completa e SQLite
+
+La soluzione pronta in `biblioteca/` tiene separate le connessioni: `biblioteca/connessione.mysql.php` contiene i dati MySQL, mentre `biblioteca/connessione.sqlite.php` crea e inizializza `database/biblioteca.sqlite`. Il selettore è `biblioteca/connessione.php`; per gli esercizi del corso continua a usare MySQL in `lavoro/`.
+
+### 6. (Opzionale) Pubblicare su Altervista
 
 1. Esegui il task **"1. Inizializza Progetto & SFTP Altervista"** e compila `.vscode/sftp.json`
 2. Carica il progetto (`SFTP: Upload Project`)
@@ -60,36 +66,33 @@ esercizi-php/
 ├── docs/
 │   ├── index.html          # Guida setup interattiva
 │   └── best-practices.md   # Buone pratiche PHP/PDO
-├── config/
-│   └── db_config.php       # Configurazione database (UNICO FILE)
 ├── database/
 │   ├── schema.sql          # Schema MySQL
 │   ├── schema_sqlite.sql   # Schema SQLite (eseguito in automatico)
 │   └── .htaccess           # Protegge il file .sqlite
 ├── lezioni/                # Lezioni del tutorial, incluso il passo 7b
-└── lavoro/                 # Cartella di lavoro (connessione.php e css già pronti)
+├── biblioteca/             # Soluzione completa con connessioni MySQL e SQLite separate
+└── lavoro/                 # Esercizi: connessione MySQL e CSS già pronti
 ```
 
 ## ⚙️ Configurazione Database
 
-**File unico**: `config/db_config.php`
+Negli esercizi, `lavoro/connessione.php` apre la connessione MySQL e gestisce i messaggi di sessione. In ogni pagina includi il file in cima:
 
 ```php
-define('DB_DRIVER', 'sqlite');          // 'sqlite' oppure 'mysql'
+require_once 'connessione.php';
 
-// Solo per MySQL:
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'biblioteca');
 ```
 
-Nelle pagine la connessione si ottiene con `require_once 'connessione.php';` (vedi `lavoro/connessione.php`), che usa `connetti_database()` e funziona con entrambi i database. Le query usano i segnaposto `?`:
+Per la soluzione completa, `biblioteca/connessione.php` seleziona il file di connessione della cartella `biblioteca/`; SQLite è la scelta iniziale. I due driver sono configurati separatamente in `biblioteca/connessione.sqlite.php` e `biblioteca/connessione.mysql.php`.
+
+Le query utilizzano PDO con i **prepared statements** e i segnaposto `?` per garantire la sicurezza contro le SQL injection:
 
 ```php
 $stmt = $pdo->prepare("SELECT * FROM libri WHERE id = ?");
 $stmt->execute([$id]);
 $libro = $stmt->fetch();
+
 ```
 
 ## 📚 Come Usare il Tutorial

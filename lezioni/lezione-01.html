@@ -28,29 +28,30 @@
 <h1>Lezione 1 - Leggere i dati</h1>
 <p><strong>Obiettivo</strong>: mostrare in una tabella HTML l'elenco delle categorie.</p>
 <h2>1. <code>connessione.php</code></h2>
-<p>Crea la connessione una volta sola. Il file <code>lavoro/connessione.php</code> è già pronto (leggilo con attenzione): legge <code>config/db_config.php</code> (SQLite o MySQL, a scelta tua) e ti lascia pronta la variabile <code>$pdo</code>.</p>
+<p>Crea la connessione una volta sola. Il file <code>lavoro/connessione.php</code> è già pronto per MySQL: su XAMPP usa il database <code>biblioteca</code>; se usi Altervista, inserisci lì le credenziali del tuo database. Dopo l'inclusione puoi usare la variabile <code>$pdo</code>.</p>
 <p>Nota: <code>$pdo</code> è l'oggetto che usi per parlare con il database.</p>
 <h2>2. <code>categorie.php</code></h2>
 <p>All'inizio del file, nel blocco PHP:</p>
 <script type="text/plain" data-language="php"><?php
 require_once 'connessione.php';
 
-$categorie = $pdo->query("SELECT id, nome FROM categorie ORDER BY nome")->fetchAll();
+$stmt = $pdo->query("SELECT id, nome FROM categorie ORDER BY nome");
+$categorie = $stmt->fetchAll();
 ?>
 </script>
 <ul>
-<li><code>query()</code> esegue la SELECT.</li>
-<li><code>fetchAll()</code> restituisce un array di righe; ogni riga è un array associativo (<code>$c['nome']</code>).</li>
+<li><code>query()</code> esegue la SELECT (sul DB server).</li>
+<li><code>fetchAll()</code> recupera le righe dal DB server e restituisce un array di righe; ogni riga è un array associativo (<code>$c['nome']</code>).</li>
 </ul>
 <p>Nella parte HTML stampa una riga <code>&lt;tr&gt;</code> per ogni categoria:</p>
 <script type="text/plain" data-language="php"><?php foreach ($categorie as $c) { ?>
     <tr>
         <td><?= $c['id'] ?></td>
-        <td><?= htmlspecialchars($c['nome']) ?></td>
+        <td><?= $c['nome'] ?></td>
     </tr>
 <?php } ?>
 </script>
-<p><code>&lt;?= ... ?&gt;</code> è la scrittura abbreviata di <code>&lt;?php echo ... ?&gt;</code>.</p>
+<p><code>&lt;?= ... ?&gt;</code> è la scrittura abbreviata di <code>&lt;?php print ... ?&gt;</code> o <code>&lt;?php echo ... ?&gt;</code>.</p>
 <h2>Verifica</h2>
 <p>Aprendo <code>categorie.php</code> nel browser vedi le 4 categorie di esempio.</p>
 <h2>Per approfondire</h2>

@@ -1,5 +1,5 @@
 -- Portale Biblioteca - versione SQLite
--- Viene eseguito automaticamente da config/db_config.php quando il file
+-- Viene eseguito automaticamente da biblioteca/connessione.sqlite.php quando il file
 -- database/biblioteca.sqlite e' vuoto. Per ripartire da zero basta cancellare
 -- il file biblioteca.sqlite.
 
