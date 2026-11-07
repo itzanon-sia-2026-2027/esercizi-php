@@ -18,7 +18,7 @@ if (isset($_SESSION['messaggio'])) {
 //VERSIONE MYSQL
 // Configurazione MySQL (XAMPP in locale)
 $host = 'localhost';
-$db   = 'biblioteca'; // Il nome del database che useranno su XAMPP
+$db   = '5bs_biblioteca'; // Il nome del database
 $user = 'root';
 $pass = '';
 

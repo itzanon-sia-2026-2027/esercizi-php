@@ -1,7 +1,7 @@
 <?php
 // Configurazione MySQL (XAMPP in locale)
 $host = 'localhost';
-$db   = 'biblioteca'; // Cambia con il nome del DB dei ragazzi
+$db   = '5bs_biblioteca'; // Cambia con il nome del DB
 $user = 'root';
 $pass = '';
 

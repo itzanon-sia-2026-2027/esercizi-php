@@ -3,8 +3,8 @@
 -- Su Altervista: il database esiste gia', quindi importa SOLO le istruzioni
 -- da "CREATE TABLE" in poi (togli le prime due istruzioni).
 
-CREATE DATABASE IF NOT EXISTS biblioteca CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE biblioteca;
+CREATE DATABASE IF NOT EXISTS 5bs_biblioteca CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE 5bs_biblioteca;
 
 CREATE TABLE categorie (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -20,7 +20,7 @@ Apri la cartella con VSCode.
 
 ### 3. Segui le lezioni (MySQL)
 
-Gli esercizi nella cartella `lavoro/` usano **MySQL**, come nelle lezioni. Avvia MySQL da XAMPP e importa `database/schema.sql` in phpMyAdmin: il file crea il database `biblioteca`.
+Gli esercizi nella cartella `lavoro/` usano **MySQL**, come nelle lezioni. Avvia MySQL da XAMPP e importa `database/schema.sql` in phpMyAdmin: il file crea il database `5bs_biblioteca`.
 
 1. Crea `lavoro/categorie.php` seguendo la [lezione 1](lezioni/lezione-01.html).
 2. Esegui il task **"4. Avvia Server PHP (file corrente)"** (pulsante ▶️ nel pannello Favorites).
@@ -34,7 +34,7 @@ La connessione degli esercizi è in `lavoro/connessione.php`. Per XAMPP i valori
 
 | Ambiente | `$host` | `$user` | `$pass` | `$db` |
 | --- | --- | --- | --- | --- |
-| XAMPP | `localhost` | `root` | *(vuota)* | `biblioteca` |
+| XAMPP | `localhost` | `root` | *(vuota)* | `5bs_biblioteca` |
 | Altervista | `localhost` | `tuousername` | password database | `my_tuousername` |
 
 ### 5. Soluzione completa e SQLite
