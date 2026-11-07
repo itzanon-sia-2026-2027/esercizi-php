@@ -1,0 +1,6 @@
+.code-string { color: #a5d6a7; }
+.code-comment { color: #b0bec5; font-style: italic; }
+.code-tag { color: #80cbc4; }
+.code-variable { color: #ffcc80; }
+.code-keyword { color: #c5a5ff; font-weight: bold; }
+.code-number { color: #ffab91; }

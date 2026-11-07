@@ -21,6 +21,7 @@
         th { background: #f8f9fa; }
         .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
     </style>
+    <link rel="stylesheet" href="assets/lezioni.css">
 </head>
 <body>
     <div class="container">
@@ -31,38 +32,39 @@
 <ol>
 <li>Leggi la riga da modificare (una sola riga, quindi <code>fetch()</code> e non <code>fetchAll()</code>):</li>
 </ol>
-<pre><code class="language-php">$id = $_GET['id'];
+<script type="text/plain" data-language="php">$id = $_GET['id'];
 
-$stmt = $pdo-&gt;prepare(&quot;SELECT id, nome FROM categorie WHERE id = ?&quot;);
-$stmt-&gt;execute([$id]);
-$categoria = $stmt-&gt;fetch();
-</code></pre>
+$stmt = $pdo->prepare("SELECT id, nome FROM categorie WHERE id = ?");
+$stmt->execute([$id]);
+$categoria = $stmt->fetch();
+</script>
 <ol start="2">
 <li>Mostra un form con il valore attuale. L'<code>id</code> non si deve modificare, ma serve alla pagina successiva: lo mandiamo con un campo <strong>nascosto</strong>.</li>
 </ol>
-<pre><code class="language-html">&lt;form action=&quot;categorie_update.php&quot; method=&quot;post&quot;&gt;
-    &lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;&lt;?= $categoria['id'] ?&gt;&quot;&gt;
-    &lt;input type=&quot;text&quot; name=&quot;nome&quot; value=&quot;&lt;?= htmlspecialchars($categoria['nome']) ?&gt;&quot; required&gt;
-    &lt;button type=&quot;submit&quot;&gt;Salva&lt;/button&gt;
-&lt;/form&gt;
-</code></pre>
+<script type="text/plain" data-language="html"><form action="categorie_update.php" method="post">
+    <input type="hidden" name="id" value="<?= $categoria['id'] ?>">
+    <input type="text" name="nome" value="<?= htmlspecialchars($categoria['nome']) ?>" required>
+    <button type="submit">Salva</button>
+</form>
+</script>
 <ol start="3">
 <li>In <code>categorie.php</code> aggiungi il link <code>&lt;a href="categorie_edit.php?id=&lt;?= $c['id'] ?&gt;"&gt;Modifica&lt;/a&gt;</code>.</li>
 </ol>
 <h2><code>categorie_update.php</code></h2>
-<pre><code class="language-php">$id = $_POST['id'];
+<script type="text/plain" data-language="php">$id = $_POST['id'];
 $nome = trim($_POST['nome']);
 
-$stmt = $pdo-&gt;prepare(&quot;UPDATE categorie SET nome = ? WHERE id = ?&quot;);
-$stmt-&gt;execute([$nome, $id]);
+$stmt = $pdo->prepare("UPDATE categorie SET nome = ? WHERE id = ?");
+$stmt->execute([$nome, $id]);
 
-header(&quot;Location: categorie.php&quot;);
+header("Location: categorie.php");
 exit;
-</code></pre>
+</script>
 <p>Attenzione all'<strong>ordine</strong>: il primo <code>?</code> è <code>nome</code>, il secondo è <code>id</code>, quindi <code>[$nome, $id]</code>.</p>
 <h2>Verifica</h2>
 <p>Modifica "Giallo" in "Thriller". Se non sai dov'è l'errore, controlla l'ordine dei valori nell'array.</p>
         <div class="nav"><a href="lezione-02.html">⬅️ Lezione precedente</a><a href="lezione-04.html">Lezione successiva ➡️</a></div>
     </div>
+    <script src="assets/lezioni.js"></script>
 </body>
 </html>

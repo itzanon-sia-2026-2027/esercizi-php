@@ -21,6 +21,7 @@
         th { background: #f8f9fa; }
         .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
     </style>
+    <link rel="stylesheet" href="assets/lezioni.css">
 </head>
 <body>
     <div class="container">
@@ -31,24 +32,24 @@
 <li>Leggi tutti i libri con la JOIN sulle categorie (come in lezione 5).</li>
 <li>Per <strong>ogni libro</strong> esegui una seconda query per gli autori. Il ciclo annidato è:</li>
 </ol>
-<pre><code class="language-php">&lt;?php foreach ($libri as $l) {
-    $sql = &quot;SELECT autori.nome, autori.cognome, libro_autore.ruolo
+<script type="text/plain" data-language="php"><?php foreach ($libri as $l) {
+    $sql = "SELECT autori.nome, autori.cognome, libro_autore.ruolo
             FROM autori
             INNER JOIN libro_autore ON autori.id = libro_autore.autore_id
-            WHERE libro_autore.libro_id = ?&quot;;
-    $stmt = $pdo-&gt;prepare($sql);
-    $stmt-&gt;execute([$l['id']]);
-    $autori = $stmt-&gt;fetchAll(); ?&gt;
-    &lt;article&gt;
-        &lt;h2&gt;&lt;?= htmlspecialchars($l['titolo']) ?&gt;&lt;/h2&gt;
-        &lt;ul&gt;
-            &lt;?php foreach ($autori as $a) { ?&gt;
-                &lt;li&gt;&lt;?= htmlspecialchars($a['nome'] . ' ' . $a['cognome']) ?&gt; - &lt;?= htmlspecialchars($a['ruolo']) ?&gt;&lt;/li&gt;
-            &lt;?php } ?&gt;
-        &lt;/ul&gt;
-    &lt;/article&gt;
-&lt;?php } ?&gt;
-</code></pre>
+            WHERE libro_autore.libro_id = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$l['id']]);
+    $autori = $stmt->fetchAll(); ?>
+    <article>
+        <h2><?= htmlspecialchars($l['titolo']) ?></h2>
+        <ul>
+            <?php foreach ($autori as $a) { ?>
+                <li><?= htmlspecialchars($a['nome'] . ' ' . $a['cognome']) ?> - <?= htmlspecialchars($a['ruolo']) ?></li>
+            <?php } ?>
+        </ul>
+    </article>
+<?php } ?>
+</script>
 <p>Anche qui si usa <code>?</code>, perché <code>$l['id']</code> viene dal database: è una buona abitudine usare <strong>sempre</strong> <code>prepare</code>.
 3. Nell'header metti i link a <code>categorie.php</code>, <code>libri.php</code>, <code>autori.php</code>.</p>
 <h2>Rifinitura</h2>
@@ -87,5 +88,6 @@
 </table>
         <div class="nav"><a href="lezione-06.html">⬅️ Lezione precedente</a><a href="lezione-07b.html">Lezione successiva ➡️</a></div>
     </div>
+    <script src="assets/lezioni.js"></script>
 </body>
 </html>

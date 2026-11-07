@@ -21,6 +21,7 @@
         th { background: #f8f9fa; }
         .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
     </style>
+    <link rel="stylesheet" href="assets/lezioni.css">
 </head>
 <body>
     <div class="container">
@@ -35,20 +36,20 @@
 <li><code>connessione.php</code> lo legge, lo mette in <code>$messaggio</code> e lo <strong>cancella</strong> (<code>unset</code>), così compare una volta sola.</li>
 <li><code>categorie.php</code> lo mostra:</li>
 </ul>
-<pre><code class="language-php">&lt;?php if ($messaggio != '') { ?&gt;
-    &lt;p&gt;&lt;?= htmlspecialchars($messaggio) ?&gt;&lt;/p&gt;
-&lt;?php } ?&gt;
-</code></pre>
+<script type="text/plain" data-language="php"><?php if ($messaggio != '') { ?>
+    <p><?= htmlspecialchars($messaggio) ?></p>
+<?php } ?>
+</script>
 <h2>try / catch</h2>
 <p>Se il database rifiuta un'operazione, PDO lancia una <code>PDOException</code>. La catturiamo:</p>
-<pre><code class="language-php">try {
-    $stmt = $pdo-&gt;prepare(&quot;INSERT INTO categorie (nome) VALUES (?)&quot;);
-    $stmt-&gt;execute([$nome]);
+<script type="text/plain" data-language="php">try {
+    $stmt = $pdo->prepare("INSERT INTO categorie (nome) VALUES (?)");
+    $stmt->execute([$nome]);
     $_SESSION['messaggio'] = 'Categoria aggiunta';
 } catch (PDOException $e) {
-    $_SESSION['messaggio'] = 'Errore: ' . $e-&gt;getMessage();
+    $_SESSION['messaggio'] = 'Errore: ' . $e->getMessage();
 }
-</code></pre>
+</script>
 <p>Aggiungi anche un controllo: se <code>$nome == ''</code> il messaggio è "Il nome è obbligatorio" e non si esegue nessuna query (la validazione si fa <strong>sempre</strong> sul server).</p>
 <h2>Integrità referenziale</h2>
 <p>Nel database <code>libri.categoria_id</code> ha <code>ON DELETE RESTRICT</code>: <strong>non si può cancellare una categoria che ha dei libri</strong>. Ora che gestisci l'errore, in <code>categorie_delete.php</code> scrivi un messaggio chiaro: "Impossibile eliminare: ci sono libri collegati".</p>
@@ -79,5 +80,6 @@
 <p>Prova a cancellare "Giallo" (ha dei libri) e a creare due volte la stessa categoria.</p>
         <div class="nav"><a href="lezione-03.html">⬅️ Lezione precedente</a><a href="lezione-05.html">Lezione successiva ➡️</a></div>
     </div>
+    <script src="assets/lezioni.js"></script>
 </body>
 </html>

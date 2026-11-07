@@ -21,13 +21,13 @@
         th { background: #f8f9fa; }
         .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
     </style>
+    <link rel="stylesheet" href="assets/lezioni.css">
 </head>
 <body>
     <div class="container">
 <p><a href="../index.html">⬅️ Home</a></p>
 <h1>Lezioni: dal primo SELECT al portale gestionale</h1>
-<p>Si riparte da zero e si costruisce un <strong>portale gestionale per una biblioteca</strong>, un passo alla volta.
-La soluzione completa e i passi intermedi (<code>passo-01</code> … <code>passo-08</code>) sono nel branch <code>soluzione</code> del repository: l'insegnante li renderà disponibili. Usali per confrontare il tuo lavoro, non per copiare.</p>
+<p>Si riparte da zero e si costruisce un <strong>portale gestionale per una biblioteca</strong>, un passo alla volta. I blocchi di codice sono scritti direttamente nelle pagine HTML e visualizzati con evidenziazione della sintassi.</p>
 <h2>Prima di iniziare</h2>
 <ol>
 <li>Lavora nella cartella <code>lavoro/</code>: contiene già <code>connessione.php</code> e lo stile in <code>css/</code>. Tutti i file che crei vanno qui dentro.</li>
@@ -35,18 +35,18 @@ La soluzione completa e i passi intermedi (<code>passo-01</code> … <code>passo
 <li>Avvia il server con il task <strong>"4. Avvia Server PHP (file corrente)"</strong> del profilo VSCode.</li>
 </ol>
 <p>Lo schema del database:</p>
-<pre><code>categorie (id, nome)                      1 ──&lt; N   libri (id, titolo, anno_pubblicazione, categoria_id)
-libri  &gt;──&lt; autori (id, nome, cognome)    N:M tramite libro_autore (libro_id, autore_id, ruolo)
-</code></pre>
+<script type="text/plain" data-language="text">categorie (id, nome)                      1 ──< N   libri (id, titolo, anno_pubblicazione, categoria_id)
+libri  >──< autori (id, nome, cognome)    N:M tramite libro_autore (libro_id, autore_id, ruolo)
+</script>
 <h2>Convenzioni (le stesse usate in classe)</h2>
 <ul>
 <li>Ogni pagina inizia con <code>require_once 'connessione.php';</code> e usa la variabile <code>$pdo</code>.</li>
 <li><strong>Un file per ogni operazione</strong>: <code>categorie.php</code>, <code>categorie_insert.php</code>, <code>categorie_delete.php</code>, <code>categorie_edit.php</code>, <code>categorie_update.php</code>.</li>
 <li>Le query con dati dell'utente usano <strong>sempre <code>prepare</code> con i segnaposto <code>?</code></strong> e <code>execute([ ... ])</code>:</li>
 </ul>
-<pre><code class="language-php">$stmt = $pdo-&gt;prepare(&quot;UPDATE autori SET nome = ?, cognome = ? WHERE id = ?&quot;);
-$stmt-&gt;execute([$nome, $cognome, $id]);
-</code></pre>
+<script type="text/plain" data-language="php">$stmt = $pdo->prepare("UPDATE autori SET nome = ?, cognome = ? WHERE id = ?");
+$stmt->execute([$nome, $cognome, $id]);
+</script>
 <p>I valori nell'array vanno <strong>nello stesso ordine</strong> dei <code>?</code>. Non si usano i parametri con nome.
 - Dopo una scrittura: <code>header("Location: pagina.php"); exit;</code>.
 - Ogni dato mostrato in pagina passa da <code>htmlspecialchars()</code>.</p>
@@ -101,13 +101,19 @@ $stmt-&gt;execute([$nome, $cognome, $id]);
 <td>ricerca obbligatoria per titolo e limite ai risultati</td>
 </tr>
 <tr>
+<td>7c</td>
+<td><a href="lezione-07c.html">Statistiche del catalogo</a></td>
+<td>conteggi, medie e raggruppamenti SQL</td>
+</tr>
+<tr>
 <td>8</td>
 <td><a href="lezione-08.html">Ultima lezione: fetch</a></td>
 <td>JavaScript che chiede a PHP pezzi di HTML</td>
 </tr>
 </tbody>
 </table>
-<p>Alla fine della lezione 7 hai un portale completo; nella 7b lo adatti a un catalogo più grande. Cambiando tabelle e campi puoi costruire lo stesso portale per qualsiasi altro tema (negozio, palestra, scuola...).</p>
+<p>Alla fine della lezione 7 hai un portale completo; nelle lezioni 7b e 7c aggiungi ricerca e statistiche. Cambiando tabelle e campi puoi costruire lo stesso portale per qualsiasi altro tema (negozio, palestra, scuola...).</p>
     </div>
+    <script src="assets/lezioni.js"></script>
 </body>
 </html>

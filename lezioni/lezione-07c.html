@@ -18,6 +18,7 @@
         pre code { background: none; padding: 0; color: inherit; }
         .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
     </style>
+    <link rel="stylesheet" href="assets/lezioni.css">
 </head>
 <body>
     <div class="container">
@@ -26,101 +27,101 @@
 
 <h2>1. Logica di Estrazione Dati (PHP)</h2>
 <p>Crea un nuovo file chiamato <code>statistiche.php</code>. Nella parte superiore del file, subito dopo aver incluso la connessione al database, eseguiamo due distinte query di raggruppamento.</p>
-<pre><code class="language-php">&lt;?php
+<script type="text/plain" data-language="php"><?php
 require_once 'connessione.php';
 
 // 1. QUERY: Conteggio dei libri suddivisi per ogni categoria
-$sql_categorie = &quot;SELECT categorie.nome AS categoria, COUNT(libri.id) AS totale_libri
+$sql_categorie = "SELECT categorie.nome AS categoria, COUNT(libri.id) AS totale_libri
                   FROM categorie
                   LEFT JOIN libri ON categorie.id = libri.categoria_id
                   GROUP BY categorie.id, categorie.nome
-                  ORDER BY totale_libri DESC, categorie.nome&quot;;
-$stmt_cat = $pdo-&gt;prepare($sql_categorie);
-$stmt_cat-&gt;execute();
-$stat_categorie = $stmt_cat-&gt;fetchAll();
+                  ORDER BY totale_libri DESC, categorie.nome";
+$stmt_cat = $pdo->prepare($sql_categorie);
+$stmt_cat->execute();
+$stat_categorie = $stmt_cat->fetchAll();
 
 // 2. QUERY: Calcolo della media degli autori per libro, raggruppati per categoria
 // Usiamo una sottoquery o una JOIN complessa per contare gli autori per ciascun libro prima di farne la media
-$sql_media_autori = &quot;SELECT categorie.nome AS categoria, 
+$sql_media_autori = "SELECT categorie.nome AS categoria,
                             ROUND(AVG(conteggio_autori.num_autori), 1) AS media_autori
                      FROM categorie
                      INNER JOIN libri ON categorie.id = libri.categoria_id
                      INNER JOIN (
-                         SELECT libro_id, COUNT(autore_id) AS num_autori 
-                         FROM libro_autore 
+                         SELECT libro_id, COUNT(autore_id) AS num_autori
+                         FROM libro_autore
                          GROUP BY libro_id
                      ) AS conteggio_autori ON libri.id = conteggio_autori.libro_id
                      GROUP BY categorie.id, categorie.nome
-                     ORDER BY media_autori DESC&quot;;
-$stmt_autori = $pdo-&gt;prepare($sql_media_autori);
-$stmt_autori-&gt;execute();
-$stat_autori = $stmt_autori-&gt;fetchAll();
-?&gt;</code></pre>
+                     ORDER BY media_autori DESC";
+$stmt_autori = $pdo->prepare($sql_media_autori);
+$stmt_autori->execute();
+$stat_autori = $stmt_autori->fetchAll();
+?></script>
 <p>Nella prima query utilizziamo una <code>LEFT JOIN</code>: in questo modo, se una categoria nel database non contiene ancora nessun libro, verrà comunque inclusa nel report mostrando il valore <code>0</code> invece di essere nascosta.</p>
 <p>Nella seconda query integriamo la funzione <code>AVG()</code> per calcolare la media aritmetica e la nidifichiamo dentro <code>ROUND(..., 1)</code> per limitare l'output a una sola cifra decimale, evitando la stampa a schermo di numeri con troppi decimali (es. 1.3333333).</p>
 
 <h2>2. Visualizzazione dei Dati (HTML/PHP)</h2>
 <p>Sotto al blocco PHP, implementa la struttura della pagina usando tabelle HTML semantiche per mostrare i due report separatamente.</p>
-<pre><code class="language-php">&lt;!DOCTYPE html>
-&lt;html lang=&quot;it&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;title&gt;Statistiche Biblioteca&lt;/title&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;css/style.css&quot;&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;header&gt;
-        &lt;h1&gt;📊 Statistiche del Catalogo&lt;/h1&gt;
-        &lt;p&gt;&lt;a href=&quot;index.php&quot;&gt;🏠 Torna alla Ricerca&lt;/a&gt;&lt;/p&gt;
-    &lt;/header&gt;
+<script type="text/plain" data-language="php"><!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistiche Biblioteca</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>📊 Statistiche del Catalogo</h1>
+        <p><a href="index.php">🏠 Torna alla Ricerca</a></p>
+    </header>
 
-    &lt;main class=&quot;statistiche-container&quot;&gt;
-        &lt;section&gt;
-            &lt;h2&gt;Libri per Categoria&lt;/h2&gt;
-            &lt;table class=&quot;tabella-stat&&quot;&gt;
-                &lt;thead&gt;
-                    &lt;tr&gt;
-                        &lt;th&gt;Categoria&lt;/th&gt;
-                        &lt;th&gt;Numero di Libri&lt;/th&gt;
-                    &lt;/tr&gt;
-                &lt;/thead&gt;
-                &lt;tbody&gt;
-                    &lt;?php foreach ($stat_categorie as $cat) { ?&gt;
-                        &lt;tr&gt;
-                            &lt;td&gt;&lt;?= htmlspecialchars($cat['categoria']) ?&gt;&lt;/td&gt;
-                            &lt;td&gt;&lt;strong&gt;&lt;?= $cat['totale_libri'] ?&gt;&lt;/strong&gt;&lt;/td&gt;
-                        &lt;/tr&gt;
-                    &lt;?php } ?&gt;
-                &lt;/tbody&gt;
-            &lt;/table&gt;
-        &lt;/section&gt;
+    <main class="statistiche-container">
+        <section>
+            <h2>Libri per Categoria</h2>
+            <table class="tabella-stat&">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Numero di Libri</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($stat_categorie as $cat) { ?>
+                        <tr>
+                            <td><?= htmlspecialchars($cat['categoria']) ?></td>
+                            <td><strong><?= $cat['totale_libri'] ?></strong></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </section>
 
-        &lt;section&gt;
-            &lt;h2&gt;Media Autori per Libro per Categoria&lt;/h2&gt;
-            &lt;table class=&quot;tabella-stat&&quot;&gt;
-                &lt;thead&gt;
-                    &lt;tr&gt;
-                        &lt;th&gt;Categoria&lt;/th&gt;
-                        &lt;th&gt;Media Autori&lt;/th&gt;
-                    &lt;/tr&gt;
-                &lt;/thead&gt;
-                &lt;tbody&gt;
-                    &lt;?php foreach ($stat_autori as $aut) { ?&gt;
-                        &lt;tr&gt;
-                            &lt;td&gt;&lt;?= htmlspecialchars($aut['categoria']) ?&gt;&lt;/td&gt;
-                            &lt;td&gt;&lt;?= $aut['media_autori'] ?&gt; autori/libro&lt;/td&gt;
-                        &lt;/tr&gt;
-                    &lt;?php } ?&gt;
-                &lt;/tbody&gt;
-            &lt;/table&gt;
-        &lt;/section&gt;
-    &lt;/main&gt;
+        <section>
+            <h2>Media Autori per Libro per Categoria</h2>
+            <table class="tabella-stat&">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Media Autori</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($stat_autori as $aut) { ?>
+                        <tr>
+                            <td><?= htmlspecialchars($aut['categoria']) ?></td>
+                            <td><?= $aut['media_autori'] ?> autori/libro</td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </section>
+    </main>
 
-    &lt;footer&gt;
-        &lt;p&gt;&amp;copy; 2026 5B SIA&lt;/p&gt;
-    &lt;/footer&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
+    <footer>
+        <p>&copy; 2026 5B SIA</p>
+    </footer>
+</body>
+</html></script>
 
 <h2>Verifica</h2>
 <ul>
@@ -131,5 +132,6 @@ $stat_autori = $stmt_autori-&gt;fetchAll();
 </ul>
         <div class="nav"><a href="lezione-07b.html">⬅️ Lezione precedente</a><a href="lezione-08.html">Lezione successiva ➡️</a></div>
     </div>
+    <script src="assets/lezioni.js"></script>
 </body>
 </html>

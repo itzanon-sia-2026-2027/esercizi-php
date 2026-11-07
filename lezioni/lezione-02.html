@@ -21,6 +21,7 @@
         th { background: #f8f9fa; }
         .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
     </style>
+    <link rel="stylesheet" href="assets/lezioni.css">
 </head>
 <body>
     <div class="container">
@@ -30,33 +31,33 @@
 <ol>
 <li>In <code>categorie.php</code>, sopra la tabella, aggiungi un form:</li>
 </ol>
-<pre><code class="language-html">&lt;form action=&quot;categorie_insert.php&quot; method=&quot;post&quot;&gt;
-    &lt;label for=&quot;nome&quot;&gt;Nome&lt;/label&gt;
-    &lt;input type=&quot;text&quot; name=&quot;nome&quot; id=&quot;nome&quot; required&gt;
-    &lt;button type=&quot;submit&quot;&gt;Aggiungi&lt;/button&gt;
-&lt;/form&gt;
-</code></pre>
+<script type="text/plain" data-language="html"><form action="categorie_insert.php" method="post">
+    <label for="nome">Nome</label>
+    <input type="text" name="nome" id="nome" required>
+    <button type="submit">Aggiungi</button>
+</form>
+</script>
 <ol start="2">
 <li>Crea <code>categorie_insert.php</code>. Questa pagina <strong>non mostra nulla</strong>: fa il lavoro e torna alla lista.</li>
 </ol>
-<pre><code class="language-php">&lt;?php
+<script type="text/plain" data-language="php"><?php
 require_once 'connessione.php';
 
 $nome = trim($_POST['nome']);
 
-$stmt = $pdo-&gt;prepare(&quot;INSERT INTO categorie (nome) VALUES (?)&quot;);
-$stmt-&gt;execute([$nome]);
+$stmt = $pdo->prepare("INSERT INTO categorie (nome) VALUES (?)");
+$stmt->execute([$nome]);
 
-header(&quot;Location: categorie.php&quot;);
+header("Location: categorie.php");
 exit;
-</code></pre>
+</script>
 <p><strong>Perché <code>?</code> e non <code>"... VALUES ('$nome')"</code>?</strong> Con <code>prepare</code> il valore viaggia separato dalla query: un utente malintenzionato non può "inventare" SQL scrivendolo nel form (SQL injection).</p>
 <h2>Cancellazione</h2>
 <ol>
 <li>Nella tabella aggiungi una colonna con il link:</li>
 </ol>
-<pre><code class="language-php">&lt;a href=&quot;categorie_delete.php?id=&lt;?= $c['id'] ?&gt;&quot; onclick=&quot;return confirm('Cancellare la categoria?');&quot;&gt;Elimina&lt;/a&gt;
-</code></pre>
+<script type="text/plain" data-language="php"><a href="categorie_delete.php?id=<?= $c['id'] ?>" onclick="return confirm('Cancellare la categoria?');">Elimina</a>
+</script>
 <p>Se <code>confirm</code> restituisce <code>false</code> il link non viene seguito.</p>
 <ol start="2">
 <li>Crea <code>categorie_delete.php</code>: legge <code>$_GET['id']</code>, esegue <code>DELETE FROM categorie WHERE id = ?</code> e torna a <code>categorie.php</code>.</li>
@@ -65,5 +66,6 @@ exit;
 <p>Aggiungi "Poesia", poi eliminala. Prova ad aggiungere una categoria con il nome già esistente: cosa succede? (lo risolviamo nella lezione 4)</p>
         <div class="nav"><a href="lezione-01.html">⬅️ Lezione precedente</a><a href="lezione-03.html">Lezione successiva ➡️</a></div>
     </div>
+    <script src="assets/lezioni.js"></script>
 </body>
 </html>

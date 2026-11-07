@@ -90,7 +90,7 @@ esercizi-php/
 
 ### Formato
 - **Guide setup**: HTML (`docs/index.html`) per visualizzazione diretta in htdocs/Altervista
-- **Lezioni**: HTML in `lezioni/` (una per passo, `index.html` è l'indice)
+- **Lezioni**: HTML in `lezioni/` (una per passo, `index.html` è l'indice). Gli esempi di codice sono sorgenti raw dentro `<script type="text/plain" data-language="php">…</script>` e vengono mostrati da `lezioni/assets/lezioni.js`; scrivere il codice direttamente lì, senza convertire `<`, `>` e `&` in entità HTML. Se un esempio contiene `</script>`, scriverlo come `<\/script>`.
 - **Codice**: Commenti inline in italiano
 
 ### Aggiornamento Documentazione

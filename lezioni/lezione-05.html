@@ -21,6 +21,7 @@
         th { background: #f8f9fa; }
         .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
     </style>
+    <link rel="stylesheet" href="assets/lezioni.css">
 </head>
 <body>
     <div class="container">
@@ -29,31 +30,32 @@
 <p>Ripeti le lezioni 1-4 per la tabella <code>libri</code>, con i file <code>libri.php</code>, <code>libri_insert.php</code>, <code>libri_delete.php</code>, <code>libri_edit.php</code>, <code>libri_update.php</code>. Le novità sono due.</p>
 <h2>1. INNER JOIN: mostrare il nome e non il numero</h2>
 <p>In tabella non vogliamo "categoria 3" ma "Giallo". Si uniscono le tabelle:</p>
-<pre><code class="language-php">$sql = &quot;SELECT libri.id,
+<script type="text/plain" data-language="php">$sql = "SELECT libri.id,
                libri.titolo,
                libri.anno_pubblicazione,
                categorie.nome AS categoria
         FROM libri
         INNER JOIN categorie ON libri.categoria_id = categorie.id
-        ORDER BY libri.titolo&quot;;
-$libri = $pdo-&gt;query($sql)-&gt;fetchAll();
-</code></pre>
+        ORDER BY libri.titolo";
+$libri = $pdo->query($sql)->fetchAll();
+</script>
 <p><code>AS categoria</code> dà un nome alla colonna: nel ciclo usi <code>$l['categoria']</code>.</p>
 <h2>2. Menu a tendina costruito dal database</h2>
 <p>Il form di inserimento deve far scegliere la categoria. Prima leggi le categorie, poi crei le <code>&lt;option&gt;</code>:</p>
-<pre><code class="language-php">&lt;select name=&quot;categoria_id&quot; required&gt;
-    &lt;?php foreach ($categorie as $c) { ?&gt;
-        &lt;option value=&quot;&lt;?= $c['id'] ?&gt;&quot;&gt;&lt;?= htmlspecialchars($c['nome']) ?&gt;&lt;/option&gt;
-    &lt;?php } ?&gt;
-&lt;/select&gt;
-</code></pre>
+<script type="text/plain" data-language="php"><select name="categoria_id" required>
+    <?php foreach ($categorie as $c) { ?>
+        <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['nome']) ?></option>
+    <?php } ?>
+</select>
+</script>
 <p>All'utente si mostra il <strong>nome</strong>, al server si invia l'<strong>id</strong> (<code>value</code>).</p>
 <p>Nella pagina di modifica la categoria attuale deve essere preselezionata:</p>
-<pre><code class="language-php">&lt;option value=&quot;&lt;?= $c['id'] ?&gt;&quot; &lt;?php if ($c['id'] == $libro['categoria_id']) { echo 'selected'; } ?&gt;&gt;
-</code></pre>
+<script type="text/plain" data-language="php"><option value="<?= $c['id'] ?>" <?php if ($c['id'] == $libro['categoria_id']) { echo 'selected'; } ?>>
+</script>
 <h2>Verifica</h2>
 <p>Inserisci un libro, modificane la categoria, poi prova a cancellare una categoria usata.</p>
         <div class="nav"><a href="lezione-04.html">⬅️ Lezione precedente</a><a href="lezione-06.html">Lezione successiva ➡️</a></div>
     </div>
+    <script src="assets/lezioni.js"></script>
 </body>
 </html>

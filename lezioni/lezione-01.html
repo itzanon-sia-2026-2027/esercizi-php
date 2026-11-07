@@ -21,6 +21,7 @@
         th { background: #f8f9fa; }
         .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
     </style>
+    <link rel="stylesheet" href="assets/lezioni.css">
 </head>
 <body>
     <div class="container">
@@ -31,24 +32,24 @@
 <p>Nota: <code>$pdo</code> è l'oggetto che usi per parlare con il database.</p>
 <h2>2. <code>categorie.php</code></h2>
 <p>All'inizio del file, nel blocco PHP:</p>
-<pre><code class="language-php">&lt;?php
+<script type="text/plain" data-language="php"><?php
 require_once 'connessione.php';
 
-$categorie = $pdo-&gt;query(&quot;SELECT id, nome FROM categorie ORDER BY nome&quot;)-&gt;fetchAll();
-?&gt;
-</code></pre>
+$categorie = $pdo->query("SELECT id, nome FROM categorie ORDER BY nome")->fetchAll();
+?>
+</script>
 <ul>
 <li><code>query()</code> esegue la SELECT.</li>
 <li><code>fetchAll()</code> restituisce un array di righe; ogni riga è un array associativo (<code>$c['nome']</code>).</li>
 </ul>
 <p>Nella parte HTML stampa una riga <code>&lt;tr&gt;</code> per ogni categoria:</p>
-<pre><code class="language-php">&lt;?php foreach ($categorie as $c) { ?&gt;
-    &lt;tr&gt;
-        &lt;td&gt;&lt;?= $c['id'] ?&gt;&lt;/td&gt;
-        &lt;td&gt;&lt;?= htmlspecialchars($c['nome']) ?&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-&lt;?php } ?&gt;
-</code></pre>
+<script type="text/plain" data-language="php"><?php foreach ($categorie as $c) { ?>
+    <tr>
+        <td><?= $c['id'] ?></td>
+        <td><?= htmlspecialchars($c['nome']) ?></td>
+    </tr>
+<?php } ?>
+</script>
 <p><code>&lt;?= ... ?&gt;</code> è la scrittura abbreviata di <code>&lt;?php echo ... ?&gt;</code>.</p>
 <h2>Verifica</h2>
 <p>Aprendo <code>categorie.php</code> nel browser vedi le 4 categorie di esempio.</p>
@@ -56,5 +57,6 @@ $categorie = $pdo-&gt;query(&quot;SELECT id, nome FROM categorie ORDER BY nome&q
 <p>Prova a cambiare <code>ORDER BY nome</code> in <code>ORDER BY nome DESC</code>. Cosa cambia?</p>
         <div class="nav"><a href="index.html">⬅️ Indice</a><a href="lezione-02.html">Lezione successiva ➡️</a></div>
     </div>
+    <script src="assets/lezioni.js"></script>
 </body>
 </html>

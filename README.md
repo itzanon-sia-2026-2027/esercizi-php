@@ -105,6 +105,7 @@ $libro = $stmt->fetch();
    | 6 | Relazione N:M (padre-figlio) |
    | 7 | Il catalogo pubblico |
    | 7b | Ricerca nel catalogo e limite ai risultati |
+   | 7c | Statistiche del catalogo |
    | 8 | fetch: aggiornare la pagina senza ricaricarla |
 
 3. La soluzione completa (`biblioteca/`) è inclusa nel repository.
