@@ -1,165 +1,295 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lezioni: dal primo SELECT al portale gestionale</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); color: #444; line-height: 1.6; }
-        h1 { color: #667eea; margin-bottom: 20px; }
-        h2 { color: #667eea; margin: 30px 0 10px; }
-        p, ul, ol, table, pre { margin-bottom: 15px; }
-        ul, ol { padding-left: 25px; }
-        a { color: #667eea; font-weight: 600; }
-        code { background: #f1f3f5; padding: 2px 6px; border-radius: 4px; font-size: 0.95em; }
-        pre { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto; }
-        pre code { background: none; padding: 0; color: inherit; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-        th { background: #f8f9fa; }
-        .nav { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            color: #444;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #667eea;
+            margin: 30px 0 10px;
+        }
+
+        p,
+        ul,
+        ol,
+        table,
+        pre {
+            margin-bottom: 15px;
+        }
+
+        ul,
+        ol {
+            padding-left: 25px;
+        }
+
+        a {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        code {
+            background: #f1f3f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8f9fa;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
     </style>
     <link rel="stylesheet" href="assets/lezioni.css">
 </head>
+
 <body>
     <div class="container">
-<p><a href="../index.html">⬅️ Home</a></p>
-<h1>Lezioni: dal primo SELECT al portale gestionale</h1>
-<p>Si riparte da zero e si costruisce un <strong>portale gestionale per una biblioteca</strong>, un passo alla volta.</p>
-<h2>Prima di iniziare</h2>
-<ol>
-<li>Lavora nella cartella <code>lavoro/</code>: contiene già <code>connessione.php</code> e lo stile in <code>css/</code>. Tutti i file che crei vanno qui dentro.</li>
-<li>Clicca sulla <strong>stella</strong> nella barra laterale di VS Code e scegli il task <strong>"Importa DB da file .sql"</strong> per importare <code>database/schema.sql</code>: crea il database <code>5bs_biblioteca</code> con le tabelle e i dati di esempio.</li>
-<li>La connessione in <code>lavoro/connessione.php</code> è già configurata.</li>
-<li>Clicca sulla <strong>stella</strong> nella barra laterale di VS Code e avvia il server PHP con il task <strong>"Avvia Server PHP"</strong>.</li>
-</ol>
-<figure style="margin: 0 0 20px; overflow-x: auto;">
-<svg viewBox="0 0 1000 270" role="img" aria-labelledby="schema-title schema-desc" style="display: block; width: 100%; min-width: 800px; height: auto;">
-<title id="schema-title">Schema del database della biblioteca</title>
-<desc id="schema-desc">Le frecce partono dalle colonne con chiave esterna e puntano alle chiavi primarie referenziate.</desc>
-<defs>
-<marker id="fk-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse">
-<path d="M0 0 L10 4 L0 8 Z" fill="#d97706" />
-</marker>
-<style>
-.schema-table { fill: #fff; stroke: #34495e; stroke-width: 2; }
-.schema-head { fill: #145a55; }
-.schema-title { fill: #fff; font: 700 18px sans-serif; }
-.schema-field { fill: #243746; font: 15px sans-serif; }
-.schema-line { fill: none; stroke: #d97706; stroke-width: 3; }
-</style>
-</defs>
-<rect class="schema-table" x="20" y="124" width="160" height="120" rx="5" />
-<path class="schema-head" d="M25 124 H175 Q180 124 180 129 V160 H20 V129 Q20 124 25 124 Z" />
-<text class="schema-title" x="34" y="149">categorie</text>
-<text class="schema-field" x="34" y="189">id (PK)</text>
-<text class="schema-field" x="34" y="218">nome</text>
+        <p><a href="../index.html">⬅️ Home</a></p>
+        <h1>Lezioni: dal primo SELECT al portale gestionale</h1>
+        <p>Si riparte da zero e si costruisce un <strong>portale gestionale per una biblioteca</strong>, un passo alla
+            volta.</p>
+        <h2>Prima di iniziare</h2>
+        <ol>
+            <li>Lavora nella cartella <code>lavoro/</code>: contiene già <code>connessione.php</code> e gli stili in
+                <code>css/</code>. Tutti i file che crei vanno qui dentro.
+            </li>
+            <li>Clicca sulla <strong>stella</strong> nella barra laterale di VS Code e scegli il task <strong>"Importa
+                    DB da file .sql"</strong> per importare <code>database/schema.sql</code>
+            </li>
+            <li>Il database importato si chiama <code>5bs_biblioteca</code> e contiene le tabelle e i dati di esempio.
+                <figure style="margin: 0 0 20px; overflow-x: auto;">
+                    <svg viewBox="0 0 1050 270" role="img" aria-labelledby="schema-title schema-desc"
+                        style="display: block; width: 100%; min-width: 700px; height: auto;">
+                        <title id="schema-title">Schema del database della biblioteca</title>
+                        <desc id="schema-desc">Le frecce partono dalle colonne con chiave esterna e puntano alle chiavi
+                            primarie referenziate.</desc>
+                        <defs>
+                            <marker id="fk-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"
+                                markerUnits="userSpaceOnUse">
+                                <path d="M0 0 L10 4 L0 8 Z" fill="#d97706" />
+                            </marker>
+                            <style>
+                                .schema-table {
+                                    fill: #fff;
+                                    stroke: #34495e;
+                                    stroke-width: 2;
+                                }
 
-<rect class="schema-table" x="245" y="40" width="220" height="175" rx="5" />
-<path class="schema-head" d="M250 40 H460 Q465 40 465 45 V76 H245 V45 Q245 40 250 40 Z" />
-<text class="schema-title" x="259" y="65">libri</text>
-<text class="schema-field" x="259" y="105">id (PK)</text>
-<text class="schema-field" x="259" y="133">titolo</text>
-<text class="schema-field" x="259" y="161">anno_pubblicazione</text>
-<text class="schema-field" x="259" y="189">categoria_id (FK)</text>
+                                .schema-head {
+                                    fill: #145a55;
+                                }
 
-<rect class="schema-table" x="530" y="40" width="230" height="150" rx="5" />
-<path class="schema-head" d="M535 40 H755 Q760 40 760 45 V76 H530 V45 Q530 40 535 40 Z" />
-<text class="schema-title" x="544" y="65">libro_autore</text>
-<text class="schema-field" x="544" y="105">libro_id (PK, FK)</text>
-<text class="schema-field" x="544" y="133">autore_id (PK, FK)</text>
-<text class="schema-field" x="544" y="161">ruolo</text>
+                                .schema-title {
+                                    fill: #fff;
+                                    font: 700 18px sans-serif;
+                                }
 
-<rect class="schema-table" x="825" y="70" width="155" height="120" rx="5" />
-<path class="schema-head" d="M830 70 H975 Q980 70 980 75 V106 H825 V75 Q825 70 830 70 Z" />
-<text class="schema-title" x="839" y="95">autori</text>
-<text class="schema-field" x="839" y="133">id (PK)</text>
-<text class="schema-field" x="839" y="161">nome, cognome</text>
+                                .schema-field {
+                                    fill: #243746;
+                                    font: 15px sans-serif;
+                                }
 
-<path class="schema-line" d="M245 184 H180" marker-end="url(#fk-arrow)" />
-<path class="schema-line" d="M530 100 H465" marker-end="url(#fk-arrow)" />
-<path class="schema-line" d="M760 128 H825" marker-end="url(#fk-arrow)" />
-</svg>
-<figcaption style="margin-top: 6px; color: #34495e;">La tabella <code>libro_autore</code> traduce l'associazione N:N tra libri e autori nel modello relazionale; <code>ruolo</code> indica il contributo dell'autore per quella specifica coppia libro-autore, per esempio Autore, traduttore o curatore.</figcaption>
-</figure>
-<h2>Convenzioni (le stesse usate in classe)</h2>
-<ul>
-<li>Ogni pagina inizia con <code>require_once 'connessione.php';</code> e usa la variabile <code>$pdo</code>.</li>
-<li><strong>Un file per ogni operazione</strong>: <code>categorie.php</code>, <code>categorie_insert.php</code>, <code>categorie_delete.php</code>, <code>categorie_edit.php</code>, <code>categorie_update.php</code>.</li>
-<li>Le query con dati dell'utente usano <strong>sempre <code>prepare</code> con i segnaposto <code>?</code></strong> e <code>execute([ ... ])</code>:</li>
-</ul>
-<script type="text/plain" data-language="php">$stmt = $pdo->prepare("UPDATE autori SET nome = ?, cognome = ? WHERE id = ?");
+                                .schema-line {
+                                    fill: none;
+                                    stroke: #d97706;
+                                    stroke-width: 3;
+                                }
+                            </style>
+                        </defs>
+                        <rect class="schema-table" x="20" y="124" width="160" height="120" rx="5" />
+                        <path class="schema-head" d="M25 124 H175 Q180 124 180 129 V160 H20 V129 Q20 124 25 124 Z" />
+                        <text class="schema-title" x="34" y="149">categorie</text>
+                        <text class="schema-field" x="34" y="189">id (PK)</text>
+                        <text class="schema-field" x="34" y="218">nome</text>
+
+                        <rect class="schema-table" x="245" y="40" width="220" height="175" rx="5" />
+                        <path class="schema-head" d="M250 40 H460 Q465 40 465 45 V76 H245 V45 Q245 40 250 40 Z" />
+                        <text class="schema-title" x="259" y="65">libri</text>
+                        <text class="schema-field" x="259" y="105">id (PK)</text>
+                        <text class="schema-field" x="259" y="133">titolo</text>
+                        <text class="schema-field" x="259" y="161">anno_pubblicazione</text>
+                        <text class="schema-field" x="259" y="189">categoria_id (FK)</text>
+
+                        <rect class="schema-table" x="530" y="40" width="230" height="150" rx="5" />
+                        <path class="schema-head" d="M535 40 H755 Q760 40 760 45 V76 H530 V45 Q530 40 535 40 Z" />
+                        <text class="schema-title" x="544" y="65">libro_autore</text>
+                        <text class="schema-field" x="544" y="105">libro_id (PK, FK)</text>
+                        <text class="schema-field" x="544" y="133">autore_id (PK, FK)</text>
+                        <text class="schema-field" x="544" y="161">ruolo</text>
+
+                        <rect class="schema-table" x="825" y="70" width="155" height="120" rx="5" />
+                        <path class="schema-head" d="M830 70 H975 Q980 70 980 75 V106 H825 V75 Q825 70 830 70 Z" />
+                        <text class="schema-title" x="839" y="95">autori</text>
+                        <text class="schema-field" x="839" y="133">id (PK)</text>
+                        <text class="schema-field" x="839" y="161">nome, cognome</text>
+
+                        <path class="schema-line" d="M245 184 H180" marker-end="url(#fk-arrow)" />
+                        <path class="schema-line" d="M530 100 H465" marker-end="url(#fk-arrow)" />
+                        <path class="schema-line" d="M760 128 H825" marker-end="url(#fk-arrow)" />
+                    </svg>
+                    <figcaption style="margin-top: 6px; color: #34495e;">La tabella <code>libro_autore</code> traduce
+                        l'associazione N:N tra libri e autori nel modello relazionale; <code>ruolo</code> indica il
+                        contributo dell'autore per quella specifica coppia libro-autore, per esempio Autore, traduttore
+                        o curatore.</figcaption>
+                </figure>
+            </li>
+            <li>
+                La connessione in <code>lavoro/connessione.php</code> è già configurata.
+            </li>
+            <li>Per testare la connessione al database: apri il file <code>lavoro/index.php</code>, clicca sulla <strong>stella</strong> nella barra laterale di VS Code e avvia il server PHP con il task
+                <strong>"Avvia Server PHP"</strong>.
+            </li>
+        </ol>
+
+        <h2>Convenzioni (le stesse usate in classe)</h2>
+        <ul>
+            <li>Ogni pagina inizia con <code>require_once 'connessione.php';</code> e usa la variabile
+                <code>$pdo</code>.
+            </li>
+            <li><strong>Un file per ogni operazione</strong>: <code>categorie.php</code>,
+                <code>categorie_insert.php</code>, <code>categorie_delete.php</code>, <code>categorie_edit.php</code>,
+                <code>categorie_update.php</code>.
+            </li>
+            <li>Le query con dati dell'utente usano <strong>sempre <code>prepare</code> con i segnaposto
+                    <code>?</code></strong> e <code>execute([ ... ])</code>:</li>
+        </ul>
+        <script type="text/plain" data-language="php">$stmt = $pdo->prepare("UPDATE autori SET nome = ?, cognome = ? WHERE id = ?");
 $stmt->execute([$nome, $cognome, $id]);
 </script>
-<p>I valori nell'array vanno <strong>nello stesso ordine</strong> dei <code>?</code>. Non si usano i parametri con nome.
-- Dopo una scrittura: <code>header("Location: pagina.php"); exit;</code>.
-- Ogni dato mostrato in pagina passa da <code>htmlspecialchars()</code>.</p>
-<h2>Sequenza</h2>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>Lezione</th>
-<th>Argomento</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td><a href="lezione-01.html">Leggere i dati</a></td>
-<td>connessione, <code>query</code>, <code>fetchAll</code>, tabella HTML</td>
-</tr>
-<tr>
-<td>2</td>
-<td><a href="lezione-02.html">Inserire e cancellare</a></td>
-<td>form, <code>prepare</code>/<code>execute</code>, redirect</td>
-</tr>
-<tr>
-<td>3</td>
-<td><a href="lezione-03.html">Modificare</a></td>
-<td><code>fetch</code>, <code>&lt;input type="hidden"&gt;</code>, <code>UPDATE</code></td>
-</tr>
-<tr>
-<td>4</td>
-<td><a href="lezione-04.html">Messaggi ed errori</a></td>
-<td>sessione, <code>try/catch</code>, chiavi esterne</td>
-</tr>
-<tr>
-<td>5</td>
-<td><a href="lezione-05.html">Seconda tabella: libri</a></td>
-<td><code>INNER JOIN</code>, menu a tendina</td>
-</tr>
-<tr>
-<td>6</td>
-<td><a href="lezione-06.html">Relazione N:M: autori dei libri</a></td>
-<td>tabella ponte, padre-figlio</td>
-</tr>
-<tr>
-<td>7</td>
-<td><a href="lezione-07.html">Il catalogo pubblico</a></td>
-<td>pagina finale, cicli annidati, home del portale</td>
-</tr>
-<tr>
-<td>7b</td>
-<td><a href="lezione-07b.html">Cercare nel catalogo</a></td>
-<td>ricerca obbligatoria per titolo e limite ai risultati</td>
-</tr>
-<tr>
-<td>7c</td>
-<td><a href="lezione-07c.html">Statistiche del catalogo</a></td>
-<td>conteggi, medie e raggruppamenti SQL</td>
-</tr>
-<tr>
-<td>8</td>
-<td><a href="lezione-08.html">Ultima lezione: fetch</a></td>
-<td>JavaScript che chiede a PHP pezzi di HTML</td>
-</tr>
-</tbody>
-</table>
-<p>Alla fine della lezione 7 hai un portale completo; nelle lezioni 7b e 7c aggiungi ricerca e statistiche. Cambiando tabelle e campi puoi costruire lo stesso portale per qualsiasi altro tema (negozio, palestra, scuola...).</p>
+        <p>I valori nell'array vanno <strong>nello stesso ordine</strong> dei <code>?</code>. Non si usano i parametri
+            con nome.
+            - Dopo una scrittura: <code>header("Location: pagina.php"); exit;</code>.
+        <h2>Sequenza</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Lezione</th>
+                    <th>Argomento</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td><a href="lezione-01.html">Leggere i dati</a></td>
+                    <td>connessione, <code>query</code>, <code>fetchAll</code>, tabella HTML</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><a href="lezione-02.html">Inserire e cancellare</a></td>
+                    <td>form, <code>prepare</code>/<code>execute</code>, redirect</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><a href="lezione-03.html">Modificare</a></td>
+                    <td><code>fetch</code>, <code>&lt;input type="hidden"&gt;</code>, <code>UPDATE</code></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><a href="lezione-04.html">Messaggi ed errori</a></td>
+                    <td>sessione, <code>try/catch</code>, chiavi esterne</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><a href="lezione-05.html">Seconda tabella: libri</a></td>
+                    <td><code>INNER JOIN</code>, menu a tendina</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><a href="lezione-06.html">Relazione N:M: autori dei libri</a></td>
+                    <td>tabella ponte, padre-figlio</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><a href="lezione-07.html">Il catalogo pubblico</a></td>
+                    <td>pagina finale, cicli annidati, home del portale</td>
+                </tr>
+                <tr>
+                    <td>7b</td>
+                    <td><a href="lezione-07b.html">Cercare nel catalogo</a></td>
+                    <td>ricerca obbligatoria per titolo e limite ai risultati</td>
+                </tr>
+                <tr>
+                    <td>7c</td>
+                    <td><a href="lezione-07c.html">Statistiche del catalogo</a></td>
+                    <td>conteggi, medie e raggruppamenti SQL</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td><a href="lezione-08.html">Ultima lezione: fetch</a></td>
+                    <td>JavaScript che chiede a PHP pezzi di HTML</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Alla fine della lezione 7 hai un portale completo; nelle lezioni 7b e 7c aggiungi ricerca e statistiche.
+            Cambiando tabelle e campi puoi costruire lo stesso portale per qualsiasi altro tema (negozio, palestra,
+            scuola...).</p>
     </div>
     <script src="assets/lezioni.js"></script>
 </body>
+
 </html>
