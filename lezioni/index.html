@@ -27,17 +27,63 @@
     <div class="container">
 <p><a href="../index.html">⬅️ Home</a></p>
 <h1>Lezioni: dal primo SELECT al portale gestionale</h1>
-<p>Si riparte da zero e si costruisce un <strong>portale gestionale per una biblioteca</strong>, un passo alla volta. I blocchi di codice sono scritti direttamente nelle pagine HTML e visualizzati con evidenziazione della sintassi.</p>
+<p>Si riparte da zero e si costruisce un <strong>portale gestionale per una biblioteca</strong>, un passo alla volta.</p>
 <h2>Prima di iniziare</h2>
 <ol>
 <li>Lavora nella cartella <code>lavoro/</code>: contiene già <code>connessione.php</code> e lo stile in <code>css/</code>. Tutti i file che crei vanno qui dentro.</li>
-<li>Il database <code>database/biblioteca.sqlite</code> si crea da solo, con i dati di esempio (guarda <code>database/schema_sqlite.sql</code>). Per ricominciare cancella il file <code>.sqlite</code>.</li>
-<li>Avvia il server con il task <strong>"4. Avvia Server PHP (file corrente)"</strong> del profilo VSCode.</li>
+<li>Clicca sulla <strong>stella</strong> nella barra laterale di VS Code e scegli il task <strong>"Importa DB da file .sql"</strong> per importare <code>database/schema.sql</code>: crea il database <code>5bs_biblioteca</code> con le tabelle e i dati di esempio.</li>
+<li>La connessione in <code>lavoro/connessione.php</code> è già configurata.</li>
+<li>Clicca sulla <strong>stella</strong> nella barra laterale di VS Code e avvia il server PHP con il task <strong>"Avvia Server PHP"</strong>.</li>
 </ol>
-<p>Lo schema del database:</p>
-<script type="text/plain" data-language="text">categorie (id, nome)                      1 ──< N   libri (id, titolo, anno_pubblicazione, categoria_id)
-libri  >──< autori (id, nome, cognome)    N:M tramite libro_autore (libro_id, autore_id, ruolo)
-</script>
+<figure style="margin: 0 0 20px; overflow-x: auto;">
+<svg viewBox="0 0 1000 270" role="img" aria-labelledby="schema-title schema-desc" style="display: block; width: 100%; min-width: 800px; height: auto;">
+<title id="schema-title">Schema del database della biblioteca</title>
+<desc id="schema-desc">Le frecce partono dalle colonne con chiave esterna e puntano alle chiavi primarie referenziate.</desc>
+<defs>
+<marker id="fk-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M0 0 L10 4 L0 8 Z" fill="#d97706" />
+</marker>
+<style>
+.schema-table { fill: #fff; stroke: #34495e; stroke-width: 2; }
+.schema-head { fill: #145a55; }
+.schema-title { fill: #fff; font: 700 18px sans-serif; }
+.schema-field { fill: #243746; font: 15px sans-serif; }
+.schema-line { fill: none; stroke: #d97706; stroke-width: 3; }
+</style>
+</defs>
+<rect class="schema-table" x="20" y="124" width="160" height="120" rx="5" />
+<path class="schema-head" d="M25 124 H175 Q180 124 180 129 V160 H20 V129 Q20 124 25 124 Z" />
+<text class="schema-title" x="34" y="149">categorie</text>
+<text class="schema-field" x="34" y="189">id (PK)</text>
+<text class="schema-field" x="34" y="218">nome</text>
+
+<rect class="schema-table" x="245" y="40" width="220" height="175" rx="5" />
+<path class="schema-head" d="M250 40 H460 Q465 40 465 45 V76 H245 V45 Q245 40 250 40 Z" />
+<text class="schema-title" x="259" y="65">libri</text>
+<text class="schema-field" x="259" y="105">id (PK)</text>
+<text class="schema-field" x="259" y="133">titolo</text>
+<text class="schema-field" x="259" y="161">anno_pubblicazione</text>
+<text class="schema-field" x="259" y="189">categoria_id (FK)</text>
+
+<rect class="schema-table" x="530" y="40" width="230" height="150" rx="5" />
+<path class="schema-head" d="M535 40 H755 Q760 40 760 45 V76 H530 V45 Q530 40 535 40 Z" />
+<text class="schema-title" x="544" y="65">libro_autore</text>
+<text class="schema-field" x="544" y="105">libro_id (PK, FK)</text>
+<text class="schema-field" x="544" y="133">autore_id (PK, FK)</text>
+<text class="schema-field" x="544" y="161">ruolo</text>
+
+<rect class="schema-table" x="825" y="70" width="155" height="120" rx="5" />
+<path class="schema-head" d="M830 70 H975 Q980 70 980 75 V106 H825 V75 Q825 70 830 70 Z" />
+<text class="schema-title" x="839" y="95">autori</text>
+<text class="schema-field" x="839" y="133">id (PK)</text>
+<text class="schema-field" x="839" y="161">nome, cognome</text>
+
+<path class="schema-line" d="M245 184 H180" marker-end="url(#fk-arrow)" />
+<path class="schema-line" d="M530 100 H465" marker-end="url(#fk-arrow)" />
+<path class="schema-line" d="M760 128 H825" marker-end="url(#fk-arrow)" />
+</svg>
+<figcaption style="margin-top: 6px; color: #34495e;">La tabella <code>libro_autore</code> traduce l'associazione N:N tra libri e autori nel modello relazionale; <code>ruolo</code> indica il contributo dell'autore per quella specifica coppia libro-autore, per esempio Autore, traduttore o curatore.</figcaption>
+</figure>
 <h2>Convenzioni (le stesse usate in classe)</h2>
 <ul>
 <li>Ogni pagina inizia con <code>require_once 'connessione.php';</code> e usa la variabile <code>$pdo</code>.</li>
