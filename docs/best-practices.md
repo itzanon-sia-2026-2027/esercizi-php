@@ -288,7 +288,7 @@ CREATE INDEX idx_studente_corso ON iscrizioni(studente_id, corso_id);
 
 ```php
 // ✅ Struttura file raccomandata
-biblioteca/
+lavoro/
 ├── connessione.php    # Crea $pdo (si include con require_once)
 ├── libri.php          # Elenco + form di inserimento
 ├── libri_insert.php   # Un file per operazione...

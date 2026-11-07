@@ -27,11 +27,10 @@
 <p><a href="../index.html">⬅️ Home</a></p>
 <h1>Lezioni: dal primo SELECT al portale gestionale</h1>
 <p>Si riparte da zero e si costruisce un <strong>portale gestionale per una biblioteca</strong>, un passo alla volta.
-La soluzione completa e funzionante è nella cartella <a href="../biblioteca/index.php"><code>../biblioteca/</code></a>: usala per confrontare il tuo lavoro, non per copiare.</p>
+La soluzione completa e i passi intermedi (<code>passo-01</code> … <code>passo-08</code>) sono nel branch <code>soluzione</code> del repository: l'insegnante li renderà disponibili. Usali per confrontare il tuo lavoro, non per copiare.</p>
 <h2>Prima di iniziare</h2>
 <ol>
-<li>Crea una cartella di lavoro tua, ad esempio <code>miabiblioteca/</code>, dentro il progetto.</li>
-<li>Copia da <code>biblioteca/</code> solo la cartella <code>css/</code> (lo stile è già pronto).</li>
+<li>Lavora nella cartella <code>lavoro/</code>: contiene già <code>connessione.php</code> e lo stile in <code>css/</code>. Tutti i file che crei vanno qui dentro.</li>
 <li>Il database <code>database/biblioteca.sqlite</code> si crea da solo, con i dati di esempio (guarda <code>database/schema_sqlite.sql</code>). Per ricominciare cancella il file <code>.sqlite</code>.</li>
 <li>Avvia il server con il task <strong>"4. Avvia Server PHP (file corrente)"</strong> del profilo VSCode.</li>
 </ol>
@@ -97,13 +96,18 @@ $stmt-&gt;execute([$nome, $cognome, $id]);
 <td>pagina finale, cicli annidati, home del portale</td>
 </tr>
 <tr>
+<td>7b</td>
+<td><a href="lezione-07b.html">Cercare nel catalogo</a></td>
+<td>ricerca obbligatoria per titolo e limite ai risultati</td>
+</tr>
+<tr>
 <td>8</td>
 <td><a href="lezione-08.html">Ultima lezione: fetch</a></td>
 <td>JavaScript che chiede a PHP pezzi di HTML</td>
 </tr>
 </tbody>
 </table>
-<p>Alla fine della lezione 7 hai un portale completo. Cambiando tabelle e campi puoi costruire lo stesso portale per qualsiasi altro tema (negozio, palestra, scuola...).</p>
+<p>Alla fine della lezione 7 hai un portale completo; nella 7b lo adatti a un catalogo più grande. Cambiando tabelle e campi puoi costruire lo stesso portale per qualsiasi altro tema (negozio, palestra, scuola...).</p>
     </div>
 </body>
 </html>
