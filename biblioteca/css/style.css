@@ -198,3 +198,38 @@ header a:hover {
     border-color: var(--accent);
     background-color: rgba(56, 189, 248, 0.1);
 }
+
+/* Ricerca nel catalogo */
+.catalogo-ricerca,
+.catalogo-messaggio {
+    max-width: 1200px;
+    margin: 0 auto 24px;
+    padding: 0 20px;
+}
+
+.catalogo-ricerca {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.catalogo-ricerca input {
+    font: inherit;
+    color: var(--text-main);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    flex: 1 1 220px;
+}
+
+.catalogo-ricerca button {
+    font: inherit;
+    color: var(--bg-main);
+    background: var(--accent);
+    border: 0;
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    cursor: pointer;
+}

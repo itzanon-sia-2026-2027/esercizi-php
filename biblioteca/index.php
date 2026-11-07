@@ -1,14 +1,39 @@
 <?php
 require_once 'connessione.php';
 
-$sql = "SELECT libri.id,
-               libri.titolo,
-               libri.anno_pubblicazione,
-               categorie.nome AS categoria
-        FROM libri
-        INNER JOIN categorie ON libri.categoria_id = categorie.id
-        ORDER BY libri.titolo";
-$libri = $pdo->query($sql)->fetchAll();
+$titolo = '';
+$errore = '';
+$libri = [];
+$altri_risultati = false;
+
+if (isset($_GET['titolo'])) {
+    if (!is_string($_GET['titolo'])) {
+        $errore = 'Inserisci un titolo valido.';
+    } else {
+        $titolo = trim($_GET['titolo']);
+        if ($titolo === '') {
+            $errore = 'Inserisci almeno una parte del titolo.';
+        }
+    }
+
+    if ($errore === '') {
+        $termine = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $titolo);
+        $sql = "SELECT libri.id, libri.titolo, libri.anno_pubblicazione,
+                       categorie.nome AS categoria
+                FROM libri
+                INNER JOIN categorie ON libri.categoria_id = categorie.id
+                WHERE libri.titolo LIKE ? ESCAPE '!'
+                ORDER BY libri.titolo, libri.id
+                LIMIT 21";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['%' . $termine . '%']);
+        $libri = $stmt->fetchAll();
+        if (count($libri) > 20) {
+            array_pop($libri);
+            $altri_risultati = true;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -31,6 +56,22 @@ $libri = $pdo->query($sql)->fetchAll();
             <a href="catalogo_ajax.php">⚡ Catalogo senza ricaricare (fetch)</a>
         </p>
     </header>
+
+    <form class="catalogo-ricerca" action="index.php" method="get">
+        <label for="titolo">Cerca nel titolo</label>
+        <input id="titolo" name="titolo" type="search" required
+               value="<?= htmlspecialchars($titolo) ?>">
+        <button type="submit">Cerca</button>
+    </form>
+    <?php if ($errore !== '') { ?>
+        <p class="catalogo-messaggio" role="alert"><?= htmlspecialchars($errore) ?></p>
+    <?php } elseif (!isset($_GET['titolo'])) { ?>
+        <p class="catalogo-messaggio">Inserisci una parte del titolo per cercare.</p>
+    <?php } elseif (count($libri) === 0) { ?>
+        <p class="catalogo-messaggio">Nessun libro trovato.</p>
+    <?php } elseif ($altri_risultati) { ?>
+        <p class="catalogo-messaggio">Sono mostrati i primi 20 risultati. Specifica meglio il titolo per cercare altri libri.</p>
+    <?php } ?>
 
     <main>
         <?php foreach ($libri as $l) {
