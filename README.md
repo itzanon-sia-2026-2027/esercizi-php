@@ -107,7 +107,7 @@ $libro = $stmt->fetch();
    | 7b | Ricerca nel catalogo e limite ai risultati |
    | 8 | fetch: aggiornare la pagina senza ricaricarla |
 
-3. La soluzione completa e i passi intermedi (`passo-01` … `passo-08`) sono nel branch `soluzione`, che l'insegnante rende disponibile
+3. La soluzione completa (`biblioteca/`) e i passi intermedi (`passo-01` … `passo-08`) sono inclusi nel repository.
 
 ## 🔧 Problemi?
 

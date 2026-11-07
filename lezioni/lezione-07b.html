@@ -24,10 +24,11 @@
 <h1>Lezione 7b - Cercare nel catalogo</h1>
 <p><strong>Obiettivo</strong>: con molti libri non è pratico caricare tutto il catalogo. Modifica <code>index.php</code>: chiedi una parte del titolo e mostra al massimo 20 risultati, senza JavaScript.</p>
 <h2>1. Leggere i criteri e cercare</h2>
-<p>Sostituisci la query iniziale della lezione 7 con questo codice, dopo <code>require_once 'connessione.php';</code>. La query parte solo se il titolo è stato inserito; controlliamo i dati anche sul server, non solo nel form.</p>
+<p>Sostituisci la query iniziale della lezione 7 con questo codice, dopo <code>require_once 'connessione.php';</code>. La query parte solo se il titolo è stato inserito; controlliamo i dati anche sul server, non solo nel form. Prima contiamo i risultati totali, poi preleviamo al massimo i primi 20.</p>
 <pre><code class="language-php">$titolo = $_GET['titolo'] ?? '';
 $errore = '';
 $libri = [];
+$totale_risultati = 0;
 $altri_risultati = false;
 
 if (!is_string($titolo)) {
@@ -36,27 +37,33 @@ if (!is_string($titolo)) {
 } else {
     $titolo = trim($titolo);
     if (!empty($titolo)) {
+        // 1. CONTEGGIO DEI RISULTATI TOTALI
+        $sql_count = &quot;SELECT COUNT(*) AS totale FROM libri WHERE titolo LIKE ?&quot;;
+        $stmt_count = $pdo-&gt;prepare($sql_count);
+        $stmt_count-&gt;execute(['%' . $titolo . '%']);
+
+        $riga_count = $stmt_count-&gt;fetch();
+        $totale_risultati = $riga_count['totale'];
+        $altri_risultati = ($totale_risultati &gt; 20);
+
+        // 2. RECUPERO DEI SOLI 20 RECORD DA MOSTRARE
         $sql = &quot;SELECT libri.id, libri.titolo, libri.anno_pubblicazione,
                        categorie.nome AS categoria
                 FROM libri
                 INNER JOIN categorie ON libri.categoria_id = categorie.id
                 WHERE libri.titolo LIKE ?
                 ORDER BY libri.titolo, libri.id
-                LIMIT 21&quot;;
+                LIMIT 20&quot;;
         $stmt = $pdo-&gt;prepare($sql);
         $stmt-&gt;execute(['%' . $titolo . '%']);
         $libri = $stmt-&gt;fetchAll();
-        if (count($libri) &gt; 20) {
-            array_pop($libri);
-            $altri_risultati = true;
-        }
     }
 }
 </code></pre>
 <p><code>empty</code> verifica anche se la variabile è definita e considera vuota la stringa <code>'0'</code>. Il controllo <code>is_string</code> evita errori se viene inviato un array al posto del titolo. <code>LIKE</code> cerca il testo anche all'interno del titolo; <code>%</code> e <code>_</code> inseriti nella ricerca restano caratteri speciali di <code>LIKE</code>, non vengono cercati letteralmente.</p>
-<p>Chiediamo 21 righe per sapere se ci sono altri risultati, ma ne mostriamo solo 20: in questo caso invitiamo a precisare la ricerca. L'ordinamento per titolo e ID è stabile anche quando più libri hanno lo stesso titolo. Se più di 20 libri hanno esattamente lo stesso titolo, precisare il titolo non basta a mostrarli tutti: è un limite di questa versione semplice.</p>
+<p>La prima query con <code>COUNT(*)</code> calcola il numero totale senza scaricare tutti i libri in memoria PHP; la seconda ne recupera al massimo 20. L'ordinamento per titolo e ID è stabile anche quando più libri hanno lo stesso titolo. Se più di 20 libri hanno esattamente lo stesso titolo, precisare il titolo non basta a mostrarli tutti: è un limite di questa versione semplice.</p>
 <h2>2. Form e risultati</h2>
-<p>Tra l'header e il <code>main</code> aggiungi il form e il messaggio. Mantieni dentro <code>main</code> il ciclo delle schede della lezione 7: ora riceve al massimo 20 libri.</p>
+<p>Tra l'header e il <code>main</code> aggiungi il form e il blocco di messaggi condizionali. Mantieni dentro <code>main</code> il ciclo delle schede della lezione 7: ora riceve al massimo 20 libri.</p>
 <pre><code class="language-php">&lt;form class=&quot;catalogo-ricerca&quot; action=&quot;index.php&quot; method=&quot;get&quot;&gt;
     &lt;label for=&quot;titolo&quot;&gt;Cerca nel titolo&lt;/label&gt;
     &lt;input id=&quot;titolo&quot; name=&quot;titolo&quot; type=&quot;search&quot; required
@@ -70,7 +77,7 @@ if (!is_string($titolo)) {
 &lt;?php } elseif (count($libri) === 0) { ?&gt;
     &lt;p class=&quot;catalogo-messaggio&quot;&gt;Nessun libro trovato.&lt;/p&gt;
 &lt;?php } elseif ($altri_risultati) { ?&gt;
-    &lt;p class=&quot;catalogo-messaggio&quot;&gt;Sono mostrati i primi 20 risultati. Specifica meglio il titolo per cercare altri libri.&lt;/p&gt;
+    &lt;p class=&quot;catalogo-messaggio&quot;&gt;Trovati &lt;?= $totale_risultati ?&gt; risultati. Sono mostrati solo i primi 20. Specifica meglio il titolo per affinare la ricerca.&lt;/p&gt;
 &lt;?php } ?&gt;
 </code></pre>
 <p>Il CSS in <code>lavoro/css/style.css</code> contiene già le regole per <code>.catalogo-ricerca</code> e <code>.catalogo-messaggio</code>. La query degli autori resta nel ciclo, ma viene eseguita per al massimo 20 libri alla volta.</p>
@@ -82,7 +89,7 @@ if (!is_string($titolo)) {
 <li>Apri la home: non deve mostrare libri prima della ricerca. Invia anche un titolo vuoto, composto da spazi o uguale a <code>0</code>.</li>
 <li>Cerca <code>buon</code> e poi un titolo inesistente. Prova anche <code>%</code> e <code>_</code> e osserva che funzionano come caratteri speciali di <code>LIKE</code>.</li>
 <li>Da un risultato apri la modifica del libro e segui il link a un autore collegato.</li>
-<li>Cerca <code>Viaggi immaginari</code>: nei dati di esempio ci sono 24 libri inventati, quindi compare l'invito a precisare il titolo. La pagina fetch della prossima lezione è separata e non eredita automaticamente questo limite.</li>
+<li>Cerca <code>Viaggi immaginari</code>: nei dati di esempio ci sono 24 libri inventati, quindi compare il numero esatto di corrispondenze e l'invito a precisare la ricerca. La pagina fetch della prossima lezione è separata e non eredita automaticamente questo limite.</li>
 </ul>
         <div class="nav"><a href="lezione-07.html">⬅️ Lezione precedente</a><a href="lezione-08.html">Lezione successiva ➡️</a></div>
     </div>
