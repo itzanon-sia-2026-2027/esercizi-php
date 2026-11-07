@@ -429,6 +429,17 @@ try {
                 </div>
 
                 <div class="step">
+                    <h4>Alternativa: pubblicazione manuale con GitHub Actions</h4>
+                    <ol>
+                        <li>Nel repository GitHub apri <strong>Settings → Secrets and variables → Actions</strong> e crea i secret del repository <code>FTP_USERNAME</code> (nome account Altervista) e <code>FTP_PASSWORD</code> (password FTP). Non inserirli nei file del repository.</li>
+                        <li>Apri <strong>Actions → Deploy su Altervista (Manuale) → Run workflow</strong>, scegli il branch da pubblicare e avvia la workflow. Controlla il risultato nella pagina dell'esecuzione.</li>
+                        <li>Il progetto viene pubblicato in <code>/5bs/esercizi-php/</code>, raggiungibile da <code>https://NOMEACCOUNT.altervista.org/5bs/esercizi-php/</code>.</li>
+                    </ol>
+                    <p>La sincronizzazione esclude i database SQLite, ma può sovrascrivere i file pubblicati e cancellare dal server quelli rimossi dal repository dopo una pubblicazione precedente. In particolare, <code>config/db_config.php</code> viene sovrascritto: non affidarti a modifiche MySQL fatte solo sul server e non inserire password reali nel repository. Fai un backup prima di pubblicare.</p>
+                    <div class="alert alert-warning">La workflow usa FTP sulla porta 21: credenziali e file viaggiano senza cifratura. Verifica nelle impostazioni Altervista che l'accesso FTP sia abilitato e che il server accetti la connessione dai runner GitHub.</div>
+                </div>
+
+                <div class="step">
                     <h4>Passo 3A: Database SQLite (consigliato)</h4>
                     <ol>
                         <li>Lascia <code>DB_DRIVER</code> su <code>'sqlite'</code> in <code>config/db_config.php</code>.</li>

@@ -43,6 +43,8 @@ In `config/db_config.php` imposta `DB_DRIVER` a `'mysql'`, inserisci le credenzi
 
 Con SQLite ogni cartella pubblicata ha il suo database: si aggira il limite di un solo database MySQL per account.
 
+In alternativa, per pubblicare questo repository nella cartella `5bs/esercizi-php` usa la **workflow manuale GitHub Actions**. Configura i secret `FTP_USERNAME` e `FTP_PASSWORD` e avvia **Deploy su Altervista (Manuale)** dalla scheda Actions; trovi istruzioni e avvertenze nella [guida HTML](docs/index.html).
+
 ## 📖 Documentazione Completa
 
 **👉 [Apri la Guida Completa (HTML)](docs/index.html) 👈**

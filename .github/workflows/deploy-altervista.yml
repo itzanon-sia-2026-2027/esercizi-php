@@ -1,0 +1,38 @@
+name: Deploy su Altervista (Manuale)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-altervista
+  cancel-in-progress: false
+
+jobs:
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del codice
+        uses: actions/checkout@v4
+
+      - name: Sincronizzazione FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ftp.${{ secrets.FTP_USERNAME }}.altervista.org
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /5bs/esercizi-php/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/*.md
+            LICENSE
+            .gitignore
+            .gitattributes
+            **/*.sqlite
+            **/*.sqlite-journal
+            **/*.db-journal
