@@ -14,6 +14,14 @@ if (!$libro) {
 }
 
 $categorie = $pdo->query("SELECT id, nome FROM categorie ORDER BY nome")->fetchAll();
+
+$sql = "SELECT autori.id, autori.nome, autori.cognome
+        FROM autori
+        INNER JOIN libro_autore ON autori.id = libro_autore.autore_id
+        WHERE libro_autore.libro_id = ?";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([$libro['id']]);
+$autori_libro = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -49,6 +57,16 @@ $categorie = $pdo->query("SELECT id, nome FROM categorie ORDER BY nome")->fetchA
             </select>
             <button type="submit">Salva</button>
         </form>
+
+        <h2>Autori del libro</h2>
+        <ul>
+            <?php foreach ($autori_libro as $a) { ?>
+                <li>
+                    <a href="autori_edit.php?id=<?= $a['id'] ?>"><?= htmlspecialchars($a['nome'] . ' ' . $a['cognome']) ?></a>
+                </li>
+            <?php } ?>
+        </ul>
+        <a href="libro_autori.php?id=<?= $libro['id'] ?>">Gestisci autori del libro</a>
     </main>
 
     <footer>

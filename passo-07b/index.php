@@ -1,32 +1,26 @@
 <?php
 require_once 'connessione.php';
 
-$titolo = '';
+$titolo = $_GET['titolo'] ?? '';
 $errore = '';
 $libri = [];
 $altri_risultati = false;
 
-if (isset($_GET['titolo'])) {
-    if (!is_string($_GET['titolo'])) {
-        $errore = 'Inserisci un titolo valido.';
-    } else {
-        $titolo = trim($_GET['titolo']);
-        if ($titolo === '') {
-            $errore = 'Inserisci almeno una parte del titolo.';
-        }
-    }
-
-    if ($errore === '') {
-        $termine = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $titolo);
+if (!is_string($titolo)) {
+    $titolo = '';
+    $errore = 'Inserisci un titolo valido.';
+} else {
+    $titolo = trim($titolo);
+    if (!empty($titolo)) {
         $sql = "SELECT libri.id, libri.titolo, libri.anno_pubblicazione,
                        categorie.nome AS categoria
                 FROM libri
                 INNER JOIN categorie ON libri.categoria_id = categorie.id
-                WHERE libri.titolo LIKE ? ESCAPE '!'
+                WHERE libri.titolo LIKE ?
                 ORDER BY libri.titolo, libri.id
                 LIMIT 21";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['%' . $termine . '%']);
+        $stmt->execute(['%' . $titolo . '%']);
         $libri = $stmt->fetchAll();
         if (count($libri) > 20) {
             array_pop($libri);
@@ -64,7 +58,7 @@ if (isset($_GET['titolo'])) {
     </form>
     <?php if ($errore !== '') { ?>
         <p class="catalogo-messaggio" role="alert"><?= htmlspecialchars($errore) ?></p>
-    <?php } elseif (!isset($_GET['titolo'])) { ?>
+    <?php } elseif (empty($titolo)) { ?>
         <p class="catalogo-messaggio">Inserisci una parte del titolo per cercare.</p>
     <?php } elseif (count($libri) === 0) { ?>
         <p class="catalogo-messaggio">Nessun libro trovato.</p>
@@ -86,6 +80,7 @@ if (isset($_GET['titolo'])) {
                 <div>
                     <span><?= htmlspecialchars($l['categoria']) ?></span>
                     <h2><?= htmlspecialchars($l['titolo']) ?></h2>
+                    <a href="libri_edit.php?id=<?= $l['id'] ?>">Modifica libro</a>
                     <time datetime="<?= $l['anno_pubblicazione'] ?>"><?= $l['anno_pubblicazione'] ?></time>
 
                     <h3>Autori</h3>

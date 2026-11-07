@@ -24,10 +24,12 @@ $stmt->execute([$libro_id]);
 $autori_libro = $stmt->fetchAll();
 
 // Autori ancora NON collegati: sono quelli che si possono aggiungere
-$sql = "SELECT id, nome, cognome
+$sql = "SELECT autori.id, autori.nome, autori.cognome
         FROM autori
-        WHERE id NOT IN (SELECT autore_id FROM libro_autore WHERE libro_id = ?)
-        ORDER BY cognome";
+        LEFT JOIN libro_autore ON autori.id = libro_autore.autore_id
+            AND libro_autore.libro_id = ?
+        WHERE libro_autore.autore_id IS NULL
+        ORDER BY autori.cognome";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$libro_id]);
 $autori_liberi = $stmt->fetchAll();
