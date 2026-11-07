@@ -25,32 +25,26 @@
 <p><strong>Obiettivo</strong>: con molti libri non è pratico caricare tutto il catalogo. Modifica <code>index.php</code>: chiedi una parte del titolo e mostra al massimo 20 risultati, senza JavaScript.</p>
 <h2>1. Leggere i criteri e cercare</h2>
 <p>Sostituisci la query iniziale della lezione 7 con questo codice, dopo <code>require_once 'connessione.php';</code>. La query parte solo se il titolo è stato inserito; controlliamo i dati anche sul server, non solo nel form.</p>
-<pre><code class="language-php">$titolo = '';
+<pre><code class="language-php">$titolo = $_GET['titolo'] ?? '';
 $errore = '';
 $libri = [];
 $altri_risultati = false;
 
-if (isset($_GET['titolo'])) {
-    if (!is_string($_GET['titolo'])) {
-        $errore = 'Inserisci un titolo valido.';
-    } else {
-        $titolo = trim($_GET['titolo']);
-        if ($titolo === '') {
-            $errore = 'Inserisci almeno una parte del titolo.';
-        }
-    }
-
-    if ($errore === '') {
-        $termine = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $titolo);
+if (!is_string($titolo)) {
+    $titolo = '';
+    $errore = 'Inserisci un titolo valido.';
+} else {
+    $titolo = trim($titolo);
+    if (!empty($titolo)) {
         $sql = &quot;SELECT libri.id, libri.titolo, libri.anno_pubblicazione,
                        categorie.nome AS categoria
                 FROM libri
                 INNER JOIN categorie ON libri.categoria_id = categorie.id
-                WHERE libri.titolo LIKE ? ESCAPE '!'
+                WHERE libri.titolo LIKE ?
                 ORDER BY libri.titolo, libri.id
                 LIMIT 21&quot;;
         $stmt = $pdo-&gt;prepare($sql);
-        $stmt-&gt;execute(['%' . $termine . '%']);
+        $stmt-&gt;execute(['%' . $titolo . '%']);
         $libri = $stmt-&gt;fetchAll();
         if (count($libri) &gt; 20) {
             array_pop($libri);
@@ -59,7 +53,7 @@ if (isset($_GET['titolo'])) {
     }
 }
 </code></pre>
-<p><code>LIKE</code> cerca il testo anche all'interno del titolo. <code>ESCAPE '!'</code> permette di cercare letteralmente anche <code>%</code>, <code>_</code> e <code>!</code>.</p>
+<p><code>empty</code> verifica anche se la variabile è definita e considera vuota la stringa <code>'0'</code>. Il controllo <code>is_string</code> evita errori se viene inviato un array al posto del titolo. <code>LIKE</code> cerca il testo anche all'interno del titolo; <code>%</code> e <code>_</code> inseriti nella ricerca restano caratteri speciali di <code>LIKE</code>, non vengono cercati letteralmente.</p>
 <p>Chiediamo 21 righe per sapere se ci sono altri risultati, ma ne mostriamo solo 20: in questo caso invitiamo a precisare la ricerca. L'ordinamento per titolo e ID è stabile anche quando più libri hanno lo stesso titolo. Se più di 20 libri hanno esattamente lo stesso titolo, precisare il titolo non basta a mostrarli tutti: è un limite di questa versione semplice.</p>
 <h2>2. Form e risultati</h2>
 <p>Tra l'header e il <code>main</code> aggiungi il form e il messaggio. Mantieni dentro <code>main</code> il ciclo delle schede della lezione 7: ora riceve al massimo 20 libri.</p>
@@ -71,7 +65,7 @@ if (isset($_GET['titolo'])) {
 &lt;/form&gt;
 &lt;?php if ($errore !== '') { ?&gt;
     &lt;p class=&quot;catalogo-messaggio&quot; role=&quot;alert&quot;&gt;&lt;?= htmlspecialchars($errore) ?&gt;&lt;/p&gt;
-&lt;?php } elseif (!isset($_GET['titolo'])) { ?&gt;
+&lt;?php } elseif (empty($titolo)) { ?&gt;
     &lt;p class=&quot;catalogo-messaggio&quot;&gt;Inserisci una parte del titolo per cercare.&lt;/p&gt;
 &lt;?php } elseif (count($libri) === 0) { ?&gt;
     &lt;p class=&quot;catalogo-messaggio&quot;&gt;Nessun libro trovato.&lt;/p&gt;
@@ -80,10 +74,14 @@ if (isset($_GET['titolo'])) {
 &lt;?php } ?&gt;
 </code></pre>
 <p>Il CSS in <code>lavoro/css/style.css</code> contiene già le regole per <code>.catalogo-ricerca</code> e <code>.catalogo-messaggio</code>. La query degli autori resta nel ciclo, ma viene eseguita per al massimo 20 libri alla volta.</p>
+<p>Dentro ogni scheda del ciclo della lezione 7 aggiungi il link alla modifica del libro:</p>
+<pre><code class="language-php">&lt;a href=&quot;libri_edit.php?id=&lt;?= $l['id'] ?&gt;&quot;&gt;Modifica libro&lt;/a&gt;
+</code></pre>
 <h2>Verifica</h2>
 <ul>
-<li>Apri la home: non deve mostrare libri prima della ricerca. Invia anche un titolo vuoto o composto da spazi.</li>
-<li>Cerca <code>buon</code> e poi un titolo inesistente. Prova anche i caratteri <code>%</code> e <code>_</code>: non devono mostrare l'intero catalogo.</li>
+<li>Apri la home: non deve mostrare libri prima della ricerca. Invia anche un titolo vuoto, composto da spazi o uguale a <code>0</code>.</li>
+<li>Cerca <code>buon</code> e poi un titolo inesistente. Prova anche <code>%</code> e <code>_</code> e osserva che funzionano come caratteri speciali di <code>LIKE</code>.</li>
+<li>Da un risultato apri la modifica del libro e segui il link a un autore collegato.</li>
 <li>Cerca <code>Viaggi immaginari</code>: nei dati di esempio ci sono 24 libri inventati, quindi compare l'invito a precisare il titolo. La pagina fetch della prossima lezione è separata e non eredita automaticamente questo limite.</li>
 </ul>
         <div class="nav"><a href="lezione-07.html">⬅️ Lezione precedente</a><a href="lezione-08.html">Lezione successiva ➡️</a></div>

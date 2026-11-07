@@ -55,19 +55,53 @@ $stmt-&gt;execute([$libro_id]);
 $autori_libro = $stmt-&gt;fetchAll();
 </code></pre>
 <ul>
-<li>Il menu a tendina propone solo gli autori <strong>non ancora</strong> collegati:</li>
+<li>Il menu a tendina propone solo gli autori <strong>non ancora</strong> collegati. Usa una <code>LEFT JOIN</code> filtrata sul libro corrente:</li>
 </ul>
-<pre><code class="language-php">SELECT id, nome, cognome FROM autori
+<pre><code class="language-php">$sql = &quot;SELECT autori.id, autori.nome, autori.cognome
+        FROM autori
+        LEFT JOIN libro_autore ON autori.id = libro_autore.autore_id
+            AND libro_autore.libro_id = ?
+        WHERE libro_autore.autore_id IS NULL&quot;;
+$stmt = $pdo-&gt;prepare($sql);
+$stmt-&gt;execute([$libro_id]);
+$autori_disponibili = $stmt-&gt;fetchAll();
+</code></pre>
+<p>La <code>LEFT JOIN</code> conserva tutti gli autori; <code>IS NULL</code> seleziona quelli senza collegamento al libro corrente. Il filtro sul libro va in <code>ON</code>, non in <code>WHERE</code>, per conservare anche gli autori senza corrispondenza.</p>
+<p>In alternativa si può usare una query annidata, con lo stesso parametro <code>$libro_id</code>:</p>
+<pre><code class="language-sql">SELECT id, nome, cognome FROM autori
 WHERE id NOT IN (SELECT autore_id FROM libro_autore WHERE libro_id = ?)
 </code></pre>
+<p>Qui <code>NOT IN</code> funziona perché <code>autore_id</code> è dichiarato <code>NOT NULL</code>.</p>
 <ul>
 <li>Il form invia <code>libro_id</code> (campo hidden), <code>autore_id</code> e <code>ruolo</code> a <code>libro_autori_insert.php</code>, che fa l'<code>INSERT</code> nella tabella ponte e poi torna a <code>libro_autori.php?id=</code> + il libro.</li>
 <li>Il link "Scollega" chiama <code>libro_autori_delete.php?libro_id=...&amp;autore_id=...</code>: servono <strong>entrambe</strong> le chiavi, perché la riga è identificata dalla coppia:</li>
 </ul>
 <pre><code class="language-php">DELETE FROM libro_autore WHERE libro_id = ? AND autore_id = ?
 </code></pre>
+<h2>4. Dalla modifica del libro alla modifica degli autori</h2>
+<p>In <code>libri_edit.php</code>, dopo aver letto il libro in <code>$libro</code>, cerca i suoi autori:</p>
+<pre><code class="language-php">$sql = &quot;SELECT autori.id, autori.nome, autori.cognome
+        FROM autori
+        INNER JOIN libro_autore ON autori.id = libro_autore.autore_id
+        WHERE libro_autore.libro_id = ?&quot;;
+$stmt = $pdo-&gt;prepare($sql);
+$stmt-&gt;execute([$libro['id']]);
+$autori_libro = $stmt-&gt;fetchAll();
+</code></pre>
+<p>Mostra un link di modifica per ogni autore collegato e un link per gestire i collegamenti:</p>
+<pre><code class="language-php">&lt;ul&gt;
+    &lt;?php foreach ($autori_libro as $a) { ?&gt;
+        &lt;li&gt;
+            &lt;a href=&quot;autori_edit.php?id=&lt;?= $a['id'] ?&gt;&quot;&gt;
+                &lt;?= htmlspecialchars($a['nome'] . ' ' . $a['cognome']) ?&gt;
+            &lt;/a&gt;
+        &lt;/li&gt;
+    &lt;?php } ?&gt;
+&lt;/ul&gt;
+&lt;a href=&quot;libro_autori.php?id=&lt;?= $libro['id'] ?&gt;&quot;&gt;Gestisci autori del libro&lt;/a&gt;
+</code></pre>
 <h2>Verifica</h2>
-<p>Collega un secondo autore a "Dune", poi scollegalo. Cancella un libro e controlla che i collegamenti siano spariti.</p>
+<p>Controlla che il menu includa gli autori collegati solo ad altri libri, ma non quelli già collegati al libro corrente. Collega un secondo autore a "Dune", apri la modifica del libro e segui il link all'autore; poi scollegalo. Cancella un libro e controlla che i collegamenti siano spariti.</p>
         <div class="nav"><a href="lezione-05.html">⬅️ Lezione precedente</a><a href="lezione-07.html">Lezione successiva ➡️</a></div>
     </div>
 </body>
