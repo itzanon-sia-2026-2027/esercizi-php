@@ -137,32 +137,32 @@ article h3 {
     margin-bottom: 10px;
 }
 
-article ul {
+ul {
     list-style: none;
 }
 
-article li {
+li {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 10px;
 }
 
-article li:last-child {
+li:last-child {
     margin-bottom: 0;
 }
 
-article li div {
+li div {
     display: flex;
     flex-direction: column;
 }
 
-article li strong {
+li strong {
     font-size: 0.9rem;
     font-weight: 600;
 }
 
-article li span {
+li span {
     font-size: 0.8rem;
     color: var(--text-muted);
 }
@@ -223,4 +223,16 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     border-radius: var(--radius);
     padding: 10px 16px;
     cursor: pointer;
+}
+
+.categorie-container {
+   display: flex;
+   gap: 20px; 
+} 
+
+.categorie-container button.active {
+    background-color: #dfc49f; 
+    color: #4a231a;            
+    border-color: #4a231a;
+    font-weight: bold;
 }

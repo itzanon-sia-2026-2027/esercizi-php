@@ -18,11 +18,13 @@ if (count($libri) == 0) {
 }
 
 foreach ($libri as $l) { ?>
-    <article>
-        <div>
+    <tr>
+        <td>
             <h2><?= htmlspecialchars($l['titolo']) ?> (<?= $l['anno_pubblicazione'] ?>)</h2>
-            <button onclick="carica_autori(<?= $l['id'] ?>)">Mostra autori</button>
-            <div id="autori_<?= $l['id'] ?>"></div>
-        </div>
-    </article>
+        </td>
+        <td>
+            <button onclick="carica_autori(<?= $l['id'] ?>, event)">Mostra autori</button>
+            <ul id="autori_<?= $l['id'] ?>"></ul>
+        </td>
+    </tr>
 <?php }

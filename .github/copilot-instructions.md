@@ -42,7 +42,7 @@ esercizi-php/
     └── connessione.php     # Crea $pdo e gestisce i messaggi di sessione
 ```
 
-**Soluzione ed esempi**: il portale completo (`biblioteca/`) è incluso nello stesso branch delle lezioni, quindi è visibile agli studenti. Convenzione dei file: un file per operazione (`categorie.php`, `_insert`, `_delete`, `_edit`, `_update`); `libri*`, `autori*`, `libro_autori*` per 1:N e N:M (tabella ponte); `catalogo_ajax.php` per la lezione finale con fetch.
+**Soluzione ed esempi**: il portale completo (`biblioteca/`) è incluso nello stesso branch delle lezioni, quindi è visibile agli studenti. Convenzione dei file: un file per operazione (`categorie.php`, `_insert`, `_delete`, `_edit`, `_update`); `libri*`, `autori*`, `libro_autori*` per 1:N e N:M (tabella ponte); `catalogo_fetch.php` per la lezione finale con fetch.
 
 ### Convenzioni Codice
 

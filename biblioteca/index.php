@@ -52,7 +52,7 @@ if (!empty($titolo)) {
             <a href="libri.php">⚙️ Gestisci Libri</a>
             <a href="autori.php">⚙️ Gestisci Autori</a>
             <a href="statistiche.php">📊 Statistiche Catalogo</a>
-            <a href="catalogo_ajax.php">⚡ Catalogo senza ricaricare (fetch)</a>
+            <a href="catalogo_fetch.php">⚡ Catalogo senza ricaricare (fetch)</a>
         </p>
     </header>
 

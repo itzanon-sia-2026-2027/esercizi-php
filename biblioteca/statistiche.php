@@ -35,42 +35,7 @@ $stat_autori = $stmt_autori->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistiche Biblioteca</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* Stili aggiuntivi specifici per le tabelle di reportistica */
-        .statistiche-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            margin-top: 20px;
-        }
-        @media (min-width: 768px) {
-            .statistiche-container {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        .tabella-stat {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            background: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .tabella-stat th, .tabella-stat td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        .tabella-stat th {
-            background-color: #667eea;
-            color: white;
-            font-weight: 600;
-        }
-        .tabella-stat tr:hover {
-            background-color: #f8f9fa;
-        }
-    </style>
+    <link rel="stylesheet" href="css/crud.css"> 
 </head>
 
 <body>
@@ -80,10 +45,10 @@ $stat_autori = $stmt_autori->fetchAll();
         <p><a href="index.php">🏠 Torna alla Ricerca</a></p>
     </header>
 
-    <main class="statistiche-container">
+    <main>
         <section>
             <h2>Libri per Categoria</h2>
-            <table class="tabella-stat">
+            <table>
                 <thead>
                     <tr>
                         <th>Categoria</th>
@@ -103,7 +68,7 @@ $stat_autori = $stmt_autori->fetchAll();
 
         <section>
             <h2>Media Autori per Categoria</h2>
-            <table class="tabella-stat">
+            <table>
                 <thead>
                     <tr>
                         <th>Categoria</th>

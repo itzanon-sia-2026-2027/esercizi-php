@@ -24,11 +24,21 @@ $categorie = $pdo->query("SELECT id, nome FROM categorie ORDER BY nome")->fetchA
     <main>
         <p>Clicca una categoria: la pagina NON si ricarica.</p>
 
-        <?php foreach ($categorie as $c) { ?>
-            <button onclick="carica_libri(<?= $c['id'] ?>)"><?= htmlspecialchars($c['nome']) ?></button>
-        <?php } ?>
-
-        <div id="elenco_libri"></div>
+        <div class="categorie-container">
+            <?php foreach ($categorie as $c) { ?>
+                <button onclick="carica_libri(<?= $c['id'] ?>, event)"><?= htmlspecialchars($c['nome']) ?></button>
+            <?php } ?>
+        </div>
+        
+        <table>
+                <thead>
+                    <tr>
+                        <th>Titolo</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody id="elenco_libri"></tbody>
+        </table>
     </main>
 
     <footer>
