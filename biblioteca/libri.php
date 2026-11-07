@@ -22,6 +22,7 @@ $categorie = $pdo->query("SELECT id, nome FROM categorie ORDER BY nome")->fetchA
     <title>Gestione Libri</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/crud.css">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 
 <body>

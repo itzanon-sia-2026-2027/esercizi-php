@@ -36,6 +36,7 @@ $stat_autori = $stmt_autori->fetchAll();
     <title>Statistiche Biblioteca</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/crud.css"> 
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 
 <body>

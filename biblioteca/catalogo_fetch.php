@@ -13,6 +13,7 @@ $categorie = $pdo->query("SELECT id, nome FROM categorie ORDER BY nome")->fetchA
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/crud.css">
     <script src="js/catalogo.js"></script>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 
 <body>
